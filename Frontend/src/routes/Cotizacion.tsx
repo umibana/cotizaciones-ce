@@ -107,12 +107,12 @@ export default function Component() {
 					</ul>
 					<Dialog>
 						<DialogTrigger asChild>
-							<Button className="mt-4">
+							<Button className="mt-4 rounded-full">
 								<Plus className="h-4 w-4 mr-2" />
 								Add Predefined Item
 							</Button>
 						</DialogTrigger>
-						<DialogContent className="sm:max-w-[425px]">
+						<DialogContent className="sm:max-w-[425px] ">
 							<DialogHeader>
 								<DialogTitle>Add Predefined Items</DialogTitle>
 							</DialogHeader>
@@ -148,6 +148,7 @@ export default function Component() {
 							<Label htmlFor="description">Description</Label>
 							<Textarea
 								id="description"
+								className=" rounded-xl"
 								value={description}
 								onChange={(e) => setDescription(e.target.value)}
 								placeholder="Enter item description"
@@ -156,18 +157,19 @@ export default function Component() {
 						<div className="flex flex-col space-y-1.5">
 							<Label htmlFor="price">Price</Label>
 							<Input
+								className=" rounded-xl"
 								id="price"
 								value={price}
 								onChange={(e) => setPrice(e.target.value)}
 								placeholder="Enter item price"
 							/>
 						</div>
-						<Button variant="outline" className="w-full">
+						<Button variant="outline" className="w-full rounded-full">
 							<Image className="h-4 w-4 mr-2" />
 							Subir Imagen
 						</Button>
 
-						<Button onClick={addCustomItem} className="w-full">
+						<Button onClick={addCustomItem} className="w-full rounded-full">
 							<Plus className="h-4 w-4 mr-2" />
 							Agregar
 						</Button>
@@ -175,7 +177,7 @@ export default function Component() {
 				</CardContent>
 			</Card>
 
-			<Button className="w-full">
+			<Button className="w-full rounded-full">
 				<Send className="h-4 w-4 mr-2" />
 				Enviar Cotización
 			</Button>
