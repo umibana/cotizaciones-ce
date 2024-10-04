@@ -1,16 +1,24 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App.tsx";
+import App from "./routes/App.tsx";
 import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import ErrorPage from "./routes/error-page.tsx";
+import Cotizacion from "./routes/Cotizacion.tsx";
 
 const router = createBrowserRouter([
 	{
 		path: "/",
 		element: <App />,
+		errorElement: <ErrorPage />,
+	},
+	{
+		path: "/cotizacion",
+		element: <Cotizacion />,
+		errorElement: <ErrorPage />,
 	},
 ]);
 
