@@ -3,7 +3,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-// Placeholder data - replace this with your actual data fetching logic later
+// Convertir a .tsx cuando tengamos definido schema
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 const initialProjects = {
 	unassigned: [
 		{ id: 1, name: "Project A" },
@@ -17,14 +19,14 @@ const initialProjects = {
 	],
 };
 
-const UnassignedProjectList = ({ projects, onAssign }) => (
+const UnassignedProjectList = ({ projects, onAssign }: any) => (
 	<Card className="flex-1">
 		<CardHeader>
 			<CardTitle>Unassigned Projects</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<ScrollArea className="h-[200px] w-full rounded-md border p-4">
-				{projects.map((project) => (
+				{projects.map((project: any) => (
 					<div
 						key={project.id}
 						className="mb-2 flex items-center justify-between rounded-lg bg-secondary p-2">
@@ -39,14 +41,14 @@ const UnassignedProjectList = ({ projects, onAssign }) => (
 	</Card>
 );
 
-const AssignedProjectList = ({ projects, onReview }) => (
+const AssignedProjectList = ({ projects, onReview }: any) => (
 	<Card className="flex-1">
 		<CardHeader>
 			<CardTitle>Assigned Projects</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<ScrollArea className="h-[200px] w-full rounded-md border p-4">
-				{projects.map((project) => (
+				{projects.map((project: any) => (
 					<div
 						key={project.id}
 						className="mb-2 flex items-center justify-between rounded-lg bg-secondary p-2">
@@ -80,7 +82,7 @@ export default function Asignacion() {
 				await new Promise((resolve) => setTimeout(resolve, 100)); // Simulate network delay
 				setProjects(initialProjects);
 				setIsLoading(false);
-			} catch (err) {
+			} catch (err: any) {
 				setError(err.message);
 				setIsLoading(false);
 			}
@@ -89,12 +91,12 @@ export default function Asignacion() {
 		fetchProjects();
 	}, []);
 
-	const handleAssign = (projectId) => {
+	const handleAssign = (projectId: any) => {
 		console.log(`Assigning project: ${projectId}`);
 		// Implement your assign logic here
 	};
 
-	const handleReview = (projectId) => {
+	const handleReview = (projectId: any) => {
 		console.log(`Reviewing project: ${projectId}`);
 		// Implement your review logic here
 	};
