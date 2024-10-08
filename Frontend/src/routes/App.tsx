@@ -16,11 +16,22 @@ function App() {
 					</Button>
 				</div>
 
-				<div className="text-center">
+				<div className="text-center flex flex-col gap-2">
 					<h1 className="text-xl font-bold"> Vista Jefe</h1>
 
 					<Button asChild>
-						<Link to="/Asignacion">Asignación</Link>
+						<Link to="/asignacion">Asignación</Link>
+					</Button>
+					<Button asChild>
+						<Link to="/proyectos">Proyectos</Link>
+					</Button>
+
+					<Button asChild>
+						<Link to="/materiales">Materiales</Link>
+					</Button>
+
+					<Button asChild>
+						<Link to="/nuevo-proyecto">Nuevo Proyecto</Link>
 					</Button>
 				</div>
 			</div>

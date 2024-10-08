@@ -8,7 +8,10 @@ const queryClient = new QueryClient();
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./routes/error-page.tsx";
 import Cotizacion from "./routes/Cotizacion.tsx";
+import Proyectos from "./routes/Proyectos.tsx";
 import Asignacion from "./routes/Asignacion.tsx";
+import Materiales from "./routes/Materiales.tsx";
+import NuevoProyecto from "./routes/NuevoProyecto.tsx";
 
 const router = createBrowserRouter([
 	{
@@ -23,8 +26,25 @@ const router = createBrowserRouter([
 	},
 
 	{
+		path: "/proyectos",
+		element: <Proyectos />,
+		errorElement: <ErrorPage />,
+	},
+
+	{
 		path: "/asignacion",
 		element: <Asignacion />,
+		errorElement: <ErrorPage />,
+	},
+	{
+		path: "/materiales",
+		element: <Materiales />,
+		errorElement: <ErrorPage />,
+	},
+
+	{
+		path: "/nuevo-proyecto",
+		element: <NuevoProyecto />,
 		errorElement: <ErrorPage />,
 	},
 ]);

@@ -1,124 +1,94 @@
-import { useState, useEffect } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-// Convertir a .tsx cuando tengamos definido schema
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
-const initialProjects = {
-	unassigned: [
-		{ id: 1, name: "Project A" },
-		{ id: 2, name: "Project B" },
-		{ id: 3, name: "Project C" },
-	],
-	assigned: [
-		{ id: 4, name: "Project D", price: 100 },
-		{ id: 5, name: "Project E", price: 150 },
-		{ id: 6, name: "Project F", price: 200 },
-	],
-};
-
-const UnassignedProjectList = ({ projects, onAssign }: any) => (
-	<Card className="flex-1">
-		<CardHeader>
-			<CardTitle>Unassigned Projects</CardTitle>
-		</CardHeader>
-		<CardContent>
-			<ScrollArea className="h-[200px] w-full rounded-md border p-4">
-				{projects.map((project: any) => (
-					<div
-						key={project.id}
-						className="mb-2 flex items-center justify-between rounded-lg bg-secondary p-2">
-						<span>{project.name}</span>
-						<Button size="sm" onClick={() => onAssign(project.id)}>
-							Assign
-						</Button>
-					</div>
-				))}
-			</ScrollArea>
-		</CardContent>
-	</Card>
-);
-
-const AssignedProjectList = ({ projects, onReview }: any) => (
-	<Card className="flex-1">
-		<CardHeader>
-			<CardTitle>Assigned Projects</CardTitle>
-		</CardHeader>
-		<CardContent>
-			<ScrollArea className="h-[200px] w-full rounded-md border p-4">
-				{projects.map((project: any) => (
-					<div
-						key={project.id}
-						className="mb-2 flex items-center justify-between rounded-lg bg-secondary p-2">
-						<span>{project.name}</span>
-						<div className="flex items-center gap-2">
-							<span className="font-medium">${project.price}</span>
-							<Button
-								size="sm"
-								variant="outline"
-								onClick={() => onReview(project.id)}>
-								Review
-							</Button>
-						</div>
-					</div>
-				))}
-			</ScrollArea>
-		</CardContent>
-	</Card>
-);
+// Placeholder user data
+const initialUsers = [
+	{ id: 1, name: "Alice Johnson" },
+	{ id: 2, name: "Bob Smith" },
+	{ id: 3, name: "Charlie Brown" },
+	{ id: 4, name: "Diana Ross" },
+	{ id: 5, name: "Edward Norton" },
+];
 
 export default function Asignacion() {
-	const [projects, setProjects] = useState(initialProjects);
-	const [isLoading, setIsLoading] = useState(true);
-	const [error, setError] = useState(null);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [users, setUsers] = useState(initialUsers);
+	// Cambiar después por react query
+	const [filterText, setFilterText] = useState("");
+	const [selectedUser, setSelectedUser] = useState<number | null>(null);
 
-	useEffect(() => {
-		// Simulate API call
-		const fetchProjects = async () => {
-			try {
-				// Replace this with your actual API call when you're ready
-				await new Promise((resolve) => setTimeout(resolve, 100)); // Simulate network delay
-				setProjects(initialProjects);
-				setIsLoading(false);
-			} catch (err: any) {
-				setError(err.message);
-				setIsLoading(false);
-			}
-		};
-
-		fetchProjects();
-	}, []);
-
-	const handleAssign = (projectId: any) => {
-		console.log(`Assigning project: ${projectId}`);
-		// Implement your assign logic here
-	};
-
-	const handleReview = (projectId: any) => {
-		console.log(`Reviewing project: ${projectId}`);
-		// Implement your review logic here
-	};
-
-	if (isLoading) return <div className="text-center p-4">Loading...</div>;
-	if (error)
-		return (
-			<div className="text-center p-4 text-red-500">
-				An error occurred: {error}
-			</div>
-		);
+	const filteredUsers = users.filter((user) =>
+		user.name.toLowerCase().includes(filterText.toLowerCase())
+	);
 
 	return (
-		<div className="container mx-auto p-4 space-y-4">
-			<UnassignedProjectList
-				projects={projects.unassigned}
-				onAssign={handleAssign}
-			/>
-			<AssignedProjectList
-				projects={projects.assigned}
-				onReview={handleReview}
-			/>
+		<div className="container mx-auto p-4 max-w-2xl">
+			<Card className="mb-8">
+				<CardHeader>
+					<CardTitle>Assigning Project</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<form className="space-y-4">
+						<div className="space-y-2">
+							<Label htmlFor="name">Name</Label>
+							<Input id="name" placeholder="Project name" />
+						</div>
+						<div className="space-y-2">
+							<Label htmlFor="type">Type</Label>
+							<Input id="type" placeholder="Project type" />
+						</div>
+						<div className="space-y-2">
+							<Label htmlFor="location">Location</Label>
+							<Input id="location" placeholder="Project location" />
+						</div>
+						<div className="space-y-2">
+							<Label>Assigned To</Label>
+							<Input
+								value={users.find((u) => u.id === selectedUser)?.name || ""}
+								readOnly
+								placeholder="Select a user below"
+							/>
+						</div>
+						<Button type="submit" className="w-full" disabled={!selectedUser}>
+							Assign Project
+						</Button>
+					</form>
+				</CardContent>
+			</Card>
+
+			<Card>
+				<CardHeader>
+					<CardTitle>Available Users</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<div className="mb-4">
+						<Input
+							placeholder="Filter users..."
+							value={filterText}
+							onChange={(e) => setFilterText(e.target.value)}
+						/>
+					</div>
+					<RadioGroup
+						value={selectedUser?.toString()}
+						onValueChange={(value) => setSelectedUser(Number(value))}>
+						{filteredUsers.map((user) => (
+							<div
+								key={user.id}
+								className="flex items-center space-x-2 p-2 bg-secondary rounded-md">
+								<RadioGroupItem
+									value={user.id.toString()}
+									id={`user-${user.id}`}
+								/>
+								<Label htmlFor={`user-${user.id}`}>{user.name}</Label>
+							</div>
+						))}
+					</RadioGroup>
+				</CardContent>
+			</Card>
 		</div>
 	);
 }
