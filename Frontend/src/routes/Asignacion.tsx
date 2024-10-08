@@ -29,32 +29,32 @@ export default function Asignacion() {
 		<div className="container mx-auto p-4 max-w-2xl">
 			<Card className="mb-8">
 				<CardHeader>
-					<CardTitle>Assigning Project</CardTitle>
+					<CardTitle>Asignación de Proyectos</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<form className="space-y-4">
 						<div className="space-y-2">
-							<Label htmlFor="name">Name</Label>
-							<Input id="name" placeholder="Project name" />
+							<Label htmlFor="name">Nombre</Label>
+							<Input id="name" placeholder="Nombre del Proyecto" />
 						</div>
 						<div className="space-y-2">
-							<Label htmlFor="type">Type</Label>
-							<Input id="type" placeholder="Project type" />
+							<Label htmlFor="type">Tipo</Label>
+							<Input id="type" placeholder="Tipo de Proyecto" />
 						</div>
 						<div className="space-y-2">
-							<Label htmlFor="location">Location</Label>
-							<Input id="location" placeholder="Project location" />
+							<Label htmlFor="location">Ubicación</Label>
+							<Input id="location" placeholder="Ubicación del Proyecto" />
 						</div>
 						<div className="space-y-2">
-							<Label>Assigned To</Label>
+							<Label>Asignado a</Label>
 							<Input
 								value={users.find((u) => u.id === selectedUser)?.name || ""}
 								readOnly
-								placeholder="Select a user below"
+								placeholder="Seleccione un colaborador"
 							/>
 						</div>
 						<Button type="submit" className="w-full" disabled={!selectedUser}>
-							Assign Project
+							Asignar Proyecto
 						</Button>
 					</form>
 				</CardContent>
@@ -62,12 +62,12 @@ export default function Asignacion() {
 
 			<Card>
 				<CardHeader>
-					<CardTitle>Available Users</CardTitle>
+					<CardTitle>Colaboradores disponibles</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<div className="mb-4">
 						<Input
-							placeholder="Filter users..."
+							placeholder="Filtrar colaboradores..."
 							value={filterText}
 							onChange={(e) => setFilterText(e.target.value)}
 						/>

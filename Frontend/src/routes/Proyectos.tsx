@@ -8,21 +8,21 @@ import { Button } from "@/components/ui/button";
 
 const initialProjects = {
 	unassigned: [
-		{ id: 1, name: "Project A" },
-		{ id: 2, name: "Project B" },
-		{ id: 3, name: "Project C" },
+		{ id: 1, name: "Proyecto A" },
+		{ id: 2, name: "Proyecto B" },
+		{ id: 3, name: "Proyecto C" },
 	],
 	assigned: [
-		{ id: 4, name: "Project D", price: 100 },
-		{ id: 5, name: "Project E", price: 150 },
-		{ id: 6, name: "Project F", price: 200 },
+		{ id: 4, name: "Proyecto D", price: 100 },
+		{ id: 5, name: "Proyecto E", price: 150 },
+		{ id: 6, name: "Proyecto F", price: 200 },
 	],
 };
 
 const UnassignedProjectList = ({ projects, onAssign }: any) => (
 	<Card className="flex-1">
 		<CardHeader>
-			<CardTitle>Unassigned Projects</CardTitle>
+			<CardTitle>Proyectos sin asignar</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<ScrollArea className="h-[200px] w-full rounded-md border p-4">
@@ -32,7 +32,7 @@ const UnassignedProjectList = ({ projects, onAssign }: any) => (
 						className="mb-2 flex items-center justify-between rounded-lg bg-secondary p-2">
 						<span>{project.name}</span>
 						<Button size="sm" onClick={() => onAssign(project.id)}>
-							Assign
+							Asignar
 						</Button>
 					</div>
 				))}
@@ -44,7 +44,7 @@ const UnassignedProjectList = ({ projects, onAssign }: any) => (
 const AssignedProjectList = ({ projects, onReview }: any) => (
 	<Card className="flex-1">
 		<CardHeader>
-			<CardTitle>Assigned Projects</CardTitle>
+			<CardTitle>Proyectos asignados</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<ScrollArea className="h-[200px] w-full rounded-md border p-4">
@@ -59,7 +59,7 @@ const AssignedProjectList = ({ projects, onReview }: any) => (
 								size="sm"
 								variant="outline"
 								onClick={() => onReview(project.id)}>
-								Review
+								Revisar
 							</Button>
 						</div>
 					</div>

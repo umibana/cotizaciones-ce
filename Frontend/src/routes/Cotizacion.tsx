@@ -219,12 +219,12 @@ export default function Component() {
 						<DialogTrigger asChild>
 							<Button className="mt-4 rounded-full">
 								<Plus className="h-4 w-4 mr-2" />
-								Add Predefined Item
+								Agregar Items
 							</Button>
 						</DialogTrigger>
 						<DialogContent className="sm:max-w-[425px] ">
 							<DialogHeader>
-								<DialogTitle>Add Predefined Items</DialogTitle>
+								<DialogTitle>Agregar Items</DialogTitle>
 							</DialogHeader>
 							<div className="grid gap-4 py-4">
 								{predefinedItems.map((item) => (
@@ -250,12 +250,12 @@ export default function Component() {
 
 			<Card className="mb-6">
 				<CardHeader>
-					<CardTitle>Add Custom Item</CardTitle>
+					<CardTitle>Agregar Item Extra</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<div className="grid w-full items-center gap-4">
 						<div className="flex flex-col space-y-1.5">
-							<Label htmlFor="description">Description</Label>
+							<Label htmlFor="description">Descripción</Label>
 							<Textarea
 								id="description"
 								className=" rounded-xl"
@@ -266,7 +266,7 @@ export default function Component() {
 						</div>
 
 						<div className="flex flex-col space-y-1.5">
-							<Label htmlFor="price">Price</Label>
+							<Label htmlFor="price">Precio</Label>
 							<Input
 								className=" rounded-xl"
 								id="price"
@@ -276,7 +276,7 @@ export default function Component() {
 							/>
 						</div>
 						<div className="flex flex-col space-y-1.5">
-							<Label htmlFor="new-item-image">Images</Label>
+							<Label htmlFor="new-item-image">Imágenes</Label>
 							<Input
 								id="new-item-image"
 								type="file"

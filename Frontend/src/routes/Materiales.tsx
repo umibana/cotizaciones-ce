@@ -22,9 +22,9 @@ type Material = {
 
 export default function Materiales() {
 	const [materials, setMaterials] = useState<Material[]>([
-		{ id: 1, name: "Wood", pricePerM2: 15 },
-		{ id: 2, name: "Steel", pricePerM2: 25 },
-		{ id: 3, name: "Glass", pricePerM2: 30 },
+		{ id: 1, name: "Cambio de piso de madera", pricePerM2: 15 },
+		{ id: 2, name: "Cambio de baldoza", pricePerM2: 25 },
+		{ id: 3, name: "Cambio de vidrio", pricePerM2: 30 },
 	]);
 	const [newMaterial, setNewMaterial] = useState({ name: "", pricePerM2: "" });
 	const [filterText, setFilterText] = useState("");
@@ -70,12 +70,12 @@ export default function Materiales() {
 		<div className="container mx-auto p-4 max-w-2xl">
 			<Card className="mb-8">
 				<CardHeader>
-					<CardTitle>Material Data</CardTitle>
+					<CardTitle>Creación de Materiales</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<form className="space-y-4">
 						<div className="space-y-2">
-							<Label htmlFor="name">Name</Label>
+							<Label htmlFor="name">Nombre</Label>
 							<Input
 								id="name"
 								value={newMaterial.name}
@@ -86,7 +86,7 @@ export default function Materiales() {
 							/>
 						</div>
 						<div className="space-y-2">
-							<Label htmlFor="price">Price per m²</Label>
+							<Label htmlFor="price">Precio per m²</Label>
 							<Input
 								id="price"
 								type="number"
@@ -94,14 +94,14 @@ export default function Materiales() {
 								onChange={(e) =>
 									setNewMaterial({ ...newMaterial, pricePerM2: e.target.value })
 								}
-								placeholder="Price per m²"
+								placeholder="Precio por m²"
 							/>
 						</div>
 						<Button
 							type="button"
 							onClick={handleAddMaterial}
 							className="w-full">
-							Add Material
+							Agregar material
 						</Button>
 					</form>
 				</CardContent>
@@ -109,12 +109,12 @@ export default function Materiales() {
 
 			<Card>
 				<CardHeader>
-					<CardTitle>Material List</CardTitle>
+					<CardTitle>Lista de Materiales</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<div className="mb-4">
 						<Input
-							placeholder="Filter materials..."
+							placeholder="Filtrar materiales..."
 							value={filterText}
 							onChange={(e) => setFilterText(e.target.value)}
 						/>
@@ -128,7 +128,7 @@ export default function Materiales() {
 									{material.name} - ${material.pricePerM2}/m²
 								</span>
 								<Button onClick={() => setEditingMaterial(material)}>
-									Update
+									Actualizar
 								</Button>
 							</li>
 						))}
