@@ -166,12 +166,13 @@ export default function NuevoProyecto() {
 									{projectData.fechaVisita ? (
 										format(projectData.fechaVisita, "PPP")
 									) : (
-										<span>Pick a date</span>
+										<span>Elige una fecha</span>
 									)}
 								</Button>
 							</PopoverTrigger>
 							<PopoverContent className="w-auto p-0">
 								<Calendar
+									className=" text-pretty"
 									mode="single"
 									selected={projectData.fechaVisita}
 									onSelect={handleDateChange}

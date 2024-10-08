@@ -15,8 +15,8 @@ const initialUsers = [
 ];
 
 export default function Asignacion() {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [users, setUsers] = useState(initialUsers);
+	// agregar setUsers cuando tengamos query
+	const [users] = useState(initialUsers);
 	// Cambiar después por react query
 	const [filterText, setFilterText] = useState("");
 	const [selectedUser, setSelectedUser] = useState<number | null>(null);
