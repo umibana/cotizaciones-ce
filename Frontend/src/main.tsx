@@ -8,6 +8,7 @@ const queryClient = new QueryClient();
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./routes/error-page.tsx";
 import Cotizacion from "./routes/Cotizacion.tsx";
+import Asignacion from "./routes/Asignacion.tsx";
 
 const router = createBrowserRouter([
 	{
@@ -18,6 +19,12 @@ const router = createBrowserRouter([
 	{
 		path: "/cotizacion",
 		element: <Cotizacion />,
+		errorElement: <ErrorPage />,
+	},
+
+	{
+		path: "/asignacion",
+		element: <Asignacion />,
 		errorElement: <ErrorPage />,
 	},
 ]);
