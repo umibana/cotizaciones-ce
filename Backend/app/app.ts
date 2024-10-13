@@ -8,7 +8,7 @@ import jsend from "jsend";
 import errorHandler from "../middlewares/error-handler";
 import todoRoutes from "./routes/todo";
 
-export const app = express();
+const app = express();
 
 // middleware routes
 const isProduction = process.env.NODE_ENV === "production";
@@ -44,3 +44,7 @@ app.get("/api", (_req, res: express.Response) => {
 });
 
 app.use("/api/todo", todoRoutes);
+
+app.use("/todo", todoRoutes);
+
+export default app
