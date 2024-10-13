@@ -2,6 +2,10 @@
   "name": "backend",
   "module": "index.ts",
   "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
