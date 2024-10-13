@@ -77,7 +77,7 @@ const AssignedProjectList = ({ projects, onReview }: any) => (
 export default function Proyectos() {
 	const [projects, setProjects] = useState(initialProjects);
 	const [isLoading, setIsLoading] = useState(true);
-	const [error, setError] = useState(null);
+	const [error, setError] = useState("");
 
 	useEffect(() => {
 		// Simulate API call
@@ -87,8 +87,12 @@ export default function Proyectos() {
 				await new Promise((resolve) => setTimeout(resolve, 100)); // Simulate network delay
 				setProjects(initialProjects);
 				setIsLoading(false);
-			} catch (err) {
-				setError(err.message);
+			} catch (err: unknown) {
+				if (err instanceof Error) {
+					setError(err.message);
+				} else {
+					setError("An unknown error occurred");
+				}
 				setIsLoading(false);
 			}
 		};
