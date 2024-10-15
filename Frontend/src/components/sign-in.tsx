@@ -16,7 +16,6 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { signIn } from "@/lib/auth-client";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -24,7 +23,6 @@ export default function SignIn() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [rememberMe, setRememberMe] = useState(false);
-	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	return (
 		<Card className="z-50 rounded-md rounded-t-none max-w-md">
