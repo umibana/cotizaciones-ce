@@ -49,13 +49,12 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
-type User = {
-	id: string;
-	email: string;
-	name: string;
-	role: "admin" | "user";
-	username: string;
-};
+// type User = {
+// 	id: string;
+// 	email: string;
+// 	name: string;
+// 	role: "admin" | "user";
+// };
 
 export default function AdminDashboard() {
 	const queryClient = useQueryClient();
@@ -111,9 +110,12 @@ export default function AdminDashboard() {
 			queryClient.invalidateQueries({
 				queryKey: ["users"],
 			});
-		} catch (error: any) {
-			toast.error(error.message || "Failed to create user");
-			console.log(error.message);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				toast.error(error.message || "Failed to impersonate user");
+			} else {
+				toast.error("An unexpected error occurred");
+			}
 		} finally {
 			setIsLoading(undefined);
 		}
@@ -127,8 +129,12 @@ export default function AdminDashboard() {
 			queryClient.invalidateQueries({
 				queryKey: ["users"],
 			});
-		} catch (error: any) {
-			toast.error(error.message || "Failed to delete user");
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				toast.error(error.message || "Failed to impersonate user");
+			} else {
+				toast.error("An unexpected error occurred");
+			}
 		} finally {
 			setIsLoading(undefined);
 		}
@@ -139,8 +145,12 @@ export default function AdminDashboard() {
 		try {
 			await client.admin.revokeUserSessions({ userId: id });
 			toast.success("Sessions revoked for user");
-		} catch (error: any) {
-			toast.error(error.message || "Failed to revoke sessions");
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				toast.error(error.message || "Failed to impersonate user");
+			} else {
+				toast.error("An unexpected error occurred");
+			}
 		} finally {
 			setIsLoading(undefined);
 		}
@@ -152,8 +162,12 @@ export default function AdminDashboard() {
 			await client.admin.impersonateUser({ userId: id });
 			toast.success("Impersonated user");
 			router.push("/dashboard");
-		} catch (error: any) {
-			toast.error(error.message || "Failed to impersonate user");
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				toast.error(error.message || "Failed to impersonate user");
+			} else {
+				toast.error("An unexpected error occurred");
+			}
 		} finally {
 			setIsLoading(undefined);
 		}
@@ -176,8 +190,12 @@ export default function AdminDashboard() {
 			queryClient.invalidateQueries({
 				queryKey: ["users"],
 			});
-		} catch (error: any) {
-			toast.error(error.message || "Failed to ban user");
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				toast.error(error.message || "Failed to impersonate user");
+			} else {
+				toast.error("An unexpected error occurred");
+			}
 		} finally {
 			setIsLoading(undefined);
 		}
@@ -410,7 +428,7 @@ export default function AdminDashboard() {
 														});
 														if (user.banned) {
 															setIsLoading(`ban-${user.id}`);
-															await admin.unbanUser(
+															await client.admin.unbanUser(
 																{
 																	userId: user.id,
 																},
