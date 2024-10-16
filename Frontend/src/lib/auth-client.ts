@@ -1,11 +1,10 @@
 import { createAuthClient } from "better-auth/react"
-import { adminClient, usernameClient } from "better-auth/client/plugins"
+import { adminClient } from "better-auth/client/plugins"
 import { toast } from "sonner";
 
 
 export const client = createAuthClient({
     plugins: [
-        usernameClient(),
         adminClient(),
     ],
     fetchOptions: {

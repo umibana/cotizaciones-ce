@@ -21,7 +21,6 @@ import { toast } from "sonner";
 export function SignUp() {
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
-	const [username, setUsername] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [passwordConfirmation, setPasswordConfirmation] = useState("");
@@ -76,19 +75,6 @@ export function SignUp() {
 								value={lastName}
 							/>
 						</div>
-					</div>
-					<div className="grid gap-2">
-						<Label htmlFor="username">Username</Label>
-						<Input
-							id="username"
-							type="text"
-							placeholder="John1234"
-							required
-							onChange={(e) => {
-								setUsername(e.target.value);
-							}}
-							value={username}
-						/>
 					</div>
 					<div className="grid gap-2">
 						<Label htmlFor="email">Email</Label>
@@ -161,13 +147,13 @@ export function SignUp() {
 						className="w-full"
 						disabled={loading}
 						onClick={async () => {
-							await signUp.username({
-								username,
+							console.log(email, password);
+							await signUp.email({
 								email,
 								password,
 								name: `${firstName} ${lastName}`,
 								image: image ? await convertImageToBase64(image) : "",
-								callbackURL: "/dashboard",
+								callbackURL: "/",
 								fetchOptions: {
 									onResponse: () => {
 										setLoading(false);
