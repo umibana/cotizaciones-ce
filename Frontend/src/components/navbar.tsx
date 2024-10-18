@@ -1,14 +1,14 @@
 import { Button } from "@/components/ui/button";
-import { client, signOut } from "@/lib/auth-client";
+import { signOut } from "@/lib/auth-client";
 import { ArrowLeft, LogOut } from "lucide-react";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
 	const router = useRouter();
 
 	const logOut = async () => {
 		try {
-			await client.signOut();
+			await signOut();
 		} catch (error) {
 			if (error instanceof Error) {
 				console.log(error.message);
