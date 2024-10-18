@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
+import Navbar from "@/components/navbar";
 
 const geistSans = localFont({
 	src: "./fonts/GeistVF.woff",
@@ -47,7 +48,10 @@ export default function RootLayout({
 		<html lang="en">
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-				<TanstackProvider>{children}</TanstackProvider>
+				<TanstackProvider>
+					<Navbar />
+					{children}
+				</TanstackProvider>
 			</body>
 		</html>
 	);

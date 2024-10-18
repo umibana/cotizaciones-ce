@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
 	Dialog,
@@ -13,56 +11,90 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import {
+	getMaterials,
+	addMaterial,
+	updateMaterial,
+	deleteMaterial,
+} from "./actions";
 
-type Material = {
-	id: number;
-	name: string;
-	pricePerM2: number;
-};
+interface Material {
+	id: string;
+	nombre: string;
+	precio: number;
+	descripcion?: string;
+}
 
 export default function Materiales() {
-	const [materials, setMaterials] = useState<Material[]>([
-		{ id: 1, name: "Cambio de piso de madera", pricePerM2: 15 },
-		{ id: 2, name: "Cambio de baldoza", pricePerM2: 25 },
-		{ id: 3, name: "Cambio de vidrio", pricePerM2: 30 },
-	]);
-	const [newMaterial, setNewMaterial] = useState({ name: "", pricePerM2: "" });
+	const [materials, setMaterials] = useState<Material[]>([]);
 	const [filterText, setFilterText] = useState("");
 	const [editingMaterial, setEditingMaterial] = useState<Material | null>(null);
+	const [isPending, startTransition] = useTransition();
+
+	useEffect(() => {
+		fetchMaterials();
+	}, []);
+
+	const fetchMaterials = async () => {
+		const result = await getMaterials();
+		if (result.error) {
+			toast.error(result.error);
+		} else if (result.data) {
+			setMaterials(result.data);
+		}
+	};
 
 	const filteredMaterials = materials.filter((material) =>
-		material.name.toLowerCase().includes(filterText.toLowerCase())
+		material.nombre.toLowerCase().includes(filterText.toLowerCase())
 	);
 
-	const handleAddMaterial = () => {
-		if (newMaterial.name && newMaterial.pricePerM2) {
-			setMaterials([
-				...materials,
-				{
-					id: materials.length + 1,
-					name: newMaterial.name,
-					pricePerM2: Number.parseFloat(newMaterial.pricePerM2),
-				},
-			]);
-			setNewMaterial({ name: "", pricePerM2: "" });
+	const handleAddMaterial = async (formData: FormData) => {
+		console.log(formData);
+		startTransition(async () => {
+			const result = await addMaterial(formData);
+			if (result.error) {
+				toast(result.error);
+			} else if (result.success) {
+				toast.success("Material added successfully");
+				fetchMaterials();
+			}
+		});
+	};
+
+	const handleUpdateMaterial = async () => {
+		if (editingMaterial) {
+			startTransition(async () => {
+				const result = await updateMaterial(editingMaterial.id, {
+					nombre: editingMaterial.nombre,
+					descripcion: editingMaterial.descripcion,
+					precio: editingMaterial.precio,
+				});
+				if (result.error) {
+					toast(result.error);
+				} else if (result.success) {
+					toast.success("Material updated successfully");
+					fetchMaterials();
+					setEditingMaterial(null);
+				}
+			});
 		}
 	};
 
-	const handleUpdateMaterial = () => {
+	const handleDeleteMaterial = async () => {
 		if (editingMaterial) {
-			setMaterials(
-				materials.map((m) =>
-					m.id === editingMaterial.id ? editingMaterial : m
-				)
-			);
-			setEditingMaterial(null);
-		}
-	};
-
-	const handleDeleteMaterial = () => {
-		if (editingMaterial) {
-			setMaterials(materials.filter((m) => m.id !== editingMaterial.id));
-			setEditingMaterial(null);
+			startTransition(async () => {
+				const result = await deleteMaterial(editingMaterial.id);
+				if (result.error) {
+					toast(result.error);
+				} else if (result.success) {
+					toast(result.error);
+					fetchMaterials();
+					setEditingMaterial(null);
+				}
+			});
 		}
 	};
 
@@ -73,35 +105,36 @@ export default function Materiales() {
 					<CardTitle>Creación de Materiales</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<form className="space-y-4">
+					<form action={handleAddMaterial} className="space-y-4">
 						<div className="space-y-2">
-							<Label htmlFor="name">Nombre</Label>
+							<Label htmlFor="nombre">Nombre</Label>
 							<Input
-								id="name"
-								value={newMaterial.name}
-								onChange={(e) =>
-									setNewMaterial({ ...newMaterial, name: e.target.value })
-								}
-								placeholder="Material name"
+								id="nombre"
+								name="nombre"
+								placeholder="Material nombre"
+								required
 							/>
 						</div>
 						<div className="space-y-2">
-							<Label htmlFor="price">Precio per m²</Label>
+							<Label htmlFor="precio">Precio per m²</Label>
 							<Input
-								id="price"
+								id="precio"
+								name="precio"
 								type="number"
-								value={newMaterial.pricePerM2}
-								onChange={(e) =>
-									setNewMaterial({ ...newMaterial, pricePerM2: e.target.value })
-								}
 								placeholder="Precio por m²"
+								required
 							/>
 						</div>
-						<Button
-							type="button"
-							onClick={handleAddMaterial}
-							className="w-full">
-							Agregar material
+						<div className="space-y-2">
+							<Label htmlFor="descripcion">Descripción</Label>
+							<Input
+								id="descripcion"
+								name="descripcion"
+								placeholder="Descripción del material"
+							/>
+						</div>
+						<Button type="submit" className="w-full" disabled={isPending}>
+							{isPending ? "Agregando..." : "Agregar material"}
 						</Button>
 					</form>
 				</CardContent>
@@ -125,7 +158,7 @@ export default function Materiales() {
 								key={material.id}
 								className="flex justify-between items-center p-2 bg-secondary rounded-md">
 								<span>
-									{material.name} - ${material.pricePerM2}/m²
+									{material.nombre} - ${material.precio}/m²
 								</span>
 								<Button onClick={() => setEditingMaterial(material)}>
 									Actualizar
@@ -138,7 +171,7 @@ export default function Materiales() {
 
 			<Dialog
 				open={!!editingMaterial}
-				onOpenChange={() => setEditingMaterial(null)}>
+				onOpenChange={(open) => !open && setEditingMaterial(null)}>
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>Edit Material</DialogTitle>
@@ -152,11 +185,11 @@ export default function Materiales() {
 								<Label htmlFor="edit-name">Name</Label>
 								<Input
 									id="edit-name"
-									value={editingMaterial.name}
+									value={editingMaterial.nombre}
 									onChange={(e) =>
 										setEditingMaterial({
 											...editingMaterial,
-											name: e.target.value,
+											nombre: e.target.value,
 										})
 									}
 								/>
@@ -166,11 +199,24 @@ export default function Materiales() {
 								<Input
 									id="edit-price"
 									type="number"
-									value={editingMaterial.pricePerM2}
+									value={editingMaterial.precio}
 									onChange={(e) =>
 										setEditingMaterial({
 											...editingMaterial,
-											pricePerM2: Number.parseFloat(e.target.value),
+											precio: Number.parseFloat(e.target.value),
+										})
+									}
+								/>
+							</div>
+							<div className="space-y-2">
+								<Label htmlFor="edit-descripcion">Descripción</Label>
+								<Input
+									id="edit-descripcion"
+									value={editingMaterial.descripcion || ""}
+									onChange={(e) =>
+										setEditingMaterial({
+											...editingMaterial,
+											descripcion: e.target.value,
 										})
 									}
 								/>
@@ -178,8 +224,11 @@ export default function Materiales() {
 						</div>
 					)}
 					<DialogFooter className="sm:justify-between">
-						<Button variant="destructive" onClick={handleDeleteMaterial}>
-							Delete
+						<Button
+							variant="destructive"
+							onClick={handleDeleteMaterial}
+							disabled={isPending}>
+							{isPending ? "Deleting..." : "Delete"}
 						</Button>
 						<div>
 							<Button
@@ -188,7 +237,9 @@ export default function Materiales() {
 								className="mr-2">
 								Cancel
 							</Button>
-							<Button onClick={handleUpdateMaterial}>Save changes</Button>
+							<Button onClick={handleUpdateMaterial} disabled={isPending}>
+								{isPending ? "Saving..." : "Save changes"}
+							</Button>
 						</div>
 					</DialogFooter>
 				</DialogContent>
