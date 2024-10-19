@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -20,6 +20,7 @@ import {
 	updateMaterial,
 	deleteMaterial,
 } from "./actions";
+import { useQuery } from "@tanstack/react-query";
 
 interface Material {
 	id: string;
@@ -29,25 +30,26 @@ interface Material {
 }
 
 export default function Materiales() {
-	const [materials, setMaterials] = useState<Material[]>([]);
 	const [filterText, setFilterText] = useState("");
 	const [editingMaterial, setEditingMaterial] = useState<Material | null>(null);
 	const [isPending, startTransition] = useTransition();
 
-	useEffect(() => {
-		fetchMaterials();
-	}, []);
+	const {
+		data: materials,
+		isLoading,
+		isError,
+	} = useQuery<Material[]>({
+		queryKey: ["materials"],
+		queryFn: async () => {
+			const result = await getMaterials();
+			if (result.error) {
+				throw new Error(result.error);
+			}
+			return result.data || [];
+		},
+	});
 
-	const fetchMaterials = async () => {
-		const result = await getMaterials();
-		if (result.error) {
-			toast.error(result.error);
-		} else if (result.data) {
-			setMaterials(result.data);
-		}
-	};
-
-	const filteredMaterials = materials.filter((material) =>
+	const filteredMaterials = materials!.filter((material) =>
 		material.nombre.toLowerCase().includes(filterText.toLowerCase())
 	);
 
@@ -59,7 +61,7 @@ export default function Materiales() {
 				toast(result.error);
 			} else if (result.success) {
 				toast.success("Material added successfully");
-				fetchMaterials();
+				getMaterials();
 			}
 		});
 	};
@@ -76,7 +78,7 @@ export default function Materiales() {
 					toast(result.error);
 				} else if (result.success) {
 					toast.success("Material updated successfully");
-					fetchMaterials();
+					getMaterials();
 					setEditingMaterial(null);
 				}
 			});
@@ -91,7 +93,7 @@ export default function Materiales() {
 					toast(result.error);
 				} else if (result.success) {
 					toast(result.error);
-					fetchMaterials();
+					getMaterials();
 					setEditingMaterial(null);
 				}
 			});
