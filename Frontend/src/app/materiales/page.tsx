@@ -36,8 +36,8 @@ export default function Materiales() {
 
 	const {
 		data: materials,
-		isLoading,
-		isError,
+		// isLoading,
+		// isError,
 	} = useQuery<Material[]>({
 		queryKey: ["materials"],
 		queryFn: async () => {

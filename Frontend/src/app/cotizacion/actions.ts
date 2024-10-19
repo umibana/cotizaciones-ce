@@ -2,13 +2,6 @@
 
 import { createClient } from '@supabase/supabase-js'
 
-interface Material {
-    id: string;
-    nombre: string;
-    precio: number;
-    descripcion?: string;
-}
-
 const supabase = createClient(
     process.env.SUPABASE_URL as string,
     process.env.SUPABASE_ANON_KEY as string
