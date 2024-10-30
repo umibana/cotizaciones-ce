@@ -42,6 +42,8 @@ export default function Materiales() {
 		queryKey: ["materials"],
 		queryFn: async () => {
 			const result = await getMaterials();
+			// fetch(servidor)
+
 			if (result.error) {
 				throw new Error(result.error);
 			}
