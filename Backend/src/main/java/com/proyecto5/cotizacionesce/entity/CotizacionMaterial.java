@@ -1,8 +1,11 @@
 package com.proyecto5.cotizacionesce.entity;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import jakarta.persistence.*;
+
 @Entity
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "cotizacion_material")
