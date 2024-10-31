@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class ImagenCotizacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long uniqueID;
+    private Long id_imagen_cotizacion;
 
     private String linkImagen;
     private LocalDateTime timestamp;

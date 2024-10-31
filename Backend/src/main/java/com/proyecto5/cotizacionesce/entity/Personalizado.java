@@ -11,7 +11,7 @@ import jakarta.persistence.*;
 public class Personalizado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long uniqueID;
+    private Long id_personalizado;
 
     private String nombre;
     private String descripcion;

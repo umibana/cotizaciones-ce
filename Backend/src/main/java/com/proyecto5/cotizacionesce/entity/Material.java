@@ -11,7 +11,7 @@ import java.util.List;
 public class Material {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long uniqueID;
+    private Long id_material;
 
     private String nombre;
     private String descripcion;

@@ -14,7 +14,7 @@ import java.util.List;
 public class Cotizacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long uniqueID;
+    private Long id_cotizacion;
 
     private Integer validezOferta;
     private String condDePago;

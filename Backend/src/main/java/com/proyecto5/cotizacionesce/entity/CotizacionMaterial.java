@@ -9,7 +9,7 @@ import jakarta.persistence.*;
 public class CotizacionMaterial {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long uniqueID;
+    private Long id_cotizacion_material;
 
     @ManyToOne
     @JoinColumn(name = "id_material")
