@@ -1,7 +1,6 @@
 package com.proyecto5.cotizacionesce.service;
 
 import com.proyecto5.cotizacionesce.exception.exception.TokenRefreshException;
-import com.proyecto5.cotizacionesce.repository.RefreshTokenRepository;
 import com.proyecto5.cotizacionesce.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
