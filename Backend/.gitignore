@@ -13,6 +13,8 @@ target/
 .springBeans
 .sts4-cache
 application.properties
+Backend/src/main/resources/application.properties
+**/src/resources/application.properties
 
 ### IntelliJ IDEA ###
 .idea
