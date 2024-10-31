@@ -1,15 +1,15 @@
 package com.proyecto5.cotizacionesce.controllers;
 
-import com.proyecto5.cotizacionesce.data.ERole;
-import com.proyecto5.cotizacionesce.data.RefreshToken;
-import com.proyecto5.cotizacionesce.data.Role;
-import com.proyecto5.cotizacionesce.data.User;
-import com.proyecto5.cotizacionesce.data.payload.request.LoginRequest;
-import com.proyecto5.cotizacionesce.data.payload.request.SignupRequest;
-import com.proyecto5.cotizacionesce.data.payload.request.TokenRefreshRequest;
-import com.proyecto5.cotizacionesce.data.payload.response.JwtResponse;
-import com.proyecto5.cotizacionesce.data.payload.response.MessageResponse;
-import com.proyecto5.cotizacionesce.data.payload.response.TokenRefreshResponse;
+import com.proyecto5.cotizacionesce.entity.ERole;
+import com.proyecto5.cotizacionesce.entity.RefreshToken;
+import com.proyecto5.cotizacionesce.entity.Role;
+import com.proyecto5.cotizacionesce.entity.User;
+import com.proyecto5.cotizacionesce.entity.payload.request.LoginRequest;
+import com.proyecto5.cotizacionesce.entity.payload.request.SignupRequest;
+import com.proyecto5.cotizacionesce.entity.payload.request.TokenRefreshRequest;
+import com.proyecto5.cotizacionesce.entity.payload.response.JwtResponse;
+import com.proyecto5.cotizacionesce.entity.payload.response.MessageResponse;
+import com.proyecto5.cotizacionesce.entity.payload.response.TokenRefreshResponse;
 import com.proyecto5.cotizacionesce.exception.exception.SignInException;
 import com.proyecto5.cotizacionesce.jwt.JwtUtils;
 import com.proyecto5.cotizacionesce.exception.exception.TokenRefreshException;

@@ -1,4 +1,4 @@
-package com.proyecto5.cotizacionesce.data;
+package com.proyecto5.cotizacionesce.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

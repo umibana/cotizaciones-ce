@@ -1,4 +1,4 @@
-package com.proyecto5.cotizacionesce.data.payload.response;
+package com.proyecto5.cotizacionesce.entity.payload.response;
 
 public class TokenRefreshResponse {
 

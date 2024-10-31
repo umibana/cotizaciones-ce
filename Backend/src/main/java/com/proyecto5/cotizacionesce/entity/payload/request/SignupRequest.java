@@ -1,4 +1,4 @@
-package com.proyecto5.cotizacionesce.data.payload.request;
+package com.proyecto5.cotizacionesce.entity.payload.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

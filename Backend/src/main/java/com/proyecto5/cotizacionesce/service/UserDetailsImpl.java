@@ -1,7 +1,7 @@
 package com.proyecto5.cotizacionesce.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.proyecto5.cotizacionesce.data.User;
+import com.proyecto5.cotizacionesce.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,6 +1,6 @@
 package com.proyecto5.cotizacionesce.service;
 
-import com.proyecto5.cotizacionesce.data.User;
+import com.proyecto5.cotizacionesce.entity.User;
 import com.proyecto5.cotizacionesce.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

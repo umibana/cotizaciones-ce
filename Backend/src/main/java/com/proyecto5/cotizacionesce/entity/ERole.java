@@ -1,4 +1,4 @@
-package com.proyecto5.cotizacionesce.data;
+package com.proyecto5.cotizacionesce.entity;
 
 public enum ERole {
     ROLE_USER,
