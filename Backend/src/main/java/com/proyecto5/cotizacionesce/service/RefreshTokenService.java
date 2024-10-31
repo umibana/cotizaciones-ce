@@ -1,6 +1,5 @@
 package com.proyecto5.cotizacionesce.service;
 
-import com.proyecto5.cotizacionesce.entity.RefreshToken;
 import com.proyecto5.cotizacionesce.exception.exception.TokenRefreshException;
 import com.proyecto5.cotizacionesce.repository.RefreshTokenRepository;
 import com.proyecto5.cotizacionesce.repository.UserRepository;
