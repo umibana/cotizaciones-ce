@@ -14,7 +14,7 @@ public class Proyecto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long uniqueID;
+    private Long id_proyecto;
     public String nombre;
     public String direccion;
     @ManyToOne
