@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import jakarta.persistence.*;
 
 @Entity
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "personalizado")
