@@ -13,14 +13,12 @@ import java.time.LocalDateTime;
 public class ImagenCotizacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_imagen_cotizacion;
+    private Long idImagenCotizacion;
 
     private String linkImagen;
     private LocalDateTime timestamp;
 
-    @ManyToOne
-    @JoinColumn(name = "id_cotizacion")
-    private Cotizacion cotizacion;
+    private Long idCotizacion;
 
     private String estado;
 }

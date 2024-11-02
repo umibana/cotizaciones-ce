@@ -1,26 +1,22 @@
 package com.proyecto5.cotizacionesce.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import jakarta.persistence.*;
 
-@Entity
 @Data
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "cotizacion_material")
 public class CotizacionMaterial {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_cotizacion_material;
+    private Long id_material_cotizacion;
 
-    @ManyToOne
-    @JoinColumn(name = "id_material")
-    private Material material;
-
-    @ManyToOne
-    @JoinColumn(name = "id_cotizacion")
-    private Cotizacion cotizacion;
-
+    private Long idMaterial;
+    private Long idCotizacion;
     private Integer cantidad;
+
 }

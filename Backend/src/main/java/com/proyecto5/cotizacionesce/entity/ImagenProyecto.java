@@ -17,11 +17,9 @@ import java.time.LocalDateTime;
 public class ImagenProyecto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_imagen_proyecto;
+    private Long idImagenProyecto;
     private String linkImagen;
     private LocalDateTime timestamp;
 
-    @ManyToOne
-    @JoinColumn(name = "id_proyecto")
-    private Proyecto proyecto;
+    private Long idProyecto;
 }

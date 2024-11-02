@@ -14,12 +14,10 @@ public class Proyecto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_proyecto;
+    private Long idProyecto;
     public String nombre;
     public String direccion;
-    @ManyToOne
-    @JoinColumn(name = "id_cliente")
-    private Cliente client;
     public String descripcion;
     public String estado;
+    public Long idCliente;
 }

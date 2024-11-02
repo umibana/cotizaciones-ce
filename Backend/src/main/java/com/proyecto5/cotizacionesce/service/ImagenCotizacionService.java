@@ -24,7 +24,7 @@ public class ImagenCotizacionService {
     }
 
     public List<ImagenCotizacion> getImagenesByCotizacion(Long cotizacionId) {
-        return imagenCotizacionRepository.findByCotizacionUniqueID(cotizacionId);
+        return imagenCotizacionRepository.findByIdCotizacion(cotizacionId);
     }
 
     public ImagenCotizacion updateEstado(Long id, String estado) {

@@ -6,6 +6,6 @@ import java.util.List;
 
 @Repository
 public interface PersonalizadoRepository extends JpaRepository<Personalizado, Long> {
-    List<Personalizado> findByCotizacionUniqueID(Long cotizacionId);
+    List<Personalizado> findByIdCotizacion(Long idCotizacion);
     List<Personalizado> findByNombreContainingIgnoreCase(String nombre);
 }

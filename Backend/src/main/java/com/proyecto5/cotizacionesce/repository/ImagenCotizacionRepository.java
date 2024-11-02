@@ -7,6 +7,6 @@ import java.util.List;
 
 @Repository
 public interface ImagenCotizacionRepository extends JpaRepository<ImagenCotizacion, Long> {
-    List<ImagenCotizacion> findByCotizacionUniqueID(Long cotizacionId);
+    List<ImagenCotizacion> findByIdCotizacion(Long cotizacionId);
     List<ImagenCotizacion> findByEstado(String estado);
 }

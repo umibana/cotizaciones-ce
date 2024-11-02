@@ -14,7 +14,7 @@ import java.util.List;
 public class Cotizacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_cotizacion;
+    private Long idCotizacion;
 
     private Integer validezOferta;
     private String condDePago;
@@ -27,23 +27,11 @@ public class Cotizacion {
 
     private String notas;
 
-    @ManyToOne
-    @JoinColumn(name = "id_proyecto")
-    private Proyecto proyecto;
+    private Long idProyecto;
 
-    @ManyToOne
-    @JoinColumn(name = "id_usuario")
-    private User user;
+    private Long idCliente;
 
     private Double porcentaje;
     private String estado;
 
-    @OneToMany(mappedBy = "cotizacion", cascade = CascadeType.ALL)
-    private List<ImagenCotizacion> imagenes;
-
-    @OneToMany(mappedBy = "cotizacion", cascade = CascadeType.ALL)
-    private List<CotizacionMaterial> materiales;
-
-    @OneToMany(mappedBy = "cotizacion", cascade = CascadeType.ALL)
-    private List<Personalizado> personalizados;
 }

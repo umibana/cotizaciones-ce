@@ -13,12 +13,9 @@ import java.util.List;
 public class Material {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_material;
+    private Long idMaterial;
 
     private String nombre;
     private String descripcion;
     private Double costo;
-
-    @OneToMany(mappedBy = "material", cascade = CascadeType.ALL)
-    private List<CotizacionMaterial> cotizaciones;
 }

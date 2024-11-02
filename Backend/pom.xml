@@ -8,10 +8,10 @@
 		<version>3.2.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.hakimfauzi23</groupId>
-	<artifactId>boilerplate-spring-security</artifactId>
+	<groupId>com.proyecto5</groupId>
+	<artifactId>cotizacionesce</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>boilerplate-spring-security</name>
+	<name>cotizacionesce</name>
 	<description>Boilerplate Code For REST API with Spring-Security</description>
 	<properties>
 		<java.version>17</java.version>

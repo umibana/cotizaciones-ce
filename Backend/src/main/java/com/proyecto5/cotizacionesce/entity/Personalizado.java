@@ -12,14 +12,12 @@ import jakarta.persistence.*;
 public class Personalizado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_personalizado;
+    private Long idMaterial;
 
     private String nombre;
     private String descripcion;
     private Double metros;
     private Double precio;
 
-    @ManyToOne
-    @JoinColumn(name = "id_cotizacion")
-    private Cotizacion cotizacion;
+    private Long idCotizacion;
 }

@@ -1,10 +1,7 @@
 package com.proyecto5.cotizacionesce.service;
 
 import com.proyecto5.cotizacionesce.entity.Cotizacion;
-import com.proyecto5.cotizacionesce.repository.CotizacionMaterialRepository;
 import com.proyecto5.cotizacionesce.repository.CotizacionRepository;
-import com.proyecto5.cotizacionesce.repository.ImagenCotizacionRepository;
-import com.proyecto5.cotizacionesce.repository.PersonalizadoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +14,6 @@ import java.util.List;
 @Transactional
 public class CotizacionService {
     private final CotizacionRepository cotizacionRepository;
-    private final ImagenCotizacionRepository imagenCotizacionRepository;
-    private final CotizacionMaterialRepository cotizacionMaterialRepository;
-    private final PersonalizadoRepository personalizadoRepository;
 
     public Cotizacion createCotizacion(Cotizacion cotizacion) {
         cotizacion.setTimestamp(LocalDateTime.now());
@@ -50,8 +44,8 @@ public class CotizacionService {
                 .orElseThrow(() -> new RuntimeException("Cotización no encontrada"));
     }
 
-    public List<Cotizacion> getCotizacionesByProyecto(Long proyectoId) {
-        return cotizacionRepository.findByProyectoUniqueID(proyectoId);
+    public List<Cotizacion> getCotizacionesByProyecto(Long idProyecto) {
+        return cotizacionRepository.findByIdProyecto(idProyecto);
     }
 
     public List<Cotizacion> getCotizacionesByEstado(String estado) {

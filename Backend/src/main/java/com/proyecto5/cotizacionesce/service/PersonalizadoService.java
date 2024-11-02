@@ -34,6 +34,6 @@ public class PersonalizadoService {
     }
 
     public List<Personalizado> getPersonalizadosByCotizacion(Long cotizacionId) {
-        return personalizadoRepository.findByCotizacionUniqueID(cotizacionId);
+        return personalizadoRepository.findByIdCotizacion(cotizacionId);
     }
 }
