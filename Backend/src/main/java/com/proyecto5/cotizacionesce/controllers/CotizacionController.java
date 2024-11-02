@@ -16,6 +16,9 @@ public class CotizacionController {
 
     @PostMapping
     public ResponseEntity<Cotizacion> createCotizacion(@RequestBody Cotizacion cotizacion) {
+        System.out.println("ENDPOINT WORKING");
+        System.out.println(cotizacion);
+        cotizacionService.createCotizacion(cotizacion);
         return ResponseEntity.ok(cotizacionService.createCotizacion(cotizacion));
     }
 
