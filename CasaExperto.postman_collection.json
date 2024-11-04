@@ -1,0 +1,28 @@
+{
+	"info": {
+		"_postman_id": "66378dee-4cb8-4718-b675-baf6282afd84",
+		"name": "CasaExperto",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "38981782"
+	},
+	"item": [
+		{
+			"name": "createProyecto",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n            \"nombre\": \"Probando\",\r\n            \"direccion\": \"Calle falsa 666\",\r\n            \"descripcion\": \"Ojala salga bien\",\r\n            \"estado\": \"Sin asignar\",\r\n            \"idCliente\": 1\r\n        }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/api/proyectos"
+			},
+			"response": []
+		}
+	]
+}
