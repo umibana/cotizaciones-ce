@@ -6,9 +6,7 @@ import com.proyecto5.cotizacionesce.service.ProyectoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class ProyectoController {
-    private ProyectoService proyectoService;
+    private final ProyectoService proyectoService;
 
     @GetMapping("/all")
     public ResponseEntity<List<Proyecto>> listarProyectos() {
@@ -25,4 +23,11 @@ public class ProyectoController {
         return ResponseEntity.ok(listaProyectos);
     }
 
+    @PostMapping
+    public ResponseEntity<Proyecto> createProyecto(@RequestBody Proyecto proyecto){
+        System.out.println("ENDPOINT WORKING");
+        System.out.println(proyecto);
+        proyectoService.createProyecto(proyecto);
+        return ResponseEntity.ok(proyecto);
+    }
 }

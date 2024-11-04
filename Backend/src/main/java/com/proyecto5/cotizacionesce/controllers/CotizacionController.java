@@ -19,7 +19,7 @@ public class CotizacionController {
         System.out.println("ENDPOINT WORKING");
         System.out.println(cotizacion);
         cotizacionService.createCotizacion(cotizacion);
-        return ResponseEntity.ok(cotizacionService.createCotizacion(cotizacion));
+        return ResponseEntity.ok(cotizacion);
     }
 
     @PutMapping("/{id}")

@@ -16,12 +16,17 @@ import java.util.List;
 public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long uniqueID;
 
     private String nombre;
+
     private String rut;
+
     private String telefono;
+
     private String direccion;
+
     private String email;
 
 }

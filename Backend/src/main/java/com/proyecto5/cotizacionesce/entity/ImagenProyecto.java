@@ -17,9 +17,14 @@ import java.time.LocalDateTime;
 public class ImagenProyecto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long idImagenProyecto;
+
+    @Column(name = "link_imagen")
     private String linkImagen;
+
     private LocalDateTime timestamp;
 
+    @Column(name = "id_proyecto")
     private Long idProyecto;
 }

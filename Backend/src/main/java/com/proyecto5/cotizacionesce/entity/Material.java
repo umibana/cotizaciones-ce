@@ -13,9 +13,12 @@ import java.util.List;
 public class Material {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long idMaterial;
 
     private String nombre;
+
     private String descripcion;
+
     private Double costo;
 }

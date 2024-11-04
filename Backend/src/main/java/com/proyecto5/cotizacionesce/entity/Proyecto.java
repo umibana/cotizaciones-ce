@@ -14,10 +14,17 @@ public class Proyecto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long idProyecto;
+
     public String nombre;
+
     public String direccion;
+
     public String descripcion;
+
     public String estado;
+
+    @Column(name = "id_cliente")
     public Long idCliente;
 }

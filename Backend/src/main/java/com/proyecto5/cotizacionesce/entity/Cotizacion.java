@@ -12,26 +12,30 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "cotizacion")
 public class Cotizacion {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long idCotizacion;
 
     private Integer validezOferta;
+
     private String condDePago;
-
-    private Double precioTentativo;
-
-    private LocalDateTime timestamp;
 
     private Integer plazoDeEntrega;
 
+    private Double precioTentativo;
+
     private String notas;
+
+    private Double porcentaje;
+
+    private String estado;
 
     private Long idProyecto;
 
     private Long idCliente;
 
-    private Double porcentaje;
-    private String estado;
+    private LocalDateTime timestamp;
 
 }
