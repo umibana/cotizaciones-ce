@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useQuery } from "@tanstack/react-query";
-import { getMaterials, createQuotation } from "./actions";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 
@@ -49,6 +48,8 @@ export default function QuotationForm() {
 	} = useQuery<Material[], Error>({
 		queryKey: ["materials"],
 		queryFn: async () => {
+			return;
+
 			const result = await getMaterials();
 			if (result.error) throw new Error(result.error);
 			return result.data ?? [];
@@ -101,6 +102,8 @@ export default function QuotationForm() {
 	};
 
 	const handleSubmitQuotation = async (event: React.FormEvent) => {
+		return;
+
 		event.preventDefault();
 		const quotationData = {
 			nombre: quotationName,

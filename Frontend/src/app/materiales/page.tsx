@@ -13,17 +13,11 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
-import {
-	getMaterials,
-	addMaterial,
-	updateMaterial,
-	deleteMaterial,
-} from "./actions";
-import { useQuery } from "@tanstack/react-query";
+// import { toast } from "sonner";
+// import { useQuery } from "@tanstack/react-query";
 
 interface Material {
-	id: string;
+	id: number;
 	nombre: string;
 	precio: number;
 	descripcion?: string;
@@ -32,24 +26,28 @@ interface Material {
 export default function Materiales() {
 	const [filterText, setFilterText] = useState("");
 	const [editingMaterial, setEditingMaterial] = useState<Material | null>(null);
-	const [isPending, startTransition] = useTransition();
+	const [isPending] = useTransition();
 
-	const {
-		data: materials,
-		// isLoading,
-		// isError,
-	} = useQuery<Material[]>({
-		queryKey: ["materials"],
-		queryFn: async () => {
-			const result = await getMaterials();
-			// fetch(servidor)
+	// const {
+	// 	data: materials,
+	// 	// isLoading,
+	// 	// isError,
+	// } = useQuery<Material[]>({
+	// 	queryKey: ["materials"],
+	// 	queryFn: async () => {
+	// 		const result = await fetch();
+	// 		// fetch(servidor)
 
-			if (result.error) {
-				throw new Error(result.error);
-			}
-			return result.data || [];
-		},
-	});
+	// 		if (result.error) {
+	// 			throw new Error(result.error);
+	// 		}
+	// 		return result.data || [];
+	// 	},
+	// });
+
+	const materials = [
+		{ nombre: "hello", id: 1, precio: 1000, descripcion: "lol" },
+	];
 
 	const filteredMaterials = materials!.filter((material) =>
 		material.nombre.toLowerCase().includes(filterText.toLowerCase())
@@ -57,49 +55,52 @@ export default function Materiales() {
 
 	const handleAddMaterial = async (formData: FormData) => {
 		console.log(formData);
-		startTransition(async () => {
-			const result = await addMaterial(formData);
-			if (result.error) {
-				toast(result.error);
-			} else if (result.success) {
-				toast.success("Material added successfully");
-				getMaterials();
-			}
-		});
+		// startTransition(async () => {
+		// 	return;
+		// 	const result = await addMaterial(formData);
+		// 	if (result.error) {
+		// 		toast(result.error);
+		// 	} else if (result.success) {
+		// 		toast.success("Material added successfully");
+		// 		getMaterials();
+		// 	}
+		// });
 	};
 
 	const handleUpdateMaterial = async () => {
-		if (editingMaterial) {
-			startTransition(async () => {
-				const result = await updateMaterial(editingMaterial.id, {
-					nombre: editingMaterial.nombre,
-					descripcion: editingMaterial.descripcion,
-					precio: editingMaterial.precio,
-				});
-				if (result.error) {
-					toast(result.error);
-				} else if (result.success) {
-					toast.success("Material updated successfully");
-					getMaterials();
-					setEditingMaterial(null);
-				}
-			});
-		}
+		return;
+		// if (editingMaterial) {
+		// 	startTransition(async () => {
+		// 		const result = await updateMaterial(editingMaterial.id, {
+		// 			nombre: editingMaterial.nombre,
+		// 			descripcion: editingMaterial.descripcion,
+		// 			precio: editingMaterial.precio,
+		// 		});
+		// 		if (result.error) {
+		// 			toast(result.error);
+		// 		} else if (result.success) {
+		// 			toast.success("Material updated successfully");
+		// 			getMaterials();
+		// 			setEditingMaterial(null);
+		// 		}
+		// 	});
+		// }
 	};
 
 	const handleDeleteMaterial = async () => {
-		if (editingMaterial) {
-			startTransition(async () => {
-				const result = await deleteMaterial(editingMaterial.id);
-				if (result.error) {
-					toast(result.error);
-				} else if (result.success) {
-					toast(result.error);
-					getMaterials();
-					setEditingMaterial(null);
-				}
-			});
-		}
+		return;
+		// if (editingMaterial) {
+		// 	startTransition(async () => {
+		// 		const result = await deleteMaterial(editingMaterial.id);
+		// 		if (result.error) {
+		// 			toast(result.error);
+		// 		} else if (result.success) {
+		// 			toast(result.error);
+		// 			getMaterials();
+		// 			setEditingMaterial(null);
+		// 		}
+		// 	});
+		// }
 	};
 
 	return (

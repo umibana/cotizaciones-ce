@@ -1,15 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 import Link from "next/link";
 
 async function App() {
-	// We check the data from the session from the server
-	// If it's admin, show admin functions
-	// If it's null then it's a user (Maybe add boss functions )
-	const session = await auth.api.getSession({
-		headers: headers(),
-	});
+	const session = true;
 	return (
 		<>
 			<div className="flex flex-auto align-middle flex-col justify-center items-center container mx-auto p-4 space-y-4 ">
@@ -17,7 +10,7 @@ async function App() {
 					{" "}
 					Prueba de Vistas Casa Experto
 				</h1>
-				{session?.user.role == "admin" ? (
+				{session ? (
 					<div className="text-center flex flex-col gap-2">
 						<h1 className="text-xl font-bold"> Vista Jefe</h1>
 

@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { signOut } from "@/lib/auth-client";
 import { ArrowLeft, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -8,7 +7,7 @@ export default function Navbar() {
 
 	const logOut = async () => {
 		try {
-			await signOut();
+			return;
 		} catch (error) {
 			if (error instanceof Error) {
 				console.log(error.message);

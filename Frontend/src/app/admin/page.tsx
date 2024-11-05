@@ -20,7 +20,6 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { toast, Toaster } from "sonner";
-import { client } from "@/lib/auth-client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import {
@@ -92,6 +91,7 @@ export default function AdminDashboard() {
 		e.preventDefault();
 		setIsLoading("create");
 		try {
+			return;
 			await client.admin.createUser({
 				email: newUser.email,
 				password: newUser.password,
