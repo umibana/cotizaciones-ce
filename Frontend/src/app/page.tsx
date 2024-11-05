@@ -10,37 +10,34 @@ async function App() {
 					{" "}
 					Prueba de Vistas Casa Experto
 				</h1>
-				{session ? (
-					<div className="text-center flex flex-col gap-2">
-						<h1 className="text-xl font-bold"> Vista Jefe</h1>
+				<div className="text-center flex flex-col gap-2">
+					<h1 className="text-xl font-bold"> Vista Jefe</h1>
 
-						<Button asChild>
-							<Link href="/asignacion">Asignación</Link>
-						</Button>
-						<Button asChild>
-							<Link href="/proyectos">Proyectos</Link>
-						</Button>
+					<Button asChild>
+						<Link href="/asignacion">Asignación</Link>
+					</Button>
+					<Button asChild>
+						<Link href="/proyectos">Proyectos</Link>
+					</Button>
 
-						<Button asChild>
-							<Link href="/materiales">Materiales</Link>
-						</Button>
+					<Button asChild>
+						<Link href="/materiales">Materiales</Link>
+					</Button>
 
-						<Button asChild>
-							<Link href="/nuevo-proyecto">Nuevo Proyecto</Link>
-						</Button>
+					<Button asChild>
+						<Link href="/nuevo-proyecto">Nuevo Proyecto</Link>
+					</Button>
 
-						<Button asChild>
-							<Link href="/admin">Administración</Link>
-						</Button>
-					</div>
-				) : (
-					<div className="text-center">
-						<h1 className=" text-xl font-bold"> Vista Maestro</h1>
-						<Button asChild>
-							<Link href="/cotizacion">Cotización</Link>
-						</Button>
-					</div>
-				)}
+					<Button asChild>
+						<Link href="/admin">Administración</Link>
+					</Button>
+				</div>
+				<div className="text-center">
+					<h1 className=" text-xl font-bold"> Vista Maestro</h1>
+					<Button asChild>
+						<Link href="/cotizacion">Cotización</Link>
+					</Button>
+				</div>
 			</div>
 		</>
 	);
