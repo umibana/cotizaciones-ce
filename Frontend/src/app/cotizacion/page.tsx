@@ -111,7 +111,6 @@ export default function QuotationForm() {
 		queryKey: ["materials"],
 		queryFn: async () => {
 			const result = await getMaterials();
-			if (result.error) throw new Error(result.error);
 			return result ?? [];
 		},
 	});
