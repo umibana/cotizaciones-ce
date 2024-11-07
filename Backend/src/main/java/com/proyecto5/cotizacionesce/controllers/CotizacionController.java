@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.proyecto5.cotizacionesce.dto.CotizacionRequestDTO;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/cotizaciones")
@@ -21,16 +23,13 @@ public class CotizacionController {
     public ResponseEntity<?> createCotizacion(@Valid @RequestBody CotizacionRequestDTO request) {
         try {
             Cotizacion cotizacion = cotizacionService.createCotizacion(request);
-            return ResponseEntity.ok()
-                    .body(
-                            "Cotización creada exitosamente"
-                    );
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Cotización " + cotizacion.getIdCotizacion() + " creada exitosamente");
+            return ResponseEntity.ok(response);  // Send JSON
         } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(
-                            "Error al crear la cotización: " + e.getMessage()
-                    );
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Error al crear la cotización: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
     @PutMapping("/{id}")
