@@ -17,7 +17,7 @@ import java.util.List;
 public class CotizacionController {
     private final CotizacionService cotizacionService;
 
-    @PostMapping
+    @PostMapping("/crear")
     public ResponseEntity<?> createCotizacion(@Valid @RequestBody CotizacionRequestDTO request) {
         try {
             Cotizacion cotizacion = cotizacionService.createCotizacion(request);

@@ -34,7 +34,6 @@ public class CotizacionService {
         Cotizacion cotizacion = new Cotizacion();
         cotizacion.setNombre(request.getNombre());
         cotizacion.setDescripcion(request.getDescripcion());
-        cotizacion.setIdProyecto(request.getIdProyecto());
         cotizacion.setTimestamp(LocalDateTime.now());
 
         // Guardar cotización para obtener el id

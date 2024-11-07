@@ -16,11 +16,11 @@ public class Cotizacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    private Long idCotizacion;
 
     private String nombre;
-    private String descripcion;
 
-    private Long idCotizacion;
+    private String descripcion;
 
     private Integer validezOferta;
 

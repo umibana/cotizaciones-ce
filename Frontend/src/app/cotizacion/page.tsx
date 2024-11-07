@@ -35,6 +35,20 @@ interface ExtraItem {
 	precio: number;
 	m2?: number;
 }
+
+interface CotizacionRequestDTO {
+	nombre: string;
+	descripcion: string;
+	idProyecto?: number;
+	materials: { idMaterial: number; cantidad: number }[];
+	extraItems: {
+		nombre: string;
+		descripcion: string;
+		metros?: number;
+		precio: number;
+	}[];
+}
+
 const getMaterials = async (): Promise<Material[]> => {
 	const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/materiales/all`;
 	console.log(url);
@@ -51,6 +65,30 @@ const getMaterials = async (): Promise<Material[]> => {
 		precio: item.precio,
 		quantity: 1,
 	}));
+};
+const createQuotation = async (quotationData: CotizacionRequestDTO) => {
+	try {
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_BACKEND_URL}/cotizaciones/crear`,
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(quotationData),
+			}
+		);
+
+		if (!response.ok) {
+			throw new Error("Failed to create quotation");
+		}
+
+		const data = await response.json();
+		return { success: true, message: data };
+	} catch (error) {
+		console.error("Error creating quotation:", error);
+		return { success: false, error: (error as Error).message };
+	}
 };
 
 export default function QuotationForm() {
@@ -125,11 +163,19 @@ export default function QuotationForm() {
 
 	const handleSubmitQuotation = async (event: React.FormEvent) => {
 		event.preventDefault();
-		const quotationData = {
+		const quotationData: CotizacionRequestDTO = {
 			nombre: quotationName,
 			descripcion: quotationDescription,
-			materials: materials.map(({ id, quantity }) => ({ id, quantity })),
-			extraItems,
+			materials: materials.map(({ id, quantity }) => ({
+				idMaterial: id,
+				cantidad: quantity,
+			})),
+			extraItems: extraItems.map((item) => ({
+				nombre: item.nombre,
+				descripcion: item.descripcion,
+				metros: item.m2,
+				precio: item.precio,
+			})),
 		};
 
 		console.log(quotationData);
@@ -138,7 +184,7 @@ export default function QuotationForm() {
 		if (result.error) {
 			toast.error("Failed to create quotation. Please try again.");
 		} else {
-			toast.success(`Quotation created with ID: ${result.quotationId}`);
+			toast.success(`Quotation created with ID: ${result}`);
 			// Reset form
 			setMaterials([]);
 			setExtraItems([]);
@@ -314,7 +360,7 @@ export default function QuotationForm() {
 								onChange={(e) =>
 									setExtraItemForm((prev) => ({
 										...prev,
-										precio: e.target.value,
+										precio: parseFloat(e.target.value) || 0,
 									}))
 								}
 								placeholder="Precio del item extra"
