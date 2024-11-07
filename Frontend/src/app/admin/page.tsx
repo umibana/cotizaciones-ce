@@ -20,7 +20,7 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { toast, Toaster } from "sonner";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2, Plus, Trash, User } from "lucide-react";
 import {
 	Dialog,
@@ -91,6 +91,18 @@ const createUser = async (newUser: User) => {
 	}
 };
 
+const deleteUser = async (id: number) => {
+	const response = await fetch(
+		`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${id}`,
+		{
+			method: "DELETE",
+		}
+	);
+	if (!response.ok) {
+		throw new Error("Failed to delete user");
+	}
+};
+
 export default function AdminDashboard() {
 	const queryClient = useQueryClient();
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -102,6 +114,10 @@ export default function AdminDashboard() {
 		role: "user",
 		password: "",
 	});
+
+	const [userToDelete, setUserToDelete] = useState<number | null>(null);
+
+	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
 	const { data: users, isLoading } = useQuery<MappedUser[], Error>({
 		queryKey: ["users"],
@@ -138,28 +154,57 @@ export default function AdminDashboard() {
 		}
 	};
 
-	const handleDeleteUser = () => {
-		console.log("test");
+	const deleteMutation = useMutation({
+		mutationFn: deleteUser,
+		onSuccess: () => {
+			toast.success("User deleted successfully");
+			queryClient.invalidateQueries({ queryKey: ["users"] });
+		},
+		onError: (error: Error) => {
+			toast.error(error.message || "Failed to delete user");
+		},
+	});
+	const handleDeleteUser = (id: number) => {
+		setUserToDelete(id);
+		setIsDeleteDialogOpen(true);
 	};
-	// const handleDeleteUser = async (id: number) => {
-	// 	try {
-	// 		await client.admin.removeUser({ userId: id });
-	// 		toast.success("User deleted successfully");
-	// 		queryClient.invalidateQueries({
-	// 			queryKey: ["users"],
-	// 		});
-	// 	} catch (error: unknown) {
-	// 		if (error instanceof Error) {
-	// 			toast.error(error.message || "Failed to impersonate user");
-	// 		} else {
-	// 			toast.error("An unexpected error occurred");
-	// 		}
-	// 	}
-	// };
+	const confirmDelete = () => {
+		if (userToDelete) {
+			deleteMutation.mutate(userToDelete);
+			setIsDeleteDialogOpen(false);
+		}
+	};
 
 	return (
 		<div className="container mx-auto p-4 space-y-8">
 			<Toaster richColors />
+			<Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Confirm Deletion</DialogTitle>
+					</DialogHeader>
+					<div className="space-y-4">
+						<p>Esta seguro que desea borrar este usuario?</p>
+						<div className="flex justify-end space-x-2">
+							<Button
+								variant="outline"
+								onClick={() => setIsDeleteDialogOpen(false)}>
+								Cancel
+							</Button>
+							<Button
+								variant="destructive"
+								onClick={confirmDelete}
+								disabled={deleteMutation.isPending}>
+								{deleteMutation.isPending ? (
+									<Loader2 className="h-4 w-4 animate-spin" />
+								) : (
+									"Delete"
+								)}
+							</Button>
+						</div>
+					</div>
+				</DialogContent>
+			</Dialog>
 			<Card>
 				<CardHeader className="flex flex-row items-center justify-between">
 					<CardTitle className="text-2xl">Admin Dashboard</CardTitle>
@@ -291,9 +336,13 @@ export default function AdminDashboard() {
 												<Button
 													variant="destructive"
 													size="sm"
-													onClick={() => handleDeleteUser()}
-													disabled={isLoading}>
-													<Trash className="h-4 w-4" />
+													onClick={() => handleDeleteUser(user.id)}
+													disabled={deleteMutation.isPending}>
+													{deleteMutation.isPending ? (
+														<Loader2 className="h-4 w-4 animate-spin" />
+													) : (
+														<Trash className="h-4 w-4" />
+													)}
 												</Button>
 											</div>
 										</TableCell>
