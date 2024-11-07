@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/table";
 import { toast, Toaster } from "sonner";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader2, Plus, Trash, User } from "lucide-react";
+import { Loader2, Plus, Trash, User, Pencil } from "lucide-react";
 import {
 	Dialog,
 	DialogContent,
@@ -103,6 +103,26 @@ const deleteUser = async (id: number) => {
 	}
 };
 
+const updateUser = async (
+	id: number,
+	userData: Omit<MappedUser, "id" | "idUser">
+) => {
+	const response = await fetch(
+		`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${id}`,
+		{
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(userData),
+		}
+	);
+	if (!response.ok) {
+		throw new Error("Failed to update user");
+	}
+	return response.json();
+};
+
 export default function AdminDashboard() {
 	const queryClient = useQueryClient();
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -118,6 +138,9 @@ export default function AdminDashboard() {
 	const [userToDelete, setUserToDelete] = useState<number | null>(null);
 
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+	const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
+	const [userToUpdate, setUserToUpdate] = useState<MappedUser | null>(null);
 
 	const { data: users, isLoading } = useQuery<MappedUser[], Error>({
 		queryKey: ["users"],
@@ -175,6 +198,29 @@ export default function AdminDashboard() {
 		}
 	};
 
+	const updateMutation = useMutation({
+		mutationFn: ({
+			id,
+			userData,
+		}: {
+			id: number;
+			userData: Omit<MappedUser, "id" | "idUser">;
+		}) => updateUser(id, userData),
+		onSuccess: () => {
+			toast.success("User updated successfully");
+			queryClient.invalidateQueries({ queryKey: ["users"] });
+			setIsUpdateDialogOpen(false);
+		},
+		onError: (error: Error) => {
+			toast.error(error.message || "Failed to update user");
+		},
+	});
+
+	const handleUpdateClick = (user: MappedUser) => {
+		setUserToUpdate(user);
+		setIsUpdateDialogOpen(true);
+	};
+
 	return (
 		<div className="container mx-auto p-4 space-y-8">
 			<Toaster richColors />
@@ -203,6 +249,116 @@ export default function AdminDashboard() {
 							</Button>
 						</div>
 					</div>
+				</DialogContent>
+			</Dialog>
+			<Dialog open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Update User</DialogTitle>
+					</DialogHeader>
+					{userToUpdate && (
+						<form
+							onSubmit={(e) => {
+								e.preventDefault();
+								if (!userToUpdate) return;
+								updateMutation.mutate({
+									id: userToUpdate.id,
+									userData: {
+										username: userToUpdate.username,
+										email: userToUpdate.email,
+										name: userToUpdate.name,
+										rut: userToUpdate.rut,
+										role: userToUpdate.role,
+									},
+								});
+							}}
+							className="space-y-4">
+							<div>
+								<Label htmlFor="update-name">Name</Label>
+								<Input
+									id="update-name"
+									value={userToUpdate.name}
+									onChange={(e) =>
+										setUserToUpdate({ ...userToUpdate, name: e.target.value })
+									}
+									required
+								/>
+							</div>
+
+							<div>
+								<Label htmlFor="update-username">Username</Label>
+								<Input
+									id="update-username"
+									value={userToUpdate.username}
+									onChange={(e) =>
+										setUserToUpdate({
+											...userToUpdate,
+											username: e.target.value,
+										})
+									}
+									required
+								/>
+							</div>
+
+							<div>
+								<Label htmlFor="update-email">Email</Label>
+								<Input
+									id="update-email"
+									type="email"
+									value={userToUpdate.email}
+									onChange={(e) =>
+										setUserToUpdate({ ...userToUpdate, email: e.target.value })
+									}
+									required
+								/>
+							</div>
+
+							<div>
+								<Label htmlFor="update-rut">RUT</Label>
+								<Input
+									id="update-rut"
+									value={userToUpdate.rut}
+									onChange={(e) =>
+										setUserToUpdate({ ...userToUpdate, rut: e.target.value })
+									}
+									required
+								/>
+							</div>
+
+							<div>
+								<Label htmlFor="update-role">Role</Label>
+								<Select
+									value={userToUpdate.role}
+									onValueChange={(value: "admin" | "user") =>
+										setUserToUpdate({ ...userToUpdate, role: value })
+									}>
+									<SelectTrigger>
+										<SelectValue placeholder="Select role" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value="admin">Admin</SelectItem>
+										<SelectItem value="user">User</SelectItem>
+									</SelectContent>
+								</Select>
+							</div>
+
+							<div className="flex justify-end space-x-2">
+								<Button
+									variant="outline"
+									onClick={() => setIsUpdateDialogOpen(false)}
+									type="button">
+									Cancel
+								</Button>
+								<Button type="submit" disabled={updateMutation.isPending}>
+									{updateMutation.isPending ? (
+										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									) : (
+										"Update User"
+									)}
+								</Button>
+							</div>
+						</form>
+					)}
 				</DialogContent>
 			</Dialog>
 			<Card>
@@ -333,6 +489,17 @@ export default function AdminDashboard() {
 										<TableCell>{user.role || "user"}</TableCell>
 										<TableCell>
 											<div className="flex space-x-2">
+												<Button
+													variant="outline"
+													size="sm"
+													onClick={() => handleUpdateClick(user)}
+													disabled={updateMutation.isPending}>
+													{updateMutation.isPending ? (
+														<Loader2 className="h-4 w-4 animate-spin" />
+													) : (
+														<Pencil className="h-4 w-4" />
+													)}
+												</Button>
 												<Button
 													variant="destructive"
 													size="sm"
