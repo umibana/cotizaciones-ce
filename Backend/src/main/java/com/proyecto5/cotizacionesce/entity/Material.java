@@ -20,5 +20,5 @@ public class Material {
 
     private String descripcion;
 
-    private Double costo;
+    private Double precio;
 }

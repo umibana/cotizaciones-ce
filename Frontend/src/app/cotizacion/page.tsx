@@ -28,6 +28,15 @@ interface ExtraItem {
 	precio: string;
 	m2?: number;
 }
+const getMaterials = async (): Promise<Material[]> => {
+	const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/materiales/all`;
+	console.log(url);
+	const response = await fetch(url);
+	if (!response.ok) {
+		throw new Error("Network response was not ok");
+	}
+	return response.json();
+};
 
 export default function QuotationForm() {
 	const [materials, setMaterials] = useState<MaterialItem[]>([]);
@@ -48,11 +57,9 @@ export default function QuotationForm() {
 	} = useQuery<Material[], Error>({
 		queryKey: ["materials"],
 		queryFn: async () => {
-			return;
-
 			const result = await getMaterials();
 			if (result.error) throw new Error(result.error);
-			return result.data ?? [];
+			return result ?? [];
 		},
 	});
 
@@ -102,8 +109,6 @@ export default function QuotationForm() {
 	};
 
 	const handleSubmitQuotation = async (event: React.FormEvent) => {
-		return;
-
 		event.preventDefault();
 		const quotationData = {
 			nombre: quotationName,
@@ -214,15 +219,19 @@ export default function QuotationForm() {
 								/>
 							</div>
 							<ScrollArea className="h-60 w-full rounded-md border p-4">
-								{filteredMaterials.map((material) => (
-									<Button
-										key={material.id}
-										onClick={() => addMaterial(material)}
-										className="w-full justify-start mb-2">
-										<Plus className="h-4 w-4 mr-2" />
-										{material.nombre} - ${material.precio}
-									</Button>
-								))}
+								{filteredMaterials
+									.filter(
+										(material) => !materials.some((m) => m.id === material.id)
+									)
+									.map((material) => (
+										<Button
+											key={material.id}
+											onClick={() => addMaterial(material)}
+											className="w-full justify-start mb-2">
+											<Plus className="h-4 w-4 mr-2" />
+											{material.nombre} - ${material.precio}
+										</Button>
+									))}
 							</ScrollArea>
 						</div>
 					)}

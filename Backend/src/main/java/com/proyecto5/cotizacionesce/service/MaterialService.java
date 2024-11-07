@@ -23,7 +23,7 @@ public class MaterialService {
                 .map(existing -> {
                     existing.setNombre(material.getNombre());
                     existing.setDescripcion(material.getDescripcion());
-                    existing.setCosto(material.getCosto());
+                    existing.setPrecio(material.getPrecio());
                     return materialRepository.save(existing);
                 })
                 .orElseThrow(() -> new RuntimeException("Material no encontrado"));
@@ -40,5 +40,8 @@ public class MaterialService {
     public Material getMaterial(Long id) {
         return materialRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Material no encontrado"));
+    }
+    public List<Material> getAllmaterial(){
+        return materialRepository.findAll();
     }
 }

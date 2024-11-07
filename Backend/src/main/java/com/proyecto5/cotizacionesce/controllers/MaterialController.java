@@ -2,6 +2,7 @@ package com.proyecto5.cotizacionesce.controllers;// MaterialController.java
 import com.proyecto5.cotizacionesce.entity.Material;
 import com.proyecto5.cotizacionesce.service.MaterialService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,25 @@ import java.util.List;
 public class MaterialController {
     private final MaterialService materialService;
 
+    @GetMapping("/all")
+    public ResponseEntity<?> listarMateriales() {
+        try {
+            List<Material> listaMateriales = materialService.getAllmaterial();
+
+            if (listaMateriales.isEmpty()) {
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body("No se encontraron materiales");
+            }
+
+            return ResponseEntity.ok(listaMateriales);
+
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al obtener los materiales: " + e.getMessage());
+        }
+    }
     @PostMapping
     public ResponseEntity<Material> createMaterial(@RequestBody Material material) {
         return ResponseEntity.ok(materialService.createMaterial(material));
