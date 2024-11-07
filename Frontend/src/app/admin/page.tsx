@@ -39,6 +39,9 @@ interface ApiUser {
 	rut: string;
 	role: string;
 }
+interface MappedUser extends ApiUser {
+	id: number;
+}
 
 interface User {
 	username: string;
@@ -49,7 +52,7 @@ interface User {
 	password: string;
 }
 
-const getUsers = async (): Promise<ApiUser[]> => {
+const getUsers = async (): Promise<MappedUser[]> => {
 	const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/all`;
 	const response = await fetch(url);
 	if (!response.ok) {
@@ -100,7 +103,7 @@ export default function AdminDashboard() {
 		password: "",
 	});
 
-	const { data: users, isLoading } = useQuery<ApiUser[], Error>({
+	const { data: users, isLoading } = useQuery<MappedUser[], Error>({
 		queryKey: ["users"],
 		queryFn: async () => {
 			const result = await getUsers();
@@ -113,7 +116,6 @@ export default function AdminDashboard() {
 		if (newUser === undefined) return;
 		try {
 			await createUser(newUser);
-			console.log(newUser.email);
 			toast.success("User created successfully");
 			setNewUser({
 				email: "",
@@ -137,7 +139,7 @@ export default function AdminDashboard() {
 	};
 
 	const handleDeleteUser = () => {
-		console.log("Test");
+		console.log("test");
 	};
 	// const handleDeleteUser = async (id: number) => {
 	// 	try {
