@@ -13,7 +13,7 @@ import java.util.List;
 public class Material {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id",columnDefinition = "serial")
     private Long idMaterial;
 
     private String nombre;

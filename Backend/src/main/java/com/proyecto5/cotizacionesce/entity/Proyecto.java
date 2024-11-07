@@ -14,7 +14,8 @@ public class Proyecto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id",columnDefinition = "serial")
+
     private Long idProyecto;
 
     public String nombre;

@@ -60,10 +60,7 @@ const getMaterials = async (): Promise<Material[]> => {
 
 	return data.map((item) => ({
 		id: item.idMaterial,
-		nombre: item.nombre,
-		descripcion: item.descripcion,
-		precio: item.precio,
-		quantity: 1,
+		...item,
 	}));
 };
 const createQuotation = async (quotationData: CotizacionRequestDTO) => {

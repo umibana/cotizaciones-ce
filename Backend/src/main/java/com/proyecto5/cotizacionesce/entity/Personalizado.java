@@ -12,7 +12,7 @@ import jakarta.persistence.*;
 public class Personalizado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id",columnDefinition = "serial")
     private Long idMaterial;
 
     private String nombre;

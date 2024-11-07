@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class ImagenCotizacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id",columnDefinition = "serial")
     private Long idImagenCotizacion;
 
     @Column(name = "link_imagen")

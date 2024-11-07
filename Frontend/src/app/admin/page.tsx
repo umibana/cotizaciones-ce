@@ -32,7 +32,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface ApiUser {
-	id: number;
+	idUser: number;
 	username: string;
 	email: string;
 	name: string;
@@ -57,7 +57,10 @@ const getUsers = async (): Promise<ApiUser[]> => {
 	}
 	const data: ApiUser[] = await response.json();
 
-	return data;
+	return data.map((item) => ({
+		id: item.idUser,
+		...item,
+	}));
 };
 
 const createUser = async (newUser: User) => {
@@ -73,15 +76,14 @@ const createUser = async (newUser: User) => {
 			}
 		);
 
-		console.log(newUser);
 		if (!response.ok) {
-			throw new Error("Failed to create quotation");
+			throw new Error("Error al crear usuario");
 		}
 
 		const data = await response.json();
 		return { success: true, message: data };
 	} catch (error) {
-		console.error("Error creating quotation:", error);
+		console.error("Error al crear usuario:", error);
 		return { success: false, error: (error as Error).message };
 	}
 };
@@ -99,7 +101,7 @@ export default function AdminDashboard() {
 	});
 
 	const { data: users, isLoading } = useQuery<ApiUser[], Error>({
-		queryKey: ["materials"],
+		queryKey: ["users"],
 		queryFn: async () => {
 			const result = await getUsers();
 			return result ?? [];

@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class ImagenProyecto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id",columnDefinition = "serial")
     private Long idImagenProyecto;
 
     @Column(name = "link_imagen")
