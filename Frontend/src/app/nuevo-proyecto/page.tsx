@@ -14,65 +14,113 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Img } from "react-image";
+import { useMutation } from "@tanstack/react-query";
 
-type ProjectData = {
-	name: string;
-	context: string;
-	tipo: string;
-	ubicacion: string;
+type proyectoData = {
+	nombre: string;
+	descripcion: string;
+	direccion: string;
 	imagen: string | null;
 	fechaVisita: Date | undefined;
-	clienteName: string;
-	clienteNumber: string;
 	clienteCorreo: string;
+	clienteRut: string;
+	clienteNombre: string;
+	clienteNumero: string;
+	clienteDireccion: string;
+};
+
+const createProject = async (proyectoData: proyectoData) => {
+	try {
+		const proyectoDTO = {
+			...proyectoData,
+			imagenes: proyectoData.imagen ? [proyectoData.imagen] : [],
+		};
+
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/nuevo`,
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(proyectoDTO),
+			}
+		);
+
+		if (!response.ok) {
+			throw new Error("Failed to create project");
+		}
+
+		const data = await response.json();
+		return { success: true, message: data };
+	} catch (error) {
+		console.error("Error creating project:", error);
+		return { success: false, error: (error as Error).message };
+	}
 };
 
 export default function NuevoProyecto() {
-	const [projectData, setProjectData] = useState<ProjectData>({
-		name: "",
-		context: "",
-		tipo: "",
-		ubicacion: "",
+	const [proyecto, setProyecto] = useState<proyectoData>({
+		nombre: "",
+		descripcion: "",
+		direccion: "",
 		imagen: null,
 		fechaVisita: undefined,
-		clienteName: "",
-		clienteNumber: "",
+		clienteNombre: "",
+		clienteRut: "",
+		clienteNumero: "",
 		clienteCorreo: "",
+		clienteDireccion: "",
 	});
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
-		setProjectData((prev) => ({ ...prev, [name]: value }));
+		setProyecto((prev) => ({ ...prev, [name]: value }));
 	};
 
 	const handleDateChange = (date: Date | undefined) => {
-		setProjectData((prev) => ({ ...prev, fechaVisita: date }));
+		setProyecto((prev) => ({ ...prev, fechaVisita: date }));
 	};
+
+	const createProjectMutation = useMutation({
+		mutationFn: createProject,
+		onSuccess: (data) => {
+			if (data.success) {
+				handleClear();
+				// Add success notification here if needed
+			}
+		},
+		onError: (error) => {
+			console.error("Error creating project:", error);
+			// Add error notification here if needed
+		},
+	});
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		console.log("Submitting project data:", projectData);
-		// Here you would typically send the data to your backend
+		createProjectMutation.mutate(proyecto);
 	};
+
 	const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
 		if (file) {
 			const imageUrl = URL.createObjectURL(file);
-			setProjectData((prev) => ({ ...prev, imagen: imageUrl }));
+			setProyecto((prev) => ({ ...prev, imagen: imageUrl }));
 		}
 	};
 
 	const handleClear = () => {
-		setProjectData({
-			name: "",
-			context: "",
-			tipo: "",
-			ubicacion: "",
+		setProyecto({
+			nombre: "",
+			descripcion: "",
+			direccion: "",
 			imagen: null,
 			fechaVisita: undefined,
-			clienteName: "",
-			clienteNumber: "",
+			clienteNombre: "",
+			clienteRut: "",
+			clienteNumero: "",
 			clienteCorreo: "",
+			clienteDireccion: "",
 		});
 	};
 
@@ -86,44 +134,64 @@ export default function NuevoProyecto() {
 				</CardHeader>
 				<CardContent className="space-y-4">
 					<div className="space-y-2">
-						<Label htmlFor="name">Nombre</Label>
+						<Label htmlFor="nombre">Nombre del Proyecto</Label>
 						<Input
-							id="name"
-							name="name"
-							value={projectData.name}
+							id="nombre"
+							name="nombre"
+							value={proyecto.nombre}
 							onChange={handleInputChange}
 							required
 						/>
 					</div>
 					<div className="space-y-2">
-						<Label htmlFor="context">Contexto</Label>
+						<Label htmlFor="descripcion">Descripción</Label>
 						<Input
-							id="context"
-							name="context"
-							value={projectData.context}
+							id="descripcion"
+							name="descripcion"
+							value={proyecto.descripcion}
 							onChange={handleInputChange}
 							required
 						/>
 					</div>
 					<div className="space-y-2">
-						<Label htmlFor="tipo">Tipo</Label>
+						<Label htmlFor="direccion">Dirección</Label>
 						<Input
-							id="tipo"
-							name="tipo"
-							value={projectData.tipo}
+							id="direccion"
+							name="direccion"
+							value={proyecto.direccion}
 							onChange={handleInputChange}
 							required
 						/>
 					</div>
+
 					<div className="space-y-2">
-						<Label htmlFor="ubicacion">Ubicación</Label>
-						<Input
-							id="ubicacion"
-							name="ubicacion"
-							value={projectData.ubicacion}
-							onChange={handleInputChange}
-							required
-						/>
+						<Label>Fecha Visita</Label>
+						<Popover>
+							<PopoverTrigger asChild>
+								<Button
+									variant={"outline"}
+									className={cn(
+										"w-full justify-start text-left font-normal",
+										!proyecto.fechaVisita && "text-muted-foreground"
+									)}>
+									<CalendarIcon className="mr-2 h-4 w-4" />
+									{proyecto.fechaVisita ? (
+										format(proyecto.fechaVisita, "PPP")
+									) : (
+										<span>Elige una fecha</span>
+									)}
+								</Button>
+							</PopoverTrigger>
+							<PopoverContent className="w-auto p-0">
+								<Calendar
+									className=" text-pretty"
+									mode="single"
+									selected={proyecto.fechaVisita}
+									onSelect={handleDateChange}
+									initialFocus
+								/>
+							</PopoverContent>
+						</Popover>
 					</div>
 					<div className="space-y-2">
 						<Label htmlFor="imagen">Imagen del Proyecto</Label>
@@ -134,10 +202,10 @@ export default function NuevoProyecto() {
 							accept="image/*"
 							onChange={handleImageUpload}
 						/>
-						{projectData.imagen && (
+						{proyecto.imagen && (
 							<div className="mt-2">
 								<Img
-									src={projectData.imagen}
+									src={proyecto.imagen}
 									alt="Project Image"
 									className="w-32 h-32 object-cover rounded-md"
 									loader={
@@ -152,36 +220,6 @@ export default function NuevoProyecto() {
 							</div>
 						)}
 					</div>
-
-					<div className="space-y-2">
-						<Label>Fecha Visita</Label>
-						<Popover>
-							<PopoverTrigger asChild>
-								<Button
-									variant={"outline"}
-									className={cn(
-										"w-full justify-start text-left font-normal",
-										!projectData.fechaVisita && "text-muted-foreground"
-									)}>
-									<CalendarIcon className="mr-2 h-4 w-4" />
-									{projectData.fechaVisita ? (
-										format(projectData.fechaVisita, "PPP")
-									) : (
-										<span>Elige una fecha</span>
-									)}
-								</Button>
-							</PopoverTrigger>
-							<PopoverContent className="w-auto p-0">
-								<Calendar
-									className=" text-pretty"
-									mode="single"
-									selected={projectData.fechaVisita}
-									onSelect={handleDateChange}
-									initialFocus
-								/>
-							</PopoverContent>
-						</Popover>
-					</div>
 				</CardContent>
 			</Card>
 
@@ -193,9 +231,9 @@ export default function NuevoProyecto() {
 					<div className="space-y-2">
 						<Label htmlFor="clienteName">Nombre del Cliente</Label>
 						<Input
-							id="clienteName"
-							name="clienteName"
-							value={projectData.clienteName}
+							id="clienteNombre"
+							name="clienteNombre"
+							value={proyecto.clienteNombre}
 							onChange={handleInputChange}
 							required
 						/>
@@ -203,9 +241,9 @@ export default function NuevoProyecto() {
 					<div className="space-y-2">
 						<Label htmlFor="clienteNumber">Número del Cliente</Label>
 						<Input
-							id="clienteNumber"
-							name="clienteNumber"
-							value={projectData.clienteNumber}
+							id="clienteNumero"
+							name="clienteNumero"
+							value={proyecto.clienteNumero}
 							onChange={handleInputChange}
 							required
 						/>
@@ -216,7 +254,27 @@ export default function NuevoProyecto() {
 							id="clienteCorreo"
 							name="clienteCorreo"
 							type="email"
-							value={projectData.clienteCorreo}
+							value={proyecto.clienteCorreo}
+							onChange={handleInputChange}
+							required
+						/>
+					</div>
+					<div className="space-y-2">
+						<Label htmlFor="clienteRut">RUT del Cliente</Label>
+						<Input
+							id="clienteRut"
+							name="clienteRut"
+							value={proyecto.clienteRut}
+							onChange={handleInputChange}
+							required
+						/>
+					</div>
+					<div className="space-y-2">
+						<Label htmlFor="clienteDireccion">Dirección del Cliente</Label>
+						<Input
+							id="clienteDireccion"
+							name="clienteDireccion"
+							value={proyecto.clienteDireccion}
 							onChange={handleInputChange}
 							required
 						/>

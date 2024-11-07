@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -25,6 +27,8 @@ public class Proyecto {
     public String descripcion;
 
     public String estado;
+
+    public Date fechaVisita;
 
     @Column(name = "id_cliente")
     public Long idCliente;

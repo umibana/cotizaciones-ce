@@ -14,6 +14,17 @@ import java.util.List;
 public class ImagenCotizacionService {
     private final ImagenCotizacionRepository imagenCotizacionRepository;
 
+    public void createImagenCotizaciones(Long proyectoId, List<String> imageUrls) {
+        for (String imageUrl : imageUrls) {
+            ImagenCotizacion imagen = new ImagenCotizacion();
+            imagen.setLinkImagen(imageUrl);
+            imagen.setEstado("active");
+            imagen.setIdCotizacion(proyectoId);
+            imagen.setTimestamp(LocalDateTime.now());
+            imagenCotizacionRepository.save(imagen);
+        }
+    }
+
     public ImagenCotizacion saveImagen(ImagenCotizacion imagen) {
         imagen.setTimestamp(LocalDateTime.now());
         return imagenCotizacionRepository.save(imagen);
