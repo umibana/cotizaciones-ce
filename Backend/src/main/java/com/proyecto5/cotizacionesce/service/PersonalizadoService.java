@@ -1,4 +1,5 @@
 package com.proyecto5.cotizacionesce.service;// PersonalizadoService.java
+import com.proyecto5.cotizacionesce.dto.PersonalizadoDTO;
 import com.proyecto5.cotizacionesce.entity.Personalizado;
 import com.proyecto5.cotizacionesce.repository.PersonalizadoRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,20 @@ public class PersonalizadoService {
 
     public Personalizado createPersonalizado(Personalizado personalizado) {
         return personalizadoRepository.save(personalizado);
+    }
+    public void createPersonalizados(List<PersonalizadoDTO> extraItems, Long idCotizacion) {
+        if (extraItems != null && !extraItems.isEmpty()) {
+            for (PersonalizadoDTO itemDTO : extraItems) {
+                Personalizado item = new Personalizado();
+                item.setNombre(itemDTO.getNombre());
+                item.setDescripcion(itemDTO.getDescripcion());
+                item.setMetros(itemDTO.getMetros());
+                item.setPrecio(itemDTO.getPrecio());
+                item.setIdCotizacion(idCotizacion);
+
+                personalizadoRepository.save(item);
+            }
+        }
     }
 
     public Personalizado updatePersonalizado(Long id, Personalizado personalizado) {

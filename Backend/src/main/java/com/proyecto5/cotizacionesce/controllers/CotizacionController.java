@@ -1,9 +1,12 @@
 package com.proyecto5.cotizacionesce.controllers;
 import com.proyecto5.cotizacionesce.entity.Cotizacion;
 import com.proyecto5.cotizacionesce.service.CotizacionService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.proyecto5.cotizacionesce.dto.CotizacionRequestDTO;
 
 import java.util.List;
 
@@ -15,13 +18,21 @@ public class CotizacionController {
     private final CotizacionService cotizacionService;
 
     @PostMapping
-    public ResponseEntity<Cotizacion> createCotizacion(@RequestBody Cotizacion cotizacion) {
-        System.out.println("ENDPOINT WORKING");
-        System.out.println(cotizacion);
-        cotizacionService.createCotizacion(cotizacion);
-        return ResponseEntity.ok(cotizacion);
+    public ResponseEntity<?> createCotizacion(@Valid @RequestBody CotizacionRequestDTO request) {
+        try {
+            Cotizacion cotizacion = cotizacionService.createCotizacion(request);
+            return ResponseEntity.ok()
+                    .body(
+                            "Cotización creada exitosamente"
+                    );
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            "Error al crear la cotización: " + e.getMessage()
+                    );
+        }
     }
-
     @PutMapping("/{id}")
     public ResponseEntity<Cotizacion> updateCotizacion(@PathVariable Long id, @RequestBody Cotizacion cotizacion) {
         return ResponseEntity.ok(cotizacionService.updateCotizacion(id, cotizacion));

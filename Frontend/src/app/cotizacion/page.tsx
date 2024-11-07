@@ -11,11 +11,18 @@ import { useQuery } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 
+interface ApiMaterial {
+	idMaterial: number;
+	nombre: string;
+	descripcion: string;
+	precio: number;
+}
+
 interface Material {
 	id: number;
 	nombre: string;
 	descripcion: string;
-	precio: string;
+	precio: number;
 }
 
 interface MaterialItem extends Material {
@@ -25,7 +32,7 @@ interface MaterialItem extends Material {
 interface ExtraItem {
 	nombre: string;
 	descripcion: string;
-	precio: string;
+	precio: number;
 	m2?: number;
 }
 const getMaterials = async (): Promise<Material[]> => {
@@ -35,7 +42,15 @@ const getMaterials = async (): Promise<Material[]> => {
 	if (!response.ok) {
 		throw new Error("Network response was not ok");
 	}
-	return response.json();
+	const data: ApiMaterial[] = await response.json();
+
+	return data.map((item) => ({
+		id: item.idMaterial,
+		nombre: item.nombre,
+		descripcion: item.descripcion,
+		precio: item.precio,
+		quantity: 1,
+	}));
 };
 
 export default function QuotationForm() {
@@ -44,7 +59,7 @@ export default function QuotationForm() {
 	const [extraItemForm, setExtraItemForm] = useState<ExtraItem>({
 		nombre: "",
 		descripcion: "",
-		precio: "",
+		precio: 0,
 	});
 	const [filter, setFilter] = useState("");
 	const [quotationName, setQuotationName] = useState("");
@@ -100,7 +115,7 @@ export default function QuotationForm() {
 			extraItemForm.precio
 		) {
 			setExtraItems((prev) => [...prev, extraItemForm]);
-			setExtraItemForm({ nombre: "", descripcion: "", precio: "" });
+			setExtraItemForm({ nombre: "", descripcion: "", precio: 0 });
 		}
 	};
 
@@ -117,6 +132,7 @@ export default function QuotationForm() {
 			extraItems,
 		};
 
+		console.log(quotationData);
 		const result = await createQuotation(quotationData);
 
 		if (result.error) {
@@ -180,7 +196,7 @@ export default function QuotationForm() {
 								key={`material-${item.id}`}
 								className="flex items-center justify-between">
 								<span>
-									{item.nombre} - ${parseFloat(item.precio) * item.quantity}
+									{item.nombre} - ${item.precio * item.quantity}
 								</span>
 								<div className="flex items-center space-x-2">
 									<Input
@@ -240,7 +256,7 @@ export default function QuotationForm() {
 
 			<Card className="mb-6">
 				<CardHeader>
-					<CardTitle>Items Extra</CardTitle>
+					<CardTitle>Items Extra (Opcional)</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<ul className="space-y-4 mb-4">

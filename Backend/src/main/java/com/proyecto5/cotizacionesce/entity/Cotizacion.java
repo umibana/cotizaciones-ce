@@ -16,6 +16,10 @@ public class Cotizacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+
+    private String nombre;
+    private String descripcion;
+
     private Long idCotizacion;
 
     private Integer validezOferta;
@@ -35,6 +39,8 @@ public class Cotizacion {
     private Long idProyecto;
 
     private Long idCliente;
+
+    private Long idUser;
 
     private LocalDateTime timestamp;
 
