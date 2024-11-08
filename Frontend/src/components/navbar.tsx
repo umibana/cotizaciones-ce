@@ -30,11 +30,6 @@ export default function Navbar() {
 						<Link href="/" className="hover:text-gray-600">
 							Home
 						</Link>
-						{isAuthenticated && (
-							<Link href="/dashboard" className="hover:text-gray-600">
-								Dashboard
-							</Link>
-						)}
 					</div>
 
 					{/* Right side - Auth buttons */}
