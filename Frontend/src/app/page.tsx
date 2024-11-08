@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-async function App() {
+function App() {
 	return (
 		<>
 			<div className="flex flex-auto align-middle flex-col justify-center items-center container mx-auto p-4 space-y-4 ">
@@ -35,6 +35,11 @@ async function App() {
 					<h1 className=" text-xl font-bold"> Vista Maestro</h1>
 					<Button asChild>
 						<Link href="/cotizacion">Cotización</Link>
+					</Button>
+				</div>
+				<div className="text-center">
+					<Button asChild>
+						<Link href="/test">Test de Auth0</Link>
 					</Button>
 				</div>
 			</div>
