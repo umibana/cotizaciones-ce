@@ -1,5 +1,5 @@
 "use client";
-import { useAuth, useAuthenticatedQuery } from "../../hooks/useAuth";
+import { useAuthenticatedQuery } from "../../hooks/useAuth";
 
 // Update the type to match backend response
 interface TestResponse {
