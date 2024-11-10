@@ -70,10 +70,8 @@ export default function RootLayout({
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
 				<Providers>
 					{/* Sacar <ProtectedRoute> para probar sin cuenta */}
-					<ProtectedRoute>
-						<Navbar />
-						{children}
-					</ProtectedRoute>
+					<Navbar />
+					<ProtectedRoute>{children}</ProtectedRoute>
 				</Providers>
 			</body>
 		</html>

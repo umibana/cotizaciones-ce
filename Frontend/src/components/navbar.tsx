@@ -2,10 +2,12 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Button } from "./ui/button";
 
 export default function Navbar() {
 	const { isAuthenticated, isLoading, loginWithRedirect, logout, user } =
 		useAuth0();
+
 	const router = useRouter();
 
 	return (
@@ -14,12 +16,12 @@ export default function Navbar() {
 				<div className="flex justify-between h-16">
 					{/* Left side - Back Arrow and Logo */}
 					<div className="flex items-center space-x-4">
-						<button
+						<Button
 							onClick={() => router.back()}
 							className="p-2 hover:bg-gray-100 rounded-full transition-colors"
 							aria-label="Go back">
 							<ArrowLeft className="h-5 w-5" />
-						</button>
+						</Button>
 						<Link href="/" className="text-xl font-bold">
 							Your Logo
 						</Link>
