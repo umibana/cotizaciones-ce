@@ -18,6 +18,8 @@ export default function AuthTest() {
 	);
 
 	// Update type parameter for useAuthenticatedQuery
+
+	/// FETCH y pasarle el bearer token
 	const {
 		data: privateData,
 		isLoading: privateLoading,

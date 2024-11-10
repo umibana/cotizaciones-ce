@@ -31,9 +31,10 @@ public class SecurityConfig {
                         // Public endpoints
                         .requestMatchers(HttpMethod.GET, "/api/users/all").permitAll()
                         .requestMatchers("/api/public/**").permitAll()
+                        .requestMatchers("/api/cotizaciones/**").permitAll()
                         // Protected endpoints
-                        .requestMatchers("/api/users/**").authenticated()
-                        .anyRequest().authenticated())
+                        .requestMatchers("/api/users/**").permitAll()
+                        .anyRequest().permitAll())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.decoder(jwtDecoder())));
 
