@@ -188,7 +188,6 @@ export default function NuevoProyecto() {
 									mode="single"
 									selected={proyecto.fechaVisita}
 									onSelect={handleDateChange}
-									initialFocus
 								/>
 							</PopoverContent>
 						</Popover>
