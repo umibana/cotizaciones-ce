@@ -63,6 +63,7 @@ function Calendar({
 				// IconLeft: ({ ...props }) => <ChevronLeftIcon className="h-4 w-4" />,
 				// IconRight: ({ ...props }) => <ChevronRightIcon className="h-4 w-4" />,
 
+				//@ts-expect-error idk shadcn is not working
 				IconLeft: () => <ChevronLeftIcon className="h-4 w-4" />,
 				IconRight: () => <ChevronRightIcon className="h-4 w-4" />,
 			}}
