@@ -15,8 +15,8 @@ public class Cotizacion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id",columnDefinition = "serial")
-    private Long idCotizacion;
+    @Column(name = "id_cotizacion",columnDefinition = "serial")
+    private Long id_Cotizacion;
 
     private String nombre;
 
@@ -36,9 +36,9 @@ public class Cotizacion {
 
     private String estado;
 
-    private Long idProyecto;
+    private Long id_Proyecto;
 
-    private Long idCliente;
+    private Long id_Cliente;
 
     private Long idUser;
 

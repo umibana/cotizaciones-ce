@@ -24,7 +24,7 @@ public class CotizacionController {
         try {
             Cotizacion cotizacion = cotizacionService.createCotizacion(request);
             Map<String, String> response = new HashMap<>();
-            response.put("message", "Cotización " + cotizacion.getIdCotizacion() + " creada exitosamente");
+            response.put("message", "Cotización " + cotizacion.getId_Cotizacion() + " creada exitosamente");
             return ResponseEntity.ok(response);  // Send JSON
         } catch (Exception e) {
             Map<String, String> errorResponse = new HashMap<>();
@@ -49,8 +49,8 @@ public class CotizacionController {
     }
 
     @GetMapping("/proyecto/{proyectoId}")
-    public ResponseEntity<List<Cotizacion>> getCotizacionesByProyecto(@PathVariable Long idProyecto) {
-        return ResponseEntity.ok(cotizacionService.getCotizacionesByProyecto(idProyecto));
+    public ResponseEntity<List<Cotizacion>> getCotizacionesByProyecto(@PathVariable Long id_Proyecto) {
+        return ResponseEntity.ok(cotizacionService.getCotizacionesByProyecto(id_Proyecto));
     }
 
     @GetMapping("/estado/{estado}")

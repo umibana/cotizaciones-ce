@@ -16,7 +16,7 @@ import java.util.List;
 public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", columnDefinition = "serial")
+    @Column(name = "id_cliente", columnDefinition = "serial")
     private Long uniqueID;
 
     private String nombre;

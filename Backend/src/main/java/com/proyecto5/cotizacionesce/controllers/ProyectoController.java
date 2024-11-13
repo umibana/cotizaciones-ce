@@ -45,4 +45,10 @@ public class ProyectoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
+
+    @PostMapping
+    public ResponseEntity<Proyecto> estadoRevision(Proyecto unProyecto){
+        Proyecto proyecto = proyectoService.estadoRevision(unProyecto);
+        return ResponseEntity.ok(unProyecto);
+    }
 }

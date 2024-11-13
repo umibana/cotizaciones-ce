@@ -48,5 +48,10 @@ public class ProyectoService {
         imagenCotizacionService.createImagenCotizaciones(proyecto.getIdProyecto(), proyectoDTO.imagenes);
         return proyectoNuevo;
     }
+
+    public Proyecto estadoRevision(Proyecto unProyecto){
+        unProyecto.setEstado("En Revision");
+        return (unProyecto);
+    }
 }
 

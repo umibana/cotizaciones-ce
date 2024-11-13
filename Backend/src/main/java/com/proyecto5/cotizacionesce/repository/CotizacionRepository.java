@@ -7,5 +7,5 @@ import java.util.List;
 @Repository
 public interface CotizacionRepository extends JpaRepository<Cotizacion, Long> {
     List<Cotizacion> findByEstado(String estado);
-    List<Cotizacion> findByIdProyecto(Long idProyecto);
+    List<Cotizacion> findByIdProyecto(Long id_Proyecto);
 }

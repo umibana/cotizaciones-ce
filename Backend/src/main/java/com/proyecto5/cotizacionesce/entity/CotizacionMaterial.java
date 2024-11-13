@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class CotizacionMaterial {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id",columnDefinition = "serial")
+    @Column(name = "id_material_cotizacion",columnDefinition = "serial")
     private Long id_material_cotizacion;
 
     @Column(name = "id_material")

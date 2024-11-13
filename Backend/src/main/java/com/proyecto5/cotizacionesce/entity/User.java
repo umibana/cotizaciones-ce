@@ -23,7 +23,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", columnDefinition = "serial")
+    @Column(name = "id_user", columnDefinition = "serial")
     private Long idUser;
 
     @NotBlank

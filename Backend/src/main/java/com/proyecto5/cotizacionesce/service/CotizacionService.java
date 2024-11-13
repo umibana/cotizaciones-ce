@@ -41,13 +41,13 @@ public class CotizacionService {
         // Creo tablas intermedia para saber que material y su cantidad
         cotizacionMaterialService.createCotizacionMateriales(
                 request.getMaterials(),
-                savedCotizacion.getIdCotizacion()
+                savedCotizacion.getId_Cotizacion()
         );
 
         // En caso de tener items personalizados, se crearan con el método
         personalizadoService.createPersonalizados(
                 request.getExtraItems(),
-                savedCotizacion.getIdCotizacion()
+                savedCotizacion.getId_Cotizacion()
         );
 
         return savedCotizacion;
@@ -77,8 +77,8 @@ public class CotizacionService {
                 .orElseThrow(() -> new RuntimeException("Cotización no encontrada"));
     }
 
-    public List<Cotizacion> getCotizacionesByProyecto(Long idProyecto) {
-        return cotizacionRepository.findByIdProyecto(idProyecto);
+    public List<Cotizacion> getCotizacionesByProyecto(Long id_Proyecto) {
+        return cotizacionRepository.findByIdProyecto(id_Proyecto);
     }
 
     public List<Cotizacion> getCotizacionesByEstado(String estado) {
