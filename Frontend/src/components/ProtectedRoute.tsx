@@ -11,13 +11,18 @@ export default function ProtectedRoute({
 	useQuery({
 		queryKey: ["auth-check"],
 		queryFn: async () => {
-			if (!isAuthenticated) {
-				await loginWithRedirect({
-					appState: { returnTo: window.location.pathname },
-				});
-				return null;
+			try{	//se agregó try y catch para captura de errores
+				if (!isAuthenticated) {
+					await loginWithRedirect({
+						appState: { returnTo: window.location.pathname },
+					});
+					return null;
+				}
+				return true;
+			}catch (error){
+				console.error('error during authentication', error);
+				throw new Error('Authentication failed');
 			}
-			return true;
 		},
 		enabled: !isLoading && !isAuthenticated,
 		retry: false,

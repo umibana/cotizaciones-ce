@@ -32,4 +32,7 @@ public class Proyecto {
 
     @Column(name = "id_cliente")
     public Long idCliente;
+
+    @Column(name = "id_user")
+    public Long idUser;
 }

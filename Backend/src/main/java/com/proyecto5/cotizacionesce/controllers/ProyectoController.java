@@ -46,9 +46,9 @@ public class ProyectoController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/estados")
     public ResponseEntity<Proyecto> estadoRevision(Proyecto unProyecto){
         Proyecto proyecto = proyectoService.estadoRevision(unProyecto);
-        return ResponseEntity.ok(unProyecto);
+        return ResponseEntity.ok(proyecto);
     }
 }

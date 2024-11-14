@@ -3,6 +3,8 @@ package com.proyecto5.cotizacionesce.service;
 import com.proyecto5.cotizacionesce.dto.ProyectoDTO;
 import com.proyecto5.cotizacionesce.entity.Cliente;
 import com.proyecto5.cotizacionesce.entity.Proyecto;
+import com.proyecto5.cotizacionesce.entity.User;
+import com.proyecto5.cotizacionesce.repository.ClienteRepository;
 import com.proyecto5.cotizacionesce.repository.ProyectoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import java.util.List;
 public class ProyectoService {
 
     private final ProyectoRepository proyectoRepository;
+    private final ClienteRepository clienteRepository;
 
     public List<Proyecto> getProyectos(){
         return(List<Proyecto>) proyectoRepository.findAll();
@@ -53,5 +56,11 @@ public class ProyectoService {
         unProyecto.setEstado("En Revision");
         return (unProyecto);
     }
-}
 
+
+    public List<Proyecto> getProyectoAsignado(User usuario){
+        List<Proyecto> asignados = proyectoRepository.findByIdUser(usuario.getIdUser());
+        return asignados;
+    }
+
+}

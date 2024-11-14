@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { FaTrash } from "react-icons/fa";
 
 // Convertir a .tsx cuando tengamos definido schema
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -35,6 +36,9 @@ const UnassignedProjectList = ({ projects, onAssign }: any) => (
 						key={project.id}
 						className="mb-2 flex items-center justify-between rounded-lg bg-secondary p-2">
 						<span>{project.name}</span>
+						<Button size="sm" onClick={() => onAssign(project.id)}>
+							<FaTrash className="mr-2" />
+						</Button>
 						<Button size="sm" onClick={() => onAssign(project.id)}>
 							Asignar
 						</Button>

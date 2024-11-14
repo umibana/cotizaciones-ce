@@ -36,7 +36,7 @@ public class Cotizacion {
 
     private String estado;
 
-    private Long id_Proyecto;
+    private Long idProyecto;
 
     private Long id_Cliente;
 
