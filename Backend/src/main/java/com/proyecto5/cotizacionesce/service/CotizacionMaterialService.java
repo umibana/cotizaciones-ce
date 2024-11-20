@@ -6,6 +6,7 @@ import com.proyecto5.cotizacionesce.repository.CotizacionMaterialRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CotizacionMaterialService {
@@ -25,9 +26,5 @@ public class CotizacionMaterialService {
             cotizacionMaterialRepository.save(cotizacionMaterial);
         }
     }
-    /*
-    public void getCotizacion(){
-        return;
-    }
-    */
+
 }

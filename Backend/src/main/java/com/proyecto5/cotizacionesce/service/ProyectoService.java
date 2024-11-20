@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLOutput;
 import java.util.List;
 
 @Service
@@ -53,8 +54,15 @@ public class ProyectoService {
     }
 
     public Proyecto estadoRevision(Proyecto unProyecto){
-        unProyecto.setEstado("En Revision");
-        return (unProyecto);
+        unProyecto.setIdProyecto(unProyecto.getIdProyecto());
+        unProyecto.setNombre(unProyecto.getNombre());
+        unProyecto.setDireccion(unProyecto.getDireccion());
+        unProyecto.setDescripcion(unProyecto.getDescripcion());
+        unProyecto.setEstado("En Revision de cotizacion");
+        unProyecto.setFechaVisita(unProyecto.getFechaVisita());
+        unProyecto.setIdCliente(unProyecto.getIdCliente());
+        unProyecto.setIdUser(unProyecto.getIdUser());
+        return unProyecto;
     }
 
 

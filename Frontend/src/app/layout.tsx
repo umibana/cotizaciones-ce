@@ -12,11 +12,13 @@ const geistSans = localFont({
 	src: "./fonts/GeistVF.woff",
 	variable: "--font-geist-sans",
 	weight: "100 900",
+	display: "swap",
 });
 const geistMono = localFont({
 	src: "./fonts/GeistMonoVF.woff",
 	variable: "--font-geist-mono",
 	weight: "100 900",
+	display: "swap",
 });
 
 // export const metadata: Metadata = {
@@ -25,8 +27,7 @@ const geistMono = localFont({
 // };
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
-	const [queryClient] = useState(
-		() =>
+	const [queryClient] = useState(() =>
 			new QueryClient({
 				defaultOptions: {
 					queries: {
@@ -35,13 +36,16 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
 				},
 			})
 	);
+
+	const redirectUri =
+		typeof window !== "undefined" ? process.env.NEXT_PUBLIC_REDIRECT_URI || window.location.origin : "";
+		
 	return (
 		<Auth0Provider
 			domain={process.env.NEXT_PUBLIC_AUTH0_DOMAIN!}
 			clientId={process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID!}
 			authorizationParams={{
-				redirect_uri:
-					typeof window !== "undefined" ? window.location.origin : "",
+				redirect_uri: redirectUri,
 				audience: process.env.NEXT_PUBLIC_AUTH0_AUDIENCE,
 			}}
 			cacheLocation="localstorage"
@@ -50,8 +54,10 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
 			skipRedirectCallback={false}
 			onRedirectCallback={(appState) => {
 				// Handle redirect with the saved path
-				if (appState?.returnTo) {
+				if (appState?.returnTo && typeof appState.returnTo === "string") {
 					window.location.href = appState.returnTo;
+				} else {
+					window.location.href = "/";
 				}
 			}}>
 			<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
@@ -66,7 +72,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body
+			<body suppressHydrationWarning={true}
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
 				<Providers>
 					{/* Sacar <ProtectedRoute> para probar sin cuenta */}
