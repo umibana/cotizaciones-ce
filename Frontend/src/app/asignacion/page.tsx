@@ -1,11 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-
+import { useSearchParams } from "next/navigation";
 // Placeholder user data
 const initialUsers = [
 	{ id: 1, name: "Alice Johnson" },
@@ -16,15 +16,101 @@ const initialUsers = [
 ];
 
 export default function Asignacion() {
-	// agregar setUsers cuando tengamos query
+	const searchParams = useSearchParams();
+	const projectId = searchParams.get("id"); // Obtener ID del proyecto de la URL
+
 	const [users] = useState(initialUsers);
-	// Cambiar después por react query
 	const [filterText, setFilterText] = useState("");
 	const [selectedUser, setSelectedUser] = useState<number | null>(null);
+	const [project, setProject] = useState(null); // Estado para guardar los datos del proyecto
+	const [isLoading, setIsLoading] = useState(true);
+	const [error, setError] = useState("");
 
 	const filteredUsers = users.filter((user) =>
 		user.name.toLowerCase().includes(filterText.toLowerCase())
 	);
+
+	//Seccion para trabajar con el filtro de trabajadores
+	const [workers, setWorkers] = useState([]); // Para almacenar los colaboradores
+	const [selectedWorkers, setSelectedWorkers] = useState<number[]>([]); // Para almacenar los IDs seleccionados
+	const [roles, setRoles] = useState<string[]>(["Jefe de operaciones", "Supervisor", "Maestro"]); // Roles disponibles
+	const [filterRole, setFilterRole] = useState<string>(""); // Filtro por rol
+	const [filterName, setFilterName] = useState<string>(""); // Filtro por nombre
+
+	const filteredWorkers = workers.filter((worker) =>
+		worker.name.toLowerCase().includes(filterName.toLowerCase()) &&
+		(filterRole ? worker.role === filterRole : true)
+	);
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+
+		if (selectedWorkers.length === 0) {
+			alert("Debe seleccionar al menos un colaborador");
+			return;
+		}
+
+		try {
+			const response = await fetch(`http://localhost:8080/api/proyectos/${projectId}/asignar`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ workerIds: selectedWorkers }),
+			});
+
+			if (!response.ok) {
+				throw new Error("Error al asignar colaboradores al proyecto");
+			}
+
+			alert("Colaboradores asignados correctamente");
+		} catch (err) {
+			alert("Hubo un error al asignar los colaboradores");
+		}
+	};
+
+	// Cargar los datos del proyecto
+	useEffect(() => {
+		const fetchProject = async () => {
+			try {
+				const response = await fetch(`http://localhost:8080/api/proyectos/${projectId}`);
+				if (!response.ok) {
+					throw new Error("Error al obtener los datos del proyecto");
+				}
+				const data = await response.json();
+				setProject(data);
+				setIsLoading(false);
+			} catch (err) {
+				setError("No se pudo cargar la información del proyecto.");
+				setIsLoading(false);
+			}
+		};
+
+		if (projectId) {
+			fetchProject();
+		}
+	}, [projectId]);
+
+	useEffect(() => {
+		const fetchWorkers = async () => {
+			try {
+				const response = await fetch("http://localhost:8080/api/users/all"); // Cambia esta URL según tu API
+				if (!response.ok) {
+					throw new Error("Error al obtener los colaboradores");
+				}
+				const data = await response.json();
+				setWorkers(data); // Almacena los colaboradores en el estado
+			} catch (err) {
+				setError("No se pudo cargar la información de los colaboradores.");
+			}
+		};
+
+		fetchWorkers();
+	}, []);
+
+
+	// Mostrar loading/error
+	if (isLoading) return <div>Cargando proyecto...</div>;
+	if (error) return <div className="text-red-500">{error}</div>;
 
 	return (
 		<div className="container mx-auto p-4 max-w-2xl">
@@ -36,60 +122,72 @@ export default function Asignacion() {
 					<form className="space-y-4">
 						<div className="space-y-2">
 							<Label htmlFor="name">Nombre</Label>
-							<Input id="name" placeholder="Nombre del Proyecto" />
+							<Input id="name" value={project?.nombre || ""} readOnly/>
 						</div>
 						<div className="space-y-2">
-							<Label htmlFor="type">Tipo</Label>
-							<Input id="type" placeholder="Tipo de Proyecto" />
+							<Label htmlFor="type">Descripción</Label>
+							<Input id="type" value={project?.descripcion || ""} readOnly/>
 						</div>
 						<div className="space-y-2">
 							<Label htmlFor="location">Ubicación</Label>
-							<Input id="location" placeholder="Ubicación del Proyecto" />
+							<Input id="location" value={project?.direccion || ""} readOnly/>
 						</div>
-						<div className="space-y-2">
-							<Label>Asignado a</Label>
-							<Input
-								value={users.find((u) => u.id === selectedUser)?.name || ""}
-								readOnly
-								placeholder="Seleccione un colaborador"
-							/>
-						</div>
-						<Button type="submit" className="w-full" disabled={!selectedUser}>
-							Asignar Proyecto
-						</Button>
 					</form>
 				</CardContent>
 			</Card>
 
 			<Card>
 				<CardHeader>
-					<CardTitle>Colaboradores disponibles</CardTitle>
+					<CardTitle>Trabajadores disponibles</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<div className="mb-4">
 						<Input
-							placeholder="Filtrar colaboradores..."
-							value={filterText}
-							onChange={(e) => setFilterText(e.target.value)}
+							placeholder="Filtrar por nombre..."
+							value={filterName}
+							onChange={(e) => setFilterName(e.target.value)}
 						/>
+						<select
+							value={filterRole}
+							onChange={(e) => setFilterRole(e.target.value)}
+							className="mt-2"
+						>
+							<option value="">Elegir filtro por rol</option>
+							{roles.map((role) => (
+								<option key={role} value={role}>{role}</option>
+							))}
+						</select>
 					</div>
-					<RadioGroup
-						value={selectedUser?.toString()}
-						onValueChange={(value) => setSelectedUser(Number(value))}>
-						{filteredUsers.map((user) => (
-							<div
-								key={user.id}
-								className="flex items-center space-x-2 p-2 bg-secondary rounded-md">
-								<RadioGroupItem
-									value={user.id.toString()}
-									id={`user-${user.id}`}
+					<div className="space-y-2">
+						{filteredWorkers.map((worker) => (
+							<div key={worker.idUser} className="flex items-center space-x-2 p-2 bg-secondary rounded-md">
+								<input
+									type="checkbox"
+									id={`worker-${worker.idUser}`}
+									checked={selectedWorkers.includes(worker.idUser)}
+									onChange={() => {
+										setSelectedWorkers((prevSelected) =>
+											prevSelected.includes(worker.idUser)
+												? prevSelected.filter(id => id !== worker.idUser)
+												: [...prevSelected, worker.idUser]
+										);
+									}}
 								/>
-								<Label htmlFor={`user-${user.id}`}>{user.name}</Label>
+								<Label htmlFor={`worker-${worker.idUser}`}>{worker.name} ({worker.role})</Label>
 							</div>
 						))}
-					</RadioGroup>
+					</div>
 				</CardContent>
 			</Card>
+
+			<Button
+				type="submit"
+				className="w-full"
+				disabled={selectedWorkers.length === 0}
+				onClick={handleSubmit}
+			>
+				Asignar
+			</Button>
 		</div>
 	);
 }

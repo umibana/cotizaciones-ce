@@ -4,25 +4,17 @@ import { useState, useEffect } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { FaTrash } from "react-icons/fa";
 
 // Convertir a .tsx cuando tengamos definido schema
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-const initialProjects = {
-	unassigned: [
-		{ id: 1, name: "Proyecto A" },
-		{ id: 2, name: "Proyecto B" },
-		{ id: 3, name: "Proyecto C" },
-	],
-	assigned: [
-		{ id: 4, name: "Proyecto D", price: 100 },
-		{ id: 5, name: "Proyecto E", price: 150 },
-		{ id: 6, name: "Proyecto F", price: 200 },
-	],
-};
+
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+<<<<<<< HEAD
 const UnassignedProjectList = ({ projects, onAssign }: any) => (
 	<Card className="flex-1">
 		<CardHeader>
@@ -50,6 +42,41 @@ const UnassignedProjectList = ({ projects, onAssign }: any) => (
 		</CardContent>
 	</Card>
 );
+=======
+const UnassignedProjectList = ({ projects, onAssign }: any) => {
+
+	return (
+		<Card className="flex-1">
+			<CardHeader>
+				<CardTitle>Proyectos sin asignar</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<ScrollArea className="h-[200px] w-full rounded-md border p-4">
+					{projects.map((project: any) => (
+						<div
+							key={project.idProyecto}
+							className="mb-2 flex items-center justify-between rounded-lg bg-secondary p-2">
+							<span>{project.nombre}</span>
+							<div className="flex gap-2">
+								<Link
+									href={{
+										pathname: "/asignacion",
+										query: { id: project.idProyecto},
+									}}>
+									<Button size="sm">Asignar</Button>
+								</Link>
+								<Button size="sm" onClick={() => onAssign(project.id)}>
+									<FaTrash />
+								</Button>
+							</div>
+						</div>
+					))}
+				</ScrollArea>
+			</CardContent>
+		</Card>
+	);
+};
+>>>>>>> 374d4fd8195ed745e072c49e023e549849eaaea8
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const AssignedProjectList = ({ projects, onReview }: any) => (
@@ -61,9 +88,9 @@ const AssignedProjectList = ({ projects, onReview }: any) => (
 			<ScrollArea className="h-[200px] w-full rounded-md border p-4">
 				{projects.map((project: any) => (
 					<div
-						key={project.id}
+						key={project.idProyecto}
 						className="mb-2 flex items-center justify-between rounded-lg bg-secondary p-2">
-						<span>{project.name}</span>
+						<span>{project.nombre}</span>
 						<div className="flex items-center gap-2">
 							<span className="font-medium">${project.price}</span>
 							<Button
@@ -81,17 +108,25 @@ const AssignedProjectList = ({ projects, onReview }: any) => (
 );
 
 export default function Proyectos() {
-	const [projects, setProjects] = useState(initialProjects);
+	const [projects, setProjects] = useState({ unassigned: [], assigned: [] });
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState("");
 
 	useEffect(() => {
-		// Simulate API call
 		const fetchProjects = async () => {
 			try {
-				// Replace this with your actual API call when you're ready
-				await new Promise((resolve) => setTimeout(resolve, 100)); // Simulate network delay
-				setProjects(initialProjects);
+				const response = await fetch("http://localhost:8080/api/proyectos/all");
+				if (!response.ok) {
+					throw new Error("Error fetching projects");
+				}
+				const data = await response.json();
+
+				// Procesar los datos para dividirlos en asignados y no asignados
+				const unassigned = data.filter((project: any) => project.estado === "Sin asignar");
+				const assigned = data.filter((project: any) => project.estado !== "Sin asignar");
+
+				// Actualizar el estado con los proyectos divididos
+				setProjects({ unassigned, assigned });
 				setIsLoading(false);
 			} catch (err: unknown) {
 				if (err instanceof Error) {
@@ -105,6 +140,8 @@ export default function Proyectos() {
 
 		fetchProjects();
 	}, []);
+
+
 
 	const handleAssign = (projectId: any) => {
 		console.log(`Assigning project: ${projectId}`);

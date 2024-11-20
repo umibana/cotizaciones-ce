@@ -77,7 +77,7 @@ export default function RootLayout({
 				<Providers>
 					{/* Sacar <ProtectedRoute> para probar sin cuenta */}
 					<Navbar />
-					<ProtectedRoute>{children}</ProtectedRoute>
+					{children}
 				</Providers>
 			</body>
 		</html>

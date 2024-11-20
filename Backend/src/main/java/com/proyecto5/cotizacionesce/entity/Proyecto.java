@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -33,6 +34,7 @@ public class Proyecto {
     @Column(name = "id_cliente")
     public Long idCliente;
 
-    @Column(name = "id_user")
+    @Column(name = "id_User")
     public Long idUser;
+
 }
