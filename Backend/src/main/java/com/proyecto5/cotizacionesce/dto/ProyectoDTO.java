@@ -7,6 +7,8 @@ public class ProyectoDTO {
     public String nombre;
     public String descripcion;
     public String direccion;
+
+    public String estado;
     public Date fechaVisita;
     public String clienteCorreo;
     public String clienteRut;

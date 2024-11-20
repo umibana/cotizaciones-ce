@@ -3,14 +3,17 @@ package com.proyecto5.cotizacionesce.service;
 import com.proyecto5.cotizacionesce.dto.ProyectoDTO;
 import com.proyecto5.cotizacionesce.entity.Cliente;
 import com.proyecto5.cotizacionesce.entity.Proyecto;
+import com.proyecto5.cotizacionesce.entity.ProyectoUser;
 import com.proyecto5.cotizacionesce.entity.User;
 import com.proyecto5.cotizacionesce.repository.ClienteRepository;
 import com.proyecto5.cotizacionesce.repository.ProyectoRepository;
+import com.proyecto5.cotizacionesce.repository.ProyectoUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,14 +21,21 @@ public class ProyectoService {
 
     private final ProyectoRepository proyectoRepository;
     private final ClienteRepository clienteRepository;
+    private final ProyectoUserRepository proyectoUserRepository;
 
-    public List<Proyecto> getProyectos(){
-        return(List<Proyecto>) proyectoRepository.findAll();
-    }
     @Autowired
     private ClienteService clienteService;
     @Autowired
     private ImagenCotizacionService imagenCotizacionService;
+
+    public List<Proyecto> getProyectos(){
+        return(List<Proyecto>) proyectoRepository.findAll();
+    }
+    public Optional<Proyecto> getProyectoById(Long idProyecto) {
+        return proyectoRepository.findById(idProyecto);
+    }
+
+
 
     public Proyecto saveProyecto(Proyecto proyecto) {
         return proyectoRepository.save(proyecto);
@@ -44,6 +54,7 @@ public class ProyectoService {
         proyecto.setNombre(proyectoDTO.nombre);
         proyecto.setDescripcion(proyectoDTO.descripcion);
         proyecto.setDireccion(proyectoDTO.direccion);
+        proyecto.setEstado(proyectoDTO.estado);
         proyecto.setFechaVisita(proyectoDTO.fechaVisita);
         proyecto.setIdCliente(cliente.getUniqueID());
         Proyecto proyectoNuevo =proyectoRepository.save(proyecto);
@@ -52,15 +63,30 @@ public class ProyectoService {
         return proyectoNuevo;
     }
 
+
+
     public Proyecto estadoRevision(Proyecto unProyecto){
         unProyecto.setEstado("En Revision");
         return (unProyecto);
     }
 
 
-    public List<Proyecto> getProyectoAsignado(User usuario){
-        List<Proyecto> asignados = proyectoRepository.findByIdUser(usuario.getIdUser());
-        return asignados;
+    public void asignarColaboradoresAlProyecto(Long projectId, List<Long> workerIds){
+
+        for (Long workerId : workerIds){
+            ProyectoUser proyectoUser = new ProyectoUser();
+            proyectoUser.setIdProyecto(projectId);
+            proyectoUser.setIdUser(workerId);
+            proyectoUserRepository.save(proyectoUser);
+        }
+
+        Proyecto proyecto = proyectoRepository.findById(projectId)
+                .orElseThrow(() -> new IllegalArgumentException("Proyecto no encontrado"));
+
+        proyecto.setEstado("Asignado");
+        proyectoRepository.save(proyecto);
     }
+
+
 
 }

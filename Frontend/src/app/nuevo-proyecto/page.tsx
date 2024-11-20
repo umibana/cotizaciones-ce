@@ -20,6 +20,7 @@ type proyectoData = {
 	nombre: string;
 	descripcion: string;
 	direccion: string;
+	estado: string;
 	imagen: string | null;
 	fechaVisita: Date | undefined;
 	clienteCorreo: string;
@@ -52,7 +53,9 @@ const createProject = async (proyectoData: proyectoData) => {
 		}
 
 		const data = await response.json();
+		alert("Proyecto creado exitosamente!");
 		return { success: true, message: data };
+
 	} catch (error) {
 		console.error("Error creating project:", error);
 		return { success: false, error: (error as Error).message };
@@ -64,6 +67,7 @@ export default function NuevoProyecto() {
 		nombre: "",
 		descripcion: "",
 		direccion: "",
+		estado:"Sin asignar",
 		imagen: null,
 		fechaVisita: undefined,
 		clienteNombre: "",
@@ -114,6 +118,7 @@ export default function NuevoProyecto() {
 			nombre: "",
 			descripcion: "",
 			direccion: "",
+			estado:"",
 			imagen: null,
 			fechaVisita: undefined,
 			clienteNombre: "",
