@@ -14,35 +14,7 @@ import { FaTrash } from "react-icons/fa";
 
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-<<<<<<< HEAD
-const UnassignedProjectList = ({ projects, onAssign }: any) => (
-	<Card className="flex-1">
-		<CardHeader>
-			<CardTitle>Proyectos sin asignar</CardTitle>
-		</CardHeader>
-		<CardContent>
-			<ScrollArea className="h-[200px] w-full rounded-md border p-4">
-				{/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-				{projects.map((project: any) => (
-					<div
-						key={project.id}
-						className="mb-2 flex items-center justify-between rounded-lg bg-secondary p-2">
-						<span>{project.name}</span>
-						<div className="flex items-center gap-2">
-							<Button size="sm" onClick={() => onAssign(project.id)}>
-								<FaTrash className="mr-2" />
-							</Button>
-							<Button size="sm" onClick={() => onAssign(project.id)}>
-								Asignar
-							</Button>
-						</div>
-					</div>
-				))}
-			</ScrollArea>
-		</CardContent>
-	</Card>
-);
-=======
+
 const UnassignedProjectList = ({ projects, onAssign }: any) => {
 
 	return (
@@ -76,7 +48,6 @@ const UnassignedProjectList = ({ projects, onAssign }: any) => {
 		</Card>
 	);
 };
->>>>>>> 374d4fd8195ed745e072c49e023e549849eaaea8
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const AssignedProjectList = ({ projects, onReview }: any) => (
