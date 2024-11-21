@@ -11,12 +11,9 @@ import { FaTrash } from "react-icons/fa";
 // Convertir a .tsx cuando tengamos definido schema
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-
-
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 
 const UnassignedProjectList = ({ projects, onAssign }: any) => {
-
 	return (
 		<Card className="flex-1">
 			<CardHeader>
@@ -33,7 +30,7 @@ const UnassignedProjectList = ({ projects, onAssign }: any) => {
 								<Link
 									href={{
 										pathname: "/asignacion",
-										query: { id: project.idProyecto},
+										query: { id: project.idProyecto },
 									}}>
 									<Button size="sm">Asignar</Button>
 								</Link>
@@ -93,8 +90,12 @@ export default function Proyectos() {
 				const data = await response.json();
 
 				// Procesar los datos para dividirlos en asignados y no asignados
-				const unassigned = data.filter((project: any) => project.estado === "Sin asignar");
-				const assigned = data.filter((project: any) => project.estado !== "Sin asignar");
+				const unassigned = data.filter(
+					(project: any) => project.estado === "Sin asignar"
+				);
+				const assigned = data.filter(
+					(project: any) => project.estado !== "Sin asignar"
+				);
 
 				// Actualizar el estado con los proyectos divididos
 				setProjects({ unassigned, assigned });
@@ -111,8 +112,6 @@ export default function Proyectos() {
 
 		fetchProjects();
 	}, []);
-
-
 
 	const handleAssign = (projectId: any) => {
 		console.log(`Assigning project: ${projectId}`);
