@@ -11,40 +11,8 @@ import { FaTrash } from "react-icons/fa";
 // Convertir a .tsx cuando tengamos definido schema
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-
-
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-<<<<<<< HEAD
-const UnassignedProjectList = ({ projects, onAssign }: any) => (
-	<Card className="flex-1">
-		<CardHeader>
-			<CardTitle>Proyectos sin asignar</CardTitle>
-		</CardHeader>
-		<CardContent>
-			<ScrollArea className="h-[200px] w-full rounded-md border p-4">
-				{/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-				{projects.map((project: any) => (
-					<div
-						key={project.id}
-						className="mb-2 flex items-center justify-between rounded-lg bg-secondary p-2">
-						<span>{project.name}</span>
-						<div className="flex items-center gap-2">
-							<Button size="sm" onClick={() => onAssign(project.id)}>
-								<FaTrash className="mr-2" />
-							</Button>
-							<Button size="sm" onClick={() => onAssign(project.id)}>
-								Asignar
-							</Button>
-						</div>
-					</div>
-				))}
-			</ScrollArea>
-		</CardContent>
-	</Card>
-);
-=======
 const UnassignedProjectList = ({ projects, onAssign }: any) => {
-
 	return (
 		<Card className="flex-1">
 			<CardHeader>
@@ -61,7 +29,7 @@ const UnassignedProjectList = ({ projects, onAssign }: any) => {
 								<Link
 									href={{
 										pathname: "/asignacion",
-										query: { id: project.idProyecto},
+										query: { id: project.idProyecto },
 									}}>
 									<Button size="sm">Asignar</Button>
 								</Link>
@@ -76,7 +44,6 @@ const UnassignedProjectList = ({ projects, onAssign }: any) => {
 		</Card>
 	);
 };
->>>>>>> 374d4fd8195ed745e072c49e023e549849eaaea8
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const AssignedProjectList = ({ projects, onReview }: any) => (
@@ -122,8 +89,12 @@ export default function Proyectos() {
 				const data = await response.json();
 
 				// Procesar los datos para dividirlos en asignados y no asignados
-				const unassigned = data.filter((project: any) => project.estado === "Sin asignar");
-				const assigned = data.filter((project: any) => project.estado !== "Sin asignar");
+				const unassigned = data.filter(
+					(project: any) => project.estado === "Sin asignar"
+				);
+				const assigned = data.filter(
+					(project: any) => project.estado !== "Sin asignar"
+				);
 
 				// Actualizar el estado con los proyectos divididos
 				setProjects({ unassigned, assigned });
@@ -140,8 +111,6 @@ export default function Proyectos() {
 
 		fetchProjects();
 	}, []);
-
-
 
 	const handleAssign = (projectId: any) => {
 		console.log(`Assigning project: ${projectId}`);
