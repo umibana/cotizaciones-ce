@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 interface Proyecto {
-	id: BigInteger;
+	id: number;
 	nombre: string;
 	direccion: string;
 	estado: string;
