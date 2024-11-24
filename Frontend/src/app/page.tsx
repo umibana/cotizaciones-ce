@@ -47,10 +47,13 @@ function AdminView() {
 
 function MaestroView() {
 	return (
-		<div className="text-center">
+		<div className="text-center flex flex-col gap-2">
 			<h1 className="text-xl font-bold">Vista Maestro</h1>
 			<Button asChild>
 				<Link href="/cotizacion">Cotización</Link>
+			</Button>
+			<Button asChild>
+				<Link href="/proyectos-maestro">Proyectos</Link>
 			</Button>
 		</div>
 	);
