@@ -5,7 +5,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-
 interface Proyecto {
 	id: BigInteger;
 	nombre: string;
@@ -20,28 +19,28 @@ const AssignedProjectList = ({ projects, onReview }: any) => (
 		</CardHeader>
 		<CardContent>
 			<ScrollArea className="h-[200px] w-full rounded-md border p-4">
-			{projects.map((project: any) => (
-				<div
-					key={project.idProyecto}
-					className="mb-2 flex items-center justify-between rounded-lg bg-secondary p-2">
-					<span>{project.nombre}</span>
-					<div className="flex items-center gap-2">
-						<span className="font-medium">${project.price}</span>
-						<Button
-							size="sm"
-							variant="outline"
-							onClick={() => onReview(project.id)}>
-							Revisar
-						</Button>
+				{projects.map((project: any) => (
+					<div
+						key={project.idProyecto}
+						className="mb-2 flex items-center justify-between rounded-lg bg-secondary p-2">
+						<span>{project.nombre}</span>
+						<div className="flex items-center gap-2">
+							<span className="font-medium">${project.price}</span>
+							<Button
+								size="sm"
+								variant="outline"
+								onClick={() => onReview(project.id)}>
+								Revisar
+							</Button>
+						</div>
 					</div>
-				</div>
 				))}
 			</ScrollArea>
 		</CardContent>
 	</Card>
 );
 
-export default function ProyectosAsignados( { idUser }: { idUser: BigInteger }) {
+export default function ProyectosAsignados({ idUser }: { idUser: BigInteger }) {
 	const [projects, setProjects] = useState<Proyecto[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -49,7 +48,9 @@ export default function ProyectosAsignados( { idUser }: { idUser: BigInteger }) 
 	useEffect(() => {
 		const fetchProjects = async () => {
 			try {
-				const response = await fetch(`http://localhost:8080/api/proyectos/asignados/${idUser}`);
+				const response = await fetch(
+					`http://localhost:8080/api/proyectos/asignados/${idUser}`
+				);
 				if (!response.ok) {
 					throw new Error("Error fetching projects");
 				}
@@ -69,11 +70,10 @@ export default function ProyectosAsignados( { idUser }: { idUser: BigInteger }) 
 		fetchProjects();
 	}, [idUser]);
 
-
-	const handleAssign = (projectId: any) => {
-		console.log(`Assigning project: ${projectId}`);
-		// Implement your assign logic here
-	};
+	// const handleAssign = (projectId: any) => {
+	// 	console.log(`Assigning project: ${projectId}`);
+	// 	// Implement your assign logic here
+	// };
 
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const handleReview = (projectId: string) => {
@@ -91,10 +91,7 @@ export default function ProyectosAsignados( { idUser }: { idUser: BigInteger }) 
 
 	return (
 		<div className="container mx-auto p-4 space-y-4">
-			<AssignedProjectList
-				projects={projects}
-				onReview={handleReview}
-			/>
+			<AssignedProjectList projects={projects} onReview={handleReview} />
 		</div>
 	);
 }
