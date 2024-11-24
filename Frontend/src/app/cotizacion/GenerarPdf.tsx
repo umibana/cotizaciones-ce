@@ -164,8 +164,8 @@ export const QuotationPDF = ({
 	// por la otra vista primero!
 	const iva = subtotal * 0.19; // 19% IVA
 	const total = subtotal + iva;
-	const validez = 10;
-	const plazo = 10;
+	// const validez = 10;
+	// const plazo = 10;
 	const adelantado = 99;
 	const contraEntrega = 1;
 
