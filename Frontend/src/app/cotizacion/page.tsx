@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Send, Trash2, Search } from "lucide-react";
+import { Plus, Send, Trash2, Search, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +10,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { useQuery } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
+import { pdf } from "@react-pdf/renderer";
+
+import { QuotationPDF } from "./GenerarPdf";
 
 interface ApiMaterial {
 	idMaterial: number;
@@ -181,11 +184,62 @@ export default function QuotationForm() {
 			toast.error("Failed to create quotation. Please try again.");
 		} else {
 			toast.success(`Quotation created with ID: ${result}`);
+
+			// Generate PDF using the same function
+			await generatePDF();
+
 			// Reset form
 			setMaterials([]);
 			setExtraItems([]);
 			setQuotationName("");
 			setQuotationDescription("");
+		}
+	};
+
+	const generatePDF = async () => {
+		try {
+			// Format items for the PDF
+			const formattedItems = [
+				// Format materials
+				...materials.map((material) => ({
+					description: material.nombre,
+					units: material.quantity,
+					unitPrice: material.precio,
+				})),
+				// Format extra items
+				...extraItems.map((item) => ({
+					description: `${item.nombre}${item.m2 ? ` (${item.m2} m²)` : ""}`,
+					units: 1,
+					unitPrice: item.precio,
+				})),
+			];
+
+			const blob = await pdf(
+				<QuotationPDF
+					quotationName={quotationName}
+					clientName="Cliente Ejemplo" // You might want to add these as form fields
+					clientPhone="123456789"
+					clientEmail="cliente@ejemplo.com"
+					clientAddress="Dirección del Cliente"
+					date={new Date().toLocaleDateString("es-CL")}
+					items={formattedItems}
+				/>
+			).toBlob();
+
+			// Create download link
+			const url = URL.createObjectURL(blob);
+			const link = document.createElement("a");
+			link.href = url;
+			link.download = `cotizacion-${quotationName}.pdf`;
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+			URL.revokeObjectURL(url);
+
+			toast.success("PDF generated successfully");
+		} catch (error) {
+			console.error("Error generating PDF:", error);
+			toast.error("Error generating PDF");
 		}
 	};
 
@@ -385,10 +439,25 @@ export default function QuotationForm() {
 				</CardContent>
 			</Card>
 
-			<Button type="submit" className="w-full">
-				<Send className="h-4 w-4 mr-2" />
-				Enviar Cotización
-			</Button>
+			<div className="flex gap-4">
+				<Button type="submit" className="flex-1">
+					<Send className="h-4 w-4 mr-2" />
+					Enviar Cotización
+				</Button>
+				<Button
+					type="button"
+					variant="outline"
+					onClick={generatePDF}
+					disabled={
+						!quotationName ||
+						!quotationDescription ||
+						(materials.length === 0 && extraItems.length === 0)
+					}
+					className="flex-1">
+					<FileDown className="h-4 w-4 mr-2" />
+					Generar PDF
+				</Button>
+			</div>
 		</form>
 	);
 }
