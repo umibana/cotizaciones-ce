@@ -40,7 +40,7 @@ const AssignedProjectList = ({ projects, onReview }: any) => (
 	</Card>
 );
 
-export default function ProyectosAsignados({ idUser }: { idUser: BigInteger }) {
+export default function ProyectosAsignados({ idUser }: { idUser: number }) {
 	const [projects, setProjects] = useState<Proyecto[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
