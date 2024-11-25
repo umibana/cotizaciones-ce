@@ -118,7 +118,8 @@ function Proyectos({ role }: ProyectosProps) {
 	if (error)
 		return (
 			<div className="text-center p-4 text-red-500">
-				An error occurred: {(error as Error).message}
+				Hubo un error al cargar los proyectos, intente de nuevo:{" "}
+				{(error as Error).message}
 			</div>
 		);
 

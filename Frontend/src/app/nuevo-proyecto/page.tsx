@@ -13,15 +13,13 @@ import {
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Img } from "react-image";
-import { useMutation } from "@tanstack/react-query";
+import { useAuthenticatedMutation } from "@/hooks/useAuth";
 
 type proyectoData = {
 	nombre: string;
 	descripcion: string;
 	direccion: string;
 	estado: string;
-	imagen: string | null;
 	fechaVisita: Date | undefined;
 	clienteCorreo: string;
 	clienteRut: string;
@@ -30,36 +28,11 @@ type proyectoData = {
 	clienteDireccion: string;
 };
 
-const createProject = async (proyectoData: proyectoData) => {
-	try {
-		const proyectoDTO = {
-			...proyectoData,
-			imagenes: proyectoData.imagen ? [proyectoData.imagen] : [],
-		};
-
-		const response = await fetch(
-			`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/nuevo`,
-			{
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(proyectoDTO),
-			}
-		);
-
-		if (!response.ok) {
-			throw new Error("Failed to create project");
-		}
-
-		const data = await response.json();
-		alert("Proyecto creado exitosamente!");
-		return { success: true, message: data };
-
-	} catch (error) {
-		console.error("Error creating project:", error);
-		return { success: false, error: (error as Error).message };
-	}
+// Add a type for the API response
+type ProjectResponse = {
+	success: boolean;
+	message?: string;
+	error?: string;
 };
 
 export default function NuevoProyecto() {
@@ -67,8 +40,7 @@ export default function NuevoProyecto() {
 		nombre: "",
 		descripcion: "",
 		direccion: "",
-		estado:"Sin asignar",
-		imagen: null,
+		estado: "Sin asignar",
 		fechaVisita: undefined,
 		clienteNombre: "",
 		clienteRut: "",
@@ -86,31 +58,24 @@ export default function NuevoProyecto() {
 		setProyecto((prev) => ({ ...prev, fechaVisita: date }));
 	};
 
-	const createProjectMutation = useMutation({
-		mutationFn: createProject,
-		onSuccess: (data) => {
-			if (data.success) {
-				handleClear();
-				// Add success notification here if needed
-			}
-		},
-		onError: (error) => {
-			console.error("Error creating project:", error);
-			// Add error notification here if needed
-		},
-	});
+	// Specify both input and output types
+	const createProjectMutation = useAuthenticatedMutation<
+		ProjectResponse,
+		proyectoData
+	>(`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/nuevo`);
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		createProjectMutation.mutate(proyecto);
-	};
-
-	const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files?.[0];
-		if (file) {
-			const imageUrl = URL.createObjectURL(file);
-			setProyecto((prev) => ({ ...prev, imagen: imageUrl }));
-		}
+		createProjectMutation.mutate(proyecto, {
+			onSuccess: () => {
+				alert("Proyecto creado exitosamente!");
+				handleClear();
+			},
+			onError: (error) => {
+				console.error("Error creating project:", error);
+				alert("Error al crear el proyecto");
+			},
+		});
 	};
 
 	const handleClear = () => {
@@ -118,8 +83,7 @@ export default function NuevoProyecto() {
 			nombre: "",
 			descripcion: "",
 			direccion: "",
-			estado:"",
-			imagen: null,
+			estado: "",
 			fechaVisita: undefined,
 			clienteNombre: "",
 			clienteRut: "",
@@ -196,33 +160,6 @@ export default function NuevoProyecto() {
 								/>
 							</PopoverContent>
 						</Popover>
-					</div>
-					<div className="space-y-2">
-						<Label htmlFor="imagen">Imagen del Proyecto</Label>
-						<Input
-							id="imagen"
-							name="imagen"
-							type="file"
-							accept="image/*"
-							onChange={handleImageUpload}
-						/>
-						{proyecto.imagen && (
-							<div className="mt-2">
-								<Img
-									src={proyecto.imagen}
-									alt="Project Image"
-									className="w-32 h-32 object-cover rounded-md"
-									loader={
-										<div className="w-32 h-32 bg-gray-200 animate-pulse rounded-md" />
-									}
-									unloader={
-										<div className="w-32 h-32 bg-gray-200 flex items-center justify-center rounded-md">
-											<span className="text-gray-400">Error loading image</span>
-										</div>
-									}
-								/>
-							</div>
-						)}
 					</div>
 				</CardContent>
 			</Card>

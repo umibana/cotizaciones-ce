@@ -11,7 +11,8 @@ export default function ProtectedRoute({
 	useQuery({
 		queryKey: ["auth-check"],
 		queryFn: async () => {
-			try{	//se agregó try y catch para captura de errores
+			try {
+				//se agregó try y catch para captura de errores
 				if (!isAuthenticated) {
 					await loginWithRedirect({
 						appState: { returnTo: window.location.pathname },
@@ -19,9 +20,9 @@ export default function ProtectedRoute({
 					return null;
 				}
 				return true;
-			}catch (error){
-				console.error('error during authentication', error);
-				throw new Error('Authentication failed');
+			} catch (error) {
+				console.error("error during authentication", error);
+				throw new Error("Authentication failed");
 			}
 		},
 		enabled: !isLoading && !isAuthenticated,
@@ -33,7 +34,7 @@ export default function ProtectedRoute({
 	if (isLoading) {
 		return (
 			<div className="flex items-center justify-center min-h-screen">
-				<div className="text-gray-500">Loading...</div>
+				<div className="text-gray-500">Cargando...</div>
 			</div>
 		);
 	}

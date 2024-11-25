@@ -15,5 +15,4 @@ public class ProyectoDTO {
     public String clienteNombre;
     public String clienteNumero;
     public String clienteDireccion;
-    public List<String> imagenes;  // Assume links are sent for now
 }

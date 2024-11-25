@@ -56,13 +56,13 @@ export const useAuthenticatedQuery = <T>(
 };
 
 // Hook for authenticated mutations
-export const useAuthenticatedMutation = <T>(
+export const useAuthenticatedMutation = <TResponse, TInput = void>(
     url: string,
     method = 'POST'
 ) => {
     const { getAccessTokenSilently } = useAuth0();
 
-    return useMutation({
+    return useMutation<TResponse, Error, TInput>({
         mutationFn: async (data) => {
             const token = await getAccessTokenSilently({
                 authorizationParams: {
@@ -82,7 +82,7 @@ export const useAuthenticatedMutation = <T>(
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            return response.json() as Promise<T>;
+            return response.json() as Promise<TResponse>;
         },
     });
 };
