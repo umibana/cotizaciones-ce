@@ -18,7 +18,7 @@ export default function Navbar() {
 					<div className="flex items-center space-x-4">
 						<Button
 							onClick={() => router.back()}
-							className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+							className="p-2 hover:brightness-110 rounded-full transition-transform"
 							aria-label="Go back">
 							<ArrowLeft className="h-5 w-5" />
 						</Button>
@@ -53,7 +53,7 @@ export default function Navbar() {
 								</div>
 
 								{/* Logout Button */}
-								<button
+								<Button
 									onClick={() =>
 										logout({
 											logoutParams: {
@@ -61,16 +61,16 @@ export default function Navbar() {
 											},
 										})
 									}
-									className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition-colors">
-									Logout
-								</button>
+									className="bg-destructive hover:bg-red-600 text-white px-4 py-2 rounded-md transition-colors">
+									Cerrar sesión
+								</Button>
 							</div>
 						) : (
-							<button
+							<Button
 								onClick={() => loginWithRedirect()}
 								className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors">
 								Login
-							</button>
+							</Button>
 						)}
 					</div>
 				</div>

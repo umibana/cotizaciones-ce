@@ -80,10 +80,7 @@ ProjectListProps) => (
 						<span className="text-lg font-bold">{project.nombre}</span>
 						<div className="flex items-center gap-2">
 							<span className="font-medium">${project.price}</span>
-							<Button
-								size="sm"
-								variant="outline"
-								onClick={() => onReview?.(project.id)}>
+							<Button size="sm" onClick={() => onReview?.(project.id)}>
 								Revisar
 							</Button>
 						</div>
