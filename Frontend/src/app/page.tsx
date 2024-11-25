@@ -105,7 +105,12 @@ function Proyectos({ role }: ProyectosProps) {
 	// Obtener los datos de la API usando hook de useAuth
 	const { data, isLoading, error } = useAuthenticatedQuery<any[]>(
 		["projects", role],
-		`${process.env.NEXT_PUBLIC_BACKEND_URL}${endpoint}`
+		`${process.env.NEXT_PUBLIC_BACKEND_URL}${endpoint}`,
+		{
+			staleTime: 0,
+			cacheTime: 0,
+			refetchOnMount: true,
+		}
 	);
 
 	if (isLoading) return <div className="text-center p-4">Loading...</div>;
