@@ -1,18 +1,14 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useSearchParams } from "next/navigation";
-// Placeholder user data
-// const initialUsers = [
-// 	{ id: 1, name: "Alice Johnson" },
-// 	{ id: 2, name: "Bob Smith" },
-// 	{ id: 3, name: "Charlie Brown" },
-// 	{ id: 4, name: "Diana Ross" },
-// 	{ id: 5, name: "Edward Norton" },
-// ];
+import {
+	useAuthenticatedQuery,
+	useAuthenticatedMutation,
+} from "@/hooks/useAuth";
 
 interface Worker {
 	idUser: number;
@@ -26,40 +22,60 @@ interface Project {
 	direccion: string;
 }
 
+// Define a type for the mutation input
+type AssignWorkersInput = {
+	workerIds: number[];
+};
+
 export default function Asignacion() {
 	const searchParams = useSearchParams();
-	const projectId = searchParams.get("id"); // Obtener ID del proyecto de la URL
+	const projectId = searchParams.get("id");
 
-	// Comentado porque no se usa por ahora
-
-	// const [users] = useState(initialUsers);
-	// const [filterText, setFilterText] = useState("");
-	// const [selectedUser, setSelectedUser] = useState<number | null>(null);
-	const [project, setProject] = useState<Project | null>(null); // Estado para guardar los datos del proyecto
-	const [isLoading, setIsLoading] = useState(true);
-	const [error, setError] = useState("");
-
-	// const filteredUsers = users.filter((user) =>
-	// 	user.name.toLowerCase().includes(filterText.toLowerCase())
-	// );
-
-	//Seccion para trabajar con el filtro de trabajadores
-	const [workers, setWorkers] = useState([]); // Para almacenar los colaboradores
-	const [selectedWorkers, setSelectedWorkers] = useState<number[]>([]); // Para almacenar los IDs seleccionados
-
+	// State for filters and selection
+	const [selectedWorkers, setSelectedWorkers] = useState<number[]>([]);
+	const [filterRole, setFilterRole] = useState<string>("");
+	const [filterName, setFilterName] = useState<string>("");
 	const [roles] = useState<string[]>([
 		"Jefe de operaciones",
 		"Supervisor",
 		"Maestro",
-	]); // Roles disponibles
-	const [filterRole, setFilterRole] = useState<string>(""); // Filtro por rol
-	const [filterName, setFilterName] = useState<string>(""); // Filtro por nombre
+	]);
 
-	const filteredWorkers = workers.filter(
+	// Authenticated queries
+	const {
+		data: projectData,
+		isLoading: isProjectLoading,
+		error: projectError,
+	} = useAuthenticatedQuery<Project>(
+		["project", projectId as string], // Cast projectId to string
+		`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/${projectId}`,
+		{
+			enabled: !!projectId, // Only run query if projectId exists
+		}
+	);
+
+	const {
+		data: workersData = [],
+		isLoading: isWorkersLoading,
+		error: workersError,
+	} = useAuthenticatedQuery<Worker[]>(
+		["workers"],
+		`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/all`
+	);
+
+	// Mutation for assigning workers
+	const assignWorkersMutation = useAuthenticatedMutation<AssignWorkersInput>(
+		`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/${projectId}/asignar`,
+		"POST"
+	);
+
+	// Filter workers based on search criteria
+	const filteredWorkers = workersData.filter(
 		(worker: Worker) =>
 			worker.name.toLowerCase().includes(filterName.toLowerCase()) &&
 			(filterRole ? worker.role === filterRole : true)
 	);
+
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
@@ -69,75 +85,24 @@ export default function Asignacion() {
 		}
 
 		try {
-			const response = await fetch(
-				`http://localhost:8080/api/proyectos/${projectId}/asignar`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({ workerIds: selectedWorkers }),
-				}
-			);
-
-			if (!response.ok) {
-				throw new Error("Error al asignar colaboradores al proyecto");
-			}
-
+			//@ts-expect-error nose
+			await assignWorkersMutation.mutateAsync({ workerIds: selectedWorkers });
 			alert("Colaboradores asignados correctamente");
 		} catch (err) {
-			alert(`Hubo un error al asignar los colaboradores${err}`);
+			console.error("Error details:", err);
+			alert(`Hubo un error al asignar los colaboradores: ${err}`);
 		}
 	};
 
-	// Cargar los datos del proyecto
-	useEffect(() => {
-		const fetchProject = async () => {
-			try {
-				const response = await fetch(
-					`http://localhost:8080/api/proyectos/${projectId}`
-				);
-				if (!response.ok) {
-					throw new Error("Error al obtener los datos del proyecto");
-				}
-				const data = await response.json();
-				setProject(data);
-				setIsLoading(false);
-			} catch (err) {
-				setError(
-					`No se pudo cargar la información del proyecto ${projectId}: ${err}`
-				);
-				setIsLoading(false);
-			}
-		};
+	// Combined loading and error states
+	const isLoading = isProjectLoading || isWorkersLoading;
+	const errorMessage = projectError || workersError;
 
-		if (projectId) {
-			fetchProject();
-		}
-	}, [projectId]);
-
-	useEffect(() => {
-		const fetchWorkers = async () => {
-			try {
-				const response = await fetch("http://localhost:8080/api/users/all"); // Cambia esta URL según tu API
-				if (!response.ok) {
-					throw new Error("Error al obtener los colaboradores");
-				}
-				const data = await response.json();
-				setWorkers(data); // Almacena los colaboradores en el estado
-			} catch (err) {
-				setError(
-					`No se pudo cargar la información de los colaboradores, ${err}`
-				);
-			}
-		};
-
-		fetchWorkers();
-	}, []);
-
-	// Mostrar loading/error
 	if (isLoading) return <div>Cargando proyecto...</div>;
-	if (error) return <div className="text-red-500">{error}</div>;
+	if (errorMessage)
+		return (
+			<div className="text-red-500">{(errorMessage as Error).message}</div>
+		);
 
 	return (
 		<div className="container mx-auto p-4 max-w-2xl">
@@ -149,15 +114,23 @@ export default function Asignacion() {
 					<form className="space-y-4">
 						<div className="space-y-2">
 							<Label htmlFor="name">Nombre</Label>
-							<Input id="name" value={project?.nombre || ""} readOnly />
+							<Input id="name" value={projectData?.nombre || ""} readOnly />
 						</div>
 						<div className="space-y-2">
 							<Label htmlFor="type">Descripción</Label>
-							<Input id="type" value={project?.descripcion || ""} readOnly />
+							<Input
+								id="type"
+								value={projectData?.descripcion || ""}
+								readOnly
+							/>
 						</div>
 						<div className="space-y-2">
 							<Label htmlFor="location">Ubicación</Label>
-							<Input id="location" value={project?.direccion || ""} readOnly />
+							<Input
+								id="location"
+								value={projectData?.direccion || ""}
+								readOnly
+							/>
 						</div>
 					</form>
 				</CardContent>

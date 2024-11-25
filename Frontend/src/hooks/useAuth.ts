@@ -66,7 +66,7 @@ export const useAuthenticatedMutation = <T>(
         mutationFn: async (data) => {
             const token = await getAccessTokenSilently({
                 authorizationParams: {
-                    audience: 'your-api-identifier',
+                    audience: process.env.NEXT_PUBLIC_AUTH0_AUDIENCE,
                 }
             });
 
