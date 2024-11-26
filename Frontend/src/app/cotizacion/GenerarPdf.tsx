@@ -145,6 +145,8 @@ interface QuotationPDFProps {
 		units: number;
 		unitPrice: number;
 	}[];
+	notes?: string;
+	offerValidity: number;
 }
 
 export const QuotationPDF = ({
@@ -155,6 +157,11 @@ export const QuotationPDF = ({
 	clientAddress,
 	date,
 	items,
+	notes,
+	offerValidity,
+	advancePayment,
+	remainingPayment,
+	workTime,
 }: QuotationPDFProps) => {
 	const subtotal = items.reduce(
 		(acc, item) => acc + item.units * item.unitPrice,
@@ -168,6 +175,7 @@ export const QuotationPDF = ({
 	// const plazo = 10;
 	const adelantado = 99;
 	const contraEntrega = 1;
+	const validez = offerValidity;
 
 	return (
 		<Document>
@@ -219,7 +227,7 @@ export const QuotationPDF = ({
 				<View style={styles.termsSection}>
 					<View style={styles.termsBox}>
 						<Text style={styles.termsTitle}>Validez Oferta</Text>
-						<Text>10 Días</Text>
+						<Text>{validez} días</Text>
 					</View>
 					<View style={styles.termsBox}>
 						<Text style={styles.termsTitle}>Cond. Pago</Text>
@@ -273,30 +281,12 @@ export const QuotationPDF = ({
 				{/* Notes */}
 				{/* Hardcodeado por ahora, lo que hay que hacer es recibir este texto
                 por la otra vista primero!  */}
-				<View style={styles.notes}>
-					<Text style={styles.notesTitle}>NOTAS:</Text>
-					<Text style={styles.noteItem}>
-						• Se consideran todos los materiales y mano de obra
-					</Text>
-					<Text style={styles.noteItem}>
-						• Se considera el uso de esmalte al agua, un solo tono a elección
-					</Text>
-					<Text style={styles.noteItem}>
-						• Se considera la instalación de piso flotante de 8 mm a lección
-						dentro de la disponibilidad
-					</Text>
-					<Text style={styles.noteItem}>
-						• Se considera la instalación de alfombra bucle simple 5mm
-					</Text>
-					<Text style={styles.noteItem}>
-						• Los valores en la presente cotización son sólo válidos en su
-						conjunto, no por separado
-					</Text>
-					<Text style={styles.noteItem}>
-						• Se considera estacionamiento de visitas
-					</Text>
-					<Text style={styles.noteItem}>• Garantía de trabajo por 3 meses</Text>
-				</View>
+				{notes && (
+					<View style={styles.notes}>
+						<Text style={styles.notesTitle}>NOTAS:</Text>
+						<Text>{notes}</Text>
+					</View>
+)}
 
 				{/* Footer */}
 				<Text style={styles.footer}>

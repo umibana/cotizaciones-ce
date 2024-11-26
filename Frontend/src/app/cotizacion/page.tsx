@@ -49,6 +49,7 @@ interface ExtraItem {
 interface CotizacionRequestDTO {
 	nombre: string;
 	descripcion: string;
+	notas: string;
 	idProyecto?: number;
 	materials: { idMaterial: number; cantidad: number }[];
 	extraItems: {
@@ -57,6 +58,10 @@ interface CotizacionRequestDTO {
 		metros?: number;
 		precio: number;
 	}[];
+	offerValidity: number;
+	advancePayment: number;
+	remainingPayment: number;
+
 }
 
 const getMaterials = async (): Promise<Material[]> => {
@@ -105,6 +110,11 @@ export default function QuotationForm() {
 	const [quotationName, setQuotationName] = useState("");
 	const [quotationDescription, setQuotationDescription] = useState("");
 	const [materialesOpen, setMaterialesOpen] = useState(false);
+	const [quotationNotes, setQuotationNotes] = useState("");
+	const [offerValidity, setOfferValidity] = useState(10);
+	const [advancePayment, setAdvancePayment] = useState(50);
+	const [remainingPayment, setRemainingPayment] = useState(50);
+	const [workTime, setWorkTime] = useState(15);
 
 	const {
 		data: availableMaterials,
@@ -163,6 +173,10 @@ export default function QuotationForm() {
 				metros: item.m2,
 				precio: item.precio,
 			})),
+			notas: quotationNotes,
+			offerValidity: number,
+			advancePayment: advancePayment,
+			remainingPayment: remainingPayment,
 		};
 
 		console.log(quotationData);
@@ -211,6 +225,8 @@ export default function QuotationForm() {
 					clientAddress="Dirección del Cliente"
 					date={new Date().toLocaleDateString("es-CL")}
 					items={formattedItems}
+					notes={quotationNotes}
+					offerValidity={offerValidity}
 				/>
 			).toBlob();
 
@@ -359,6 +375,75 @@ export default function QuotationForm() {
 								</ScrollArea>
 							</div>
 						)}
+					</CardContent>
+				</Card>
+				<Card className="mb-6">
+					<CardHeader>
+						<CardTitle>Notas de la Cotización</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<div className="space-y-4">
+							<Textarea
+								id="quotationNotes"
+								value={quotationNotes}
+								onChange={(e) => setQuotationNotes(e.target.value)}
+								placeholder="Ingrese las notas de la cotización"
+							/>
+						</div>
+					</CardContent>
+				</Card>
+
+				<Card className="mb-6">
+					<CardHeader>
+						<CardTitle>Detalles de la Oferta</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<div className="space-y-4">
+							<div>
+								<Label htmlFor="offerValidity">Validez de la Oferta (días)</Label>
+								<Input
+									id="offerValidity"
+									type="number"
+									value={offerValidity}
+									onChange={(e) => setOfferValidity(parseInt(e.target.value) || 0)}
+									placeholder="Ingrese la validez de la oferta en días"
+									required
+								/>
+							</div>
+							<div>
+								<Label htmlFor="advancePayment">% Adelantado</Label>
+								<Input
+									id="advancePayment"
+									type="number"
+									value={advancePayment}
+									onChange={(e) => setAdvancePayment(parseInt(e.target.value) || 0)}
+									placeholder="Ingrese el porcentaje de pago adelantado"
+									required
+								/>
+							</div>
+							<div>
+								<Label htmlFor="remainingPayment">% Contra Entrega</Label>
+								<Input
+									id="remainingPayment"
+									type="number"
+									value={remainingPayment}
+									onChange={(e) => setRemainingPayment(parseInt(e.target.value) || 0)}
+									placeholder="Ingrese el porcentaje de pago contra entrega"
+									required
+								/>
+							</div>
+							<div>
+								<Label htmlFor="deliveryTime">Plazo de Entrega (días)</Label>
+								<Input
+									id="deliveryTime"
+									type="number"
+									value={workTime}
+									onChange={(e) => setWorkTime(parseInt(e.target.value) || 0)}
+									placeholder="Ingrese el plazo de entrega en días"
+									required
+								/>
+							</div>
+						</div>
 					</CardContent>
 				</Card>
 
