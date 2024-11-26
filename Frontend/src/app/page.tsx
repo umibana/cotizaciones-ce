@@ -6,6 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FaTrash } from "react-icons/fa";
 import { useAuthenticatedQuery } from "@/hooks/useAuth";
+import { Badge } from "@/components/ui/badge";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -26,11 +27,13 @@ const UnassignedProjectList = ({
 		<Card className="flex-1">
 			<CardHeader className="flex flex-row items-center justify-between">
 				<CardTitle>Proyectos sin asignar</CardTitle>
-				<Link href="/nuevo-proyecto">
-					<Button size="default" aria-label="Crear nueva cotización">
-						Crear Nuevo Proyecto
-					</Button>
-				</Link>
+				{role === "admin" && (
+					<Link href="/nuevo-proyecto">
+						<Button size="default" aria-label="Crear nueva cotización">
+							Crear Nuevo Proyecto
+						</Button>
+					</Link>
+				)}
 			</CardHeader>
 			<CardContent>
 				<ScrollArea className="h-[200px] w-full rounded-md border p-4">
@@ -40,18 +43,23 @@ const UnassignedProjectList = ({
 							className="mb-2 flex items-center justify-between rounded-lg bg-muted p-2">
 							<span className="text-lg font-bold">{project.nombre}</span>
 							<div className="flex gap-2">
-								<Link
-									href={{
-										pathname: "/asignacion",
-										query: { id: project.idProyecto },
-									}}>
-									<Button size="sm">Asignar</Button>
-								</Link>
-								{role === "admin" && (
-									<Button size="sm" onClick={() => onAssign?.(project.id)}>
-										<FaTrash />
-									</Button>
-								)}
+								<Button size="sm">Crear Cotización</Button>
+								{role === "admin" ||
+									(role === "supervisor" && (
+										<Link
+											href={{
+												pathname: "/asignacion",
+												query: { id: project.idProyecto },
+											}}>
+											<Button size="sm">Asignar</Button>
+										</Link>
+									))}
+								{role === "admin" ||
+									(role === "supervisor" && (
+										<Button size="sm" onClick={() => onAssign?.(project.id)}>
+											<FaTrash />
+										</Button>
+									))}
 							</div>
 						</div>
 					))}
@@ -78,6 +86,7 @@ ProjectListProps) => (
 						key={project.idProyecto}
 						className="mb-2 flex items-center justify-between bg-muted  p-2">
 						<span className="text-lg font-bold">{project.nombre}</span>
+						<Badge>En progreso</Badge>
 						<div className="flex items-center gap-2">
 							<span className="font-medium">${project.price}</span>
 							<Button size="sm" onClick={() => onReview?.(project.id)}>

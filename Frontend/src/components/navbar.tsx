@@ -3,7 +3,6 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
-
 export default function Navbar() {
 	const { isAuthenticated, isLoading, loginWithRedirect, logout, user } =
 		useAuth0();
@@ -22,15 +21,12 @@ export default function Navbar() {
 							aria-label="Go back">
 							<ArrowLeft className="h-5 w-5" />
 						</Button>
-						<Link href="/" className="text-xl font-bold">
-							Your Logo
-						</Link>
 					</div>
 
 					{/* Center - Navigation Links */}
 					<div className="hidden md:flex items-center space-x-4">
 						<Link href="/" className="hover:text-gray-600">
-							Home
+							<img src="/casa_experto_logo.png" alt="Logo" width={100} />
 						</Link>
 					</div>
 

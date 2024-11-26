@@ -11,6 +11,13 @@ import { useQuery } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { pdf } from "@react-pdf/renderer";
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
+import Materiales from "../materiales/page";
 
 import { QuotationPDF } from "./GenerarPdf";
 
@@ -94,14 +101,10 @@ const createQuotation = async (quotationData: CotizacionRequestDTO) => {
 export default function QuotationForm() {
 	const [materials, setMaterials] = useState<MaterialItem[]>([]);
 	const [extraItems, setExtraItems] = useState<ExtraItem[]>([]);
-	const [extraItemForm, setExtraItemForm] = useState<ExtraItem>({
-		nombre: "",
-		descripcion: "",
-		precio: 0,
-	});
 	const [filter, setFilter] = useState("");
 	const [quotationName, setQuotationName] = useState("");
 	const [quotationDescription, setQuotationDescription] = useState("");
+	const [materialesOpen, setMaterialesOpen] = useState(false);
 
 	const {
 		data: availableMaterials,
@@ -143,21 +146,6 @@ export default function QuotationForm() {
 
 	const removeMaterial = (id: number) => {
 		setMaterials((prev) => prev.filter((item) => item.id !== id));
-	};
-
-	const addExtraItem = () => {
-		if (
-			extraItemForm.nombre &&
-			extraItemForm.descripcion &&
-			extraItemForm.precio
-		) {
-			setExtraItems((prev) => [...prev, extraItemForm]);
-			setExtraItemForm({ nombre: "", descripcion: "", precio: 0 });
-		}
-	};
-
-	const removeExtraItem = (index: number) => {
-		setExtraItems((prev) => prev.filter((_, i) => i !== index));
 	};
 
 	const handleSubmitQuotation = async (event: React.FormEvent) => {
@@ -243,221 +231,169 @@ export default function QuotationForm() {
 		}
 	};
 
+	const handleMaterialAdd = (material: Material) => {
+		// Add the material to the selected materials list with quantity 1
+		setMaterials((prev) => [...prev, { ...material, quantity: 1 }]);
+		// Close the dialog
+		setMaterialesOpen(false);
+		// Show success toast
+		toast.success("Material added successfully");
+	};
+
 	return (
-		<form
-			onSubmit={handleSubmitQuotation}
-			className="container mx-auto p-4 max-w-2xl">
-			<h1 className="text-3xl font-bold mb-6">Cotización</h1>
+		<div className="container mx-auto p-4 max-w-2xl">
+			<form onSubmit={handleSubmitQuotation} className="space-y-6">
+				<h1 className="text-3xl font-bold mb-6">Cotización</h1>
 
-			<Card className="mb-6">
-				<CardHeader>
-					<CardTitle>Detalles de la Cotización</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div className="space-y-4">
-						<div>
-							<Label htmlFor="quotationName">Nombre de la Cotización</Label>
-							<Input
-								id="quotationName"
-								value={quotationName}
-								onChange={(e) => setQuotationName(e.target.value)}
-								placeholder="Ingrese el nombre de la cotización"
-								required
-							/>
-						</div>
-						<div>
-							<Label htmlFor="quotationDescription">
-								Descripción de la Cotización
-							</Label>
-							<Textarea
-								id="quotationDescription"
-								value={quotationDescription}
-								onChange={(e) => setQuotationDescription(e.target.value)}
-								placeholder="Ingrese la descripción de la cotización"
-								required
-							/>
-						</div>
-					</div>
-				</CardContent>
-			</Card>
-
-			<Card className="mb-6">
-				<CardHeader>
-					<CardTitle>Materiales</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<ul className="space-y-4 mb-4">
-						{materials.map((item) => (
-							<li
-								key={`material-${item.id}`}
-								className="flex items-center justify-between">
-								<span>
-									{item.nombre} - ${item.precio * item.quantity}
-								</span>
-								<div className="flex items-center space-x-2">
-									<Input
-										type="number"
-										value={item.quantity}
-										onChange={(e) =>
-											updateMaterialQuantity(item.id, parseInt(e.target.value))
-										}
-										className="w-16 h-8 text-center"
-										min="1"
-									/>
-									<Button
-										variant="outline"
-										size="icon"
-										onClick={() => removeMaterial(item.id)}>
-										<Trash2 className="h-4 w-4" />
-									</Button>
-								</div>
-							</li>
-						))}
-					</ul>
-
-					{isLoading ? (
-						<p>Loading materials...</p>
-					) : isError ? (
-						<p>Error loading materials</p>
-					) : (
-						<div>
-							<div className="flex items-center space-x-2 mb-2">
-								<Search className="w-4 h-4 text-gray-500" />
+				<Card className="mb-6">
+					<CardHeader>
+						<CardTitle>Detalles de la Cotización</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<div className="space-y-4">
+							<div>
+								<Label htmlFor="quotationName">Nombre de la Cotización</Label>
 								<Input
-									type="text"
-									placeholder="Filter materials..."
-									value={filter}
-									onChange={(e) => setFilter(e.target.value)}
+									id="quotationName"
+									value={quotationName}
+									onChange={(e) => setQuotationName(e.target.value)}
+									placeholder="Ingrese el nombre de la cotización"
+									required
 								/>
 							</div>
-							<ScrollArea className="h-60 w-full rounded-md border p-4">
-								{filteredMaterials
-									.filter(
-										(material) => !materials.some((m) => m.id === material.id)
-									)
-									.map((material) => (
-										<Button
-											key={material.id}
-											onClick={() => addMaterial(material)}
-											className="w-full justify-start mb-2">
-											<Plus className="h-4 w-4 mr-2" />
-											{material.nombre} - ${material.precio}
-										</Button>
-									))}
-							</ScrollArea>
+							<div>
+								<Label htmlFor="quotationDescription">
+									Descripción de la Cotización
+								</Label>
+								<Textarea
+									id="quotationDescription"
+									value={quotationDescription}
+									onChange={(e) => setQuotationDescription(e.target.value)}
+									placeholder="Ingrese la descripción de la cotización"
+									required
+								/>
+							</div>
 						</div>
-					)}
-				</CardContent>
-			</Card>
+					</CardContent>
+				</Card>
 
-			<Card className="mb-6">
-				<CardHeader>
-					<CardTitle>Items Extra (Opcional)</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<ul className="space-y-4 mb-4">
-						{extraItems.map((item, index) => (
-							<li
-								key={`extra-${index}`}
-								className="flex items-center justify-between">
-								<span>
-									{item.nombre} - ${item.precio}
-									{item.m2 && ` (${item.m2} m²)`}
-								</span>
-								<Button
-									variant="outline"
-									size="icon"
-									onClick={() => removeExtraItem(index)}>
-									<Trash2 className="h-4 w-4" />
-								</Button>
-							</li>
-						))}
-					</ul>
-					<div className="space-y-4">
-						<div>
-							<Label htmlFor="extraItemName">Nombre</Label>
-							<Input
-								id="extraItemName"
-								value={extraItemForm.nombre}
-								onChange={(e) =>
-									setExtraItemForm((prev) => ({
-										...prev,
-										nombre: e.target.value,
-									}))
-								}
-								placeholder="Nombre del item extra"
-							/>
-						</div>
-						<div>
-							<Label htmlFor="extraItemDescription">Descripción</Label>
-							<Textarea
-								id="extraItemDescription"
-								value={extraItemForm.descripcion}
-								onChange={(e) =>
-									setExtraItemForm((prev) => ({
-										...prev,
-										descripcion: e.target.value,
-									}))
-								}
-								placeholder="Descripción del item extra"
-							/>
-						</div>
-						<div>
-							<Label htmlFor="extraItemPrice">Precio</Label>
-							<Input
-								id="extraItemPrice"
-								value={extraItemForm.precio}
-								onChange={(e) =>
-									setExtraItemForm((prev) => ({
-										...prev,
-										precio: parseFloat(e.target.value) || 0,
-									}))
-								}
-								placeholder="Precio del item extra"
-							/>
-						</div>
-						<div>
-							<Label htmlFor="extraItemM2">m² (opcional)</Label>
-							<Input
-								id="extraItemM2"
-								type="number"
-								value={extraItemForm.m2 ?? ""}
-								onChange={(e) =>
-									setExtraItemForm((prev) => ({
-										...prev,
-										m2: e.target.value ? parseFloat(e.target.value) : undefined,
-									}))
-								}
-								placeholder="m² del item extra (opcional)"
-							/>
-						</div>
-						<Button onClick={addExtraItem} className="w-full">
-							<Plus className="h-4 w-4 mr-2" />
-							Agregar Item Extra
+				<Card className="mb-6">
+					<CardHeader className="flex flex-row items-center justify-between">
+						<CardTitle>Materiales</CardTitle>
+						<Button
+							type="button"
+							variant="outline"
+							size="icon"
+							onClick={(e) => {
+								e.stopPropagation();
+								setMaterialesOpen(true);
+							}}
+							aria-label="Open materials management">
+							<Plus className="h-4 w-4" />
 						</Button>
-					</div>
-				</CardContent>
-			</Card>
+					</CardHeader>
+					<CardContent>
+						<ul className="space-y-4 mb-4">
+							{materials.map((item) => (
+								<li
+									key={`material-${item.id}`}
+									className="flex items-center justify-between">
+									<span>
+										{item.nombre} - ${item.precio * item.quantity}
+									</span>
+									<div className="flex items-center space-x-2">
+										<Input
+											type="number"
+											value={item.quantity}
+											onChange={(e) =>
+												updateMaterialQuantity(
+													item.id,
+													parseInt(e.target.value)
+												)
+											}
+											className="w-16 h-8 text-center"
+											min="1"
+										/>
+										<Button
+											type="button"
+											variant="outline"
+											size="icon"
+											onClick={() => removeMaterial(item.id)}>
+											<Trash2 className="h-4 w-4" />
+										</Button>
+									</div>
+								</li>
+							))}
+						</ul>
 
-			<div className="flex gap-4">
-				<Button type="submit" className="flex-1">
-					<Send className="h-4 w-4 mr-2" />
-					Enviar Cotización
-				</Button>
-				<Button
-					type="button"
-					variant="outline"
-					onClick={generatePDF}
-					disabled={
-						!quotationName ||
-						!quotationDescription ||
-						(materials.length === 0 && extraItems.length === 0)
-					}
-					className="flex-1">
-					<FileDown className="h-4 w-4 mr-2" />
-					Generar PDF
-				</Button>
-			</div>
-		</form>
+						{isLoading ? (
+							<p>Loading materials...</p>
+						) : isError ? (
+							<p>Error loading materials</p>
+						) : (
+							<div>
+								<div className="flex items-center space-x-2 mb-2">
+									<Search className="w-4 h-4 text-gray-500" />
+									<Input
+										type="text"
+										placeholder="Filter materials..."
+										value={filter}
+										onChange={(e) => setFilter(e.target.value)}
+									/>
+								</div>
+								<ScrollArea className="h-60 w-full rounded-md border p-4">
+									{filteredMaterials
+										.filter(
+											(material) => !materials.some((m) => m.id === material.id)
+										)
+										.map((material) => (
+											<Button
+												type="button"
+												key={material.id}
+												onClick={() => addMaterial(material)}
+												className="w-full justify-start mb-2">
+												<Plus className="h-4 w-4 mr-2" />
+												{material.nombre} - ${material.precio}
+											</Button>
+										))}
+								</ScrollArea>
+							</div>
+						)}
+					</CardContent>
+				</Card>
+
+				<Dialog open={materialesOpen} onOpenChange={setMaterialesOpen}>
+					<DialogContent
+						className="max-w-4xl"
+						onClick={(e) => e.stopPropagation()}>
+						<DialogHeader>
+							<DialogTitle>Gestión de Materiales</DialogTitle>
+						</DialogHeader>
+						{/* @ts-expect-error Revisar este type despues */}
+						<Materiales isDialog={true} onMaterialAdd={handleMaterialAdd} />
+					</DialogContent>
+				</Dialog>
+
+				<div className="flex gap-4">
+					<Button type="submit" className="flex-1">
+						<Send className="h-4 w-4 mr-2" />
+						Enviar Cotización
+					</Button>
+					<Button
+						type="button"
+						variant="outline"
+						onClick={generatePDF}
+						disabled={
+							!quotationName ||
+							!quotationDescription ||
+							(materials.length === 0 && extraItems.length === 0)
+						}
+						className="flex-1">
+						<FileDown className="h-4 w-4 mr-2" />
+						Generar PDF
+					</Button>
+				</div>
+			</form>
+		</div>
 	);
 }
