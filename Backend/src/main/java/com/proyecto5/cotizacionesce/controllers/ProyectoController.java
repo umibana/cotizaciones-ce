@@ -80,4 +80,11 @@ public class ProyectoController {
         proyectoService.estadoRevision(unProyecto);
         return ResponseEntity.ok(unProyecto);
     }
+
+    //hacer controller para buscar segun email y retorne todos los proyectos asociados, retornar un array
+    @GetMapping("/asignadosEmail")
+    public ResponseEntity<List<Proyecto>> listarProyectosAsignadosPorEmail(Long idUser){
+        List<Proyecto> proyecto = proyectoService.getProyectoByIdUser(idUser);
+        return ResponseEntity.ok(proyecto);
+    }
 }

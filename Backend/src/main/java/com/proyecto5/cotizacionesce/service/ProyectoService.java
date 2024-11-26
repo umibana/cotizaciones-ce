@@ -36,7 +36,7 @@ public class ProyectoService {
         return proyectoRepository.findById(idProyecto);
     }
 
-
+    public List<Proyecto> getProyectoByIdUser(Long idUser){ return proyectoRepository.findByIdUser(idUser); }
 
     public Proyecto saveProyecto(Proyecto proyecto) {
         return proyectoRepository.save(proyecto);
