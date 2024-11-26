@@ -1,5 +1,4 @@
 "use client";
-// import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -27,7 +26,8 @@ const geistMono = localFont({
 // };
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
-	const [queryClient] = useState(() =>
+	const [queryClient] = useState(
+		() =>
 			new QueryClient({
 				defaultOptions: {
 					queries: {
@@ -38,8 +38,10 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
 	);
 
 	const redirectUri =
-		typeof window !== "undefined" ? process.env.NEXT_PUBLIC_REDIRECT_URI || window.location.origin : "";
-		
+		typeof window !== "undefined"
+			? process.env.NEXT_PUBLIC_REDIRECT_URI || window.location.origin
+			: "";
+
 	return (
 		<Auth0Provider
 			domain={process.env.NEXT_PUBLIC_AUTH0_DOMAIN!}
@@ -72,12 +74,14 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body suppressHydrationWarning={true}
+			<body
+				suppressHydrationWarning={true}
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
 				<Providers>
-					{/* Sacar <ProtectedRoute> para probar sin cuenta */}
-					<Navbar />
-					{children}
+					<ProtectedRoute>
+						<Navbar />
+						{children}
+					</ProtectedRoute>
 				</Providers>
 			</body>
 		</html>

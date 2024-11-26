@@ -58,10 +58,8 @@ public class ProyectoService {
         proyecto.setEstado(proyectoDTO.estado);
         proyecto.setFechaVisita(proyectoDTO.fechaVisita);
         proyecto.setIdCliente(cliente.getUniqueID());
-        Proyecto proyectoNuevo =proyectoRepository.save(proyecto);
 
-        imagenCotizacionService.createImagenCotizaciones(proyecto.getIdProyecto(), proyectoDTO.imagenes);
-        return proyectoNuevo;
+        return proyectoRepository.save(proyecto);
     }
 
 
