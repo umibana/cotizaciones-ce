@@ -8,8 +8,11 @@ import com.proyecto5.cotizacionesce.entity.User;
 import com.proyecto5.cotizacionesce.repository.ClienteRepository;
 import com.proyecto5.cotizacionesce.repository.ProyectoRepository;
 import com.proyecto5.cotizacionesce.repository.ProyectoUserRepository;
+import com.proyecto5.cotizacionesce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLOutput;
@@ -21,6 +24,7 @@ import java.util.Optional;
 public class ProyectoService {
 
     private final ProyectoRepository proyectoRepository;
+    private final UserRepository userRepository;
     private final ClienteRepository clienteRepository;
     private final ProyectoUserRepository proyectoUserRepository;
 
@@ -93,6 +97,8 @@ public class ProyectoService {
         proyectoRepository.save(proyecto);
     }
 
-
+    public List<Proyecto> listaProyectosAsignadosPorEmail(@Param("email") String email){
+        return userRepository.findProyectosByEmail(email);
+    }
 
 }
