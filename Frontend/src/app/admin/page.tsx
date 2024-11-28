@@ -1,16 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useManagementMutation } from "@/hooks/useManagementApi";
+import { Loader2, Plus, Trash, Pencil, Eye, X } from "lucide-react";
+import { toast, Toaster } from "sonner";
+import { UserDialog } from "./UserDialog";
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
 	Table,
 	TableBody,
@@ -19,218 +22,124 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { toast, Toaster } from "sonner";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader2, Plus, Trash, User, Pencil } from "lucide-react";
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "@/components/ui/dialog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useRoles } from "@/hooks/useRoles";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-interface ApiUser {
-	idUser: number;
-	username: string;
+interface Auth0User {
+	user_id: string;
 	email: string;
 	name: string;
-	rut: string;
-	role: string;
-}
-interface MappedUser extends ApiUser {
-	id: number;
-}
-
-interface User {
-	username: string;
-	email: string;
-	name: string;
-	rut: string;
-	role: string;
-	password: string;
+	nickname?: string;
+	app_metadata?: {
+		role?: string;
+	};
 }
 
-const getUsers = async (): Promise<MappedUser[]> => {
-	const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/all`;
-	const response = await fetch(url);
-	if (!response.ok) {
-		throw new Error("Network response was not ok");
-	}
-	const data: ApiUser[] = await response.json();
+interface UserDetails {
+	userId: string;
+	roles: string[];
+	isLoading: boolean;
+}
 
-	return data.map((item) => ({
-		id: item.idUser,
-		...item,
-	}));
+const getManagementToken = async () => {
+	const response = await fetch("/api/auth/management-token");
+	if (!response.ok) throw new Error("Failed to get management token");
+	const data = await response.json();
+	return data.access_token;
 };
 
-const createUser = async (newUser: User) => {
-	try {
-		const response = await fetch(
-			`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/crear`,
-			{
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(newUser),
-			}
-		);
-
-		if (!response.ok) {
-			throw new Error("Error al crear usuario");
-		}
-
-		const data = await response.json();
-		return { success: true, message: data };
-	} catch (error) {
-		console.error("Error al crear usuario:", error);
-		return { success: false, error: (error as Error).message };
-	}
-};
-
-const deleteUser = async (id: number) => {
+const getUsers = async (): Promise<Auth0User[]> => {
+	const token = await getManagementToken();
 	const response = await fetch(
-		`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${id}`,
+		`${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/api/v2/users`,
 		{
-			method: "DELETE",
-		}
-	);
-	if (!response.ok) {
-		throw new Error("Failed to delete user");
-	}
-};
-
-const updateUser = async (
-	id: number,
-	userData: Omit<MappedUser, "id" | "idUser">
-) => {
-	const response = await fetch(
-		`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${id}`,
-		{
-			method: "PUT",
 			headers: {
-				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
 			},
-			body: JSON.stringify(userData),
 		}
 	);
-	if (!response.ok) {
-		throw new Error("Failed to update user");
-	}
+	if (!response.ok) throw new Error("Failed to fetch users");
 	return response.json();
 };
 
 export default function AdminDashboard() {
 	const queryClient = useQueryClient();
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
-	const [newUser, setNewUser] = useState<User>({
-		email: "",
-		name: "",
-		username: "",
-		rut: "",
-		role: "user",
-		password: "",
-	});
-
-	const [userToDelete, setUserToDelete] = useState<number | null>(null);
-
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+	const [userToDelete, setUserToDelete] = useState<Auth0User | null>(null);
+	const [userToEdit, setUserToEdit] = useState<Auth0User | null>(null);
+	const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
+	const { isAdmin, isAuthenticated } = useRoles();
 
-	const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
-	const [userToUpdate, setUserToUpdate] = useState<MappedUser | null>(null);
-
-	const { data: users, isLoading } = useQuery<MappedUser[], Error>({
+	const { data: users, isLoading } = useQuery({
 		queryKey: ["users"],
-		queryFn: async () => {
-			const result = await getUsers();
-			return result ?? [];
-		},
+		queryFn: getUsers,
+		enabled: isAuthenticated && isAdmin,
 	});
 
-	const handleCreateUser = async (e: React.FormEvent) => {
-		e.preventDefault();
-		if (newUser === undefined) return;
-		try {
-			await createUser(newUser);
-			toast.success("User created successfully");
-			setNewUser({
-				email: "",
-				name: "",
-				username: "",
-				rut: "",
-				role: "user",
-				password: "string",
-			});
-			setIsDialogOpen(false);
-			queryClient.invalidateQueries({
-				queryKey: ["users"],
-			});
-		} catch (error: unknown) {
-			if (error instanceof Error) {
-				toast.error(error.message || "Failed to impersonate user");
-			} else {
-				toast.error("An unexpected error occurred");
-			}
-		}
-	};
+	const deleteMutation = useManagementMutation<void, void>(
+		`${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/api/v2/users/${userToDelete?.user_id}`,
+		"DELETE"
+	);
 
-	const deleteMutation = useMutation({
-		mutationFn: deleteUser,
-		onSuccess: () => {
-			toast.success("User deleted successfully");
-			queryClient.invalidateQueries({ queryKey: ["users"] });
-		},
-		onError: (error: Error) => {
-			toast.error(error.message || "Failed to delete user");
-		},
-	});
-	const handleDeleteUser = (id: number) => {
-		setUserToDelete(id);
+	if (!isAuthenticated || !isAdmin) {
+		return <div>Acceso denegado</div>;
+	}
+
+	const handleDeleteUser = (user: Auth0User) => {
+		setUserToDelete(user);
 		setIsDeleteDialogOpen(true);
 	};
-	const confirmDelete = () => {
-		if (userToDelete) {
-			deleteMutation.mutate(userToDelete);
+
+	const confirmDelete = async () => {
+		if (!userToDelete) return;
+
+		try {
+			await deleteMutation.mutateAsync();
+			toast.success("User deleted successfully");
+			queryClient.invalidateQueries({ queryKey: ["users"] });
 			setIsDeleteDialogOpen(false);
+		} catch (error) {
+			toast.error(`Failed to delete user: ${error}`);
 		}
 	};
 
-	const updateMutation = useMutation({
-		mutationFn: ({
-			id,
-			userData,
-		}: {
-			id: number;
-			userData: Omit<MappedUser, "id" | "idUser">;
-		}) => updateUser(id, userData),
-		onSuccess: () => {
-			toast.success("User updated successfully");
-			queryClient.invalidateQueries({ queryKey: ["users"] });
-			setIsUpdateDialogOpen(false);
-		},
-		onError: (error: Error) => {
-			toast.error(error.message || "Failed to update user");
-		},
-	});
-
-	const handleUpdateClick = (user: MappedUser) => {
-		setUserToUpdate(user);
-		setIsUpdateDialogOpen(true);
+	const fetchUserDetails = async (userId: string) => {
+		setUserDetails({ userId, roles: [], isLoading: true });
+		try {
+			const token = await getManagementToken();
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/api/v2/users/${userId}/roles`,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+			if (!response.ok) throw new Error("Failed to fetch user roles");
+			const rolesData = await response.json();
+			const roles = rolesData.map((role: { name: string }) => role.name);
+			setUserDetails({ userId, roles, isLoading: false });
+		} catch (error) {
+			console.error("Error fetching user roles:", error);
+			toast.error("Failed to fetch user roles");
+			setUserDetails(null);
+		}
 	};
 
 	return (
 		<div className="container mx-auto p-4 space-y-8">
 			<Toaster richColors />
+
+			{/* Delete Confirmation Dialog */}
 			<Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>Confirm Deletion</DialogTitle>
 					</DialogHeader>
 					<div className="space-y-4">
-						<p>Esta seguro que desea borrar este usuario?</p>
+						<p>Are you sure you want to delete this user?</p>
 						<div className="flex justify-end space-x-2">
 							<Button
 								variant="outline"
@@ -251,220 +160,23 @@ export default function AdminDashboard() {
 					</div>
 				</DialogContent>
 			</Dialog>
-			<Dialog open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen}>
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>Update User</DialogTitle>
-					</DialogHeader>
-					{userToUpdate && (
-						<form
-							onSubmit={(e) => {
-								e.preventDefault();
-								if (!userToUpdate) return;
-								updateMutation.mutate({
-									id: userToUpdate.id,
-									userData: {
-										username: userToUpdate.username,
-										email: userToUpdate.email,
-										name: userToUpdate.name,
-										rut: userToUpdate.rut,
-										role: userToUpdate.role,
-									},
-								});
-							}}
-							className="space-y-4">
-							<div>
-								<Label htmlFor="update-name">Name</Label>
-								<Input
-									id="update-name"
-									value={userToUpdate.name}
-									onChange={(e) =>
-										setUserToUpdate({ ...userToUpdate, name: e.target.value })
-									}
-									required
-								/>
-							</div>
 
-							<div>
-								<Label htmlFor="update-username">Username</Label>
-								<Input
-									id="update-username"
-									value={userToUpdate.username}
-									onChange={(e) =>
-										setUserToUpdate({
-											...userToUpdate,
-											username: e.target.value,
-										})
-									}
-									required
-								/>
-							</div>
+			{/* Create/Edit User Dialog */}
+			<UserDialog
+				open={isDialogOpen}
+				onOpenChange={(open) => {
+					setIsDialogOpen(open);
+					if (!open) setUserToEdit(null);
+				}}
+				user={userToEdit}
+			/>
 
-							<div>
-								<Label htmlFor="update-email">Email</Label>
-								<Input
-									id="update-email"
-									type="email"
-									value={userToUpdate.email}
-									onChange={(e) =>
-										setUserToUpdate({ ...userToUpdate, email: e.target.value })
-									}
-									required
-								/>
-							</div>
-
-							<div>
-								<Label htmlFor="update-rut">RUT</Label>
-								<Input
-									id="update-rut"
-									value={userToUpdate.rut}
-									onChange={(e) =>
-										setUserToUpdate({ ...userToUpdate, rut: e.target.value })
-									}
-									required
-								/>
-							</div>
-
-							<div>
-								<Label htmlFor="update-role">Role</Label>
-								<Select
-									value={userToUpdate.role}
-									onValueChange={(value: "admin" | "user") =>
-										setUserToUpdate({ ...userToUpdate, role: value })
-									}>
-									<SelectTrigger>
-										<SelectValue placeholder="Select role" />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value="admin">Admin</SelectItem>
-										<SelectItem value="user">User</SelectItem>
-									</SelectContent>
-								</Select>
-							</div>
-
-							<div className="flex justify-end space-x-2">
-								<Button
-									variant="outline"
-									onClick={() => setIsUpdateDialogOpen(false)}
-									type="button">
-									Cancel
-								</Button>
-								<Button type="submit" disabled={updateMutation.isPending}>
-									{updateMutation.isPending ? (
-										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-									) : (
-										"Update User"
-									)}
-								</Button>
-							</div>
-						</form>
-					)}
-				</DialogContent>
-			</Dialog>
 			<Card>
 				<CardHeader className="flex flex-row items-center justify-between">
-					<CardTitle className="text-2xl">Admin Dashboard</CardTitle>
-					<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-						<DialogTrigger asChild>
-							<Button>
-								<Plus className="mr-2 h-4 w-4" /> Create User
-							</Button>
-						</DialogTrigger>
-						<DialogContent>
-							<DialogHeader>
-								<DialogTitle>Create New User</DialogTitle>
-							</DialogHeader>
-							<form onSubmit={handleCreateUser} className="space-y-4">
-								<div>
-									<Label htmlFor="name">Name</Label>
-									<Input
-										id="name"
-										value={newUser.name}
-										onChange={(e) =>
-											setNewUser({ ...newUser, name: e.target.value })
-										}
-										required
-									/>
-								</div>
-
-								<div>
-									<Label htmlFor="username">Nombre de usuario</Label>
-									<Input
-										id="username"
-										type="username"
-										value={newUser.username}
-										onChange={(e) =>
-											setNewUser({ ...newUser, username: e.target.value })
-										}
-										required
-									/>
-								</div>
-								<div>
-									<Label htmlFor="email">Email</Label>
-									<Input
-										id="email"
-										type="email"
-										value={newUser.email}
-										onChange={(e) =>
-											setNewUser({ ...newUser, email: e.target.value })
-										}
-										required
-									/>
-								</div>
-
-								<div>
-									<Label htmlFor="rut">RUT</Label>
-									<Input
-										id="rut"
-										type="rut"
-										value={newUser.rut}
-										onChange={(e) =>
-											setNewUser({ ...newUser, rut: e.target.value })
-										}
-										required
-									/>
-								</div>
-								<div>
-									<Label htmlFor="password">Password</Label>
-									<Input
-										id="password"
-										type="password"
-										value={newUser.password}
-										onChange={(e) =>
-											setNewUser({ ...newUser, password: e.target.value })
-										}
-										required
-									/>
-								</div>
-								<div>
-									<Label htmlFor="role">Role</Label>
-									<Select
-										value={newUser.role}
-										onValueChange={(value: "admin" | "user") =>
-											setNewUser({ ...newUser, role: value as "user" })
-										}>
-										<SelectTrigger>
-											<SelectValue placeholder="Select role" />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value="admin">Admin</SelectItem>
-											<SelectItem value="user">User</SelectItem>
-										</SelectContent>
-									</Select>
-								</div>
-								<Button type="submit" className="w-full" disabled={isLoading}>
-									{isLoading ? (
-										<>
-											<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-											Creating...
-										</>
-									) : (
-										"Create User"
-									)}
-								</Button>
-							</form>
-						</DialogContent>
-					</Dialog>
+					<CardTitle className="text-2xl">Gestión de usuarios</CardTitle>
+					<Button onClick={() => setIsDialogOpen(true)}>
+						<Plus className="mr-2 h-4 w-4" /> Crear usuario
+					</Button>
 				</CardHeader>
 				<CardContent>
 					{isLoading ? (
@@ -476,34 +188,60 @@ export default function AdminDashboard() {
 							<TableHeader>
 								<TableRow>
 									<TableHead>Email</TableHead>
-									<TableHead>Name</TableHead>
-									<TableHead>Role</TableHead>
-									<TableHead>Actions</TableHead>
+									<TableHead>Nombre</TableHead>
+									<TableHead>Rol</TableHead>
+									<TableHead>Acciones</TableHead>
 								</TableRow>
 							</TableHeader>
 							<TableBody>
 								{users?.map((user) => (
-									<TableRow key={user.id}>
+									<TableRow key={user.user_id}>
 										<TableCell>{user.email}</TableCell>
 										<TableCell>{user.name}</TableCell>
-										<TableCell>{user.role || "user"}</TableCell>
+										<TableCell>
+											{userDetails?.userId === user.user_id ? (
+												<div className="flex items-center gap-2">
+													{userDetails.isLoading ? (
+														<Loader2 className="h-4 w-4 animate-spin" />
+													) : (
+														<>
+															<span>
+																{userDetails.roles.join(", ") || "No roles"}
+															</span>
+															<Button
+																variant="ghost"
+																size="sm"
+																onClick={() => setUserDetails(null)}>
+																<X className="h-4 w-4" />
+															</Button>
+														</>
+													)}
+												</div>
+											) : (
+												<Button
+													variant="ghost"
+													size="sm"
+													onClick={() => fetchUserDetails(user.user_id)}>
+													<Eye className="h-4 w-4 mr-2" />
+													Ver detalles
+												</Button>
+											)}
+										</TableCell>
 										<TableCell>
 											<div className="flex space-x-2">
 												<Button
 													variant="outline"
 													size="sm"
-													onClick={() => handleUpdateClick(user)}
-													disabled={updateMutation.isPending}>
-													{updateMutation.isPending ? (
-														<Loader2 className="h-4 w-4 animate-spin" />
-													) : (
-														<Pencil className="h-4 w-4" />
-													)}
+													onClick={() => {
+														setUserToEdit(user);
+														setIsDialogOpen(true);
+													}}>
+													<Pencil className="h-4 w-4" />
 												</Button>
 												<Button
 													variant="destructive"
 													size="sm"
-													onClick={() => handleDeleteUser(user.id)}
+													onClick={() => handleDeleteUser(user)}
 													disabled={deleteMutation.isPending}>
 													{deleteMutation.isPending ? (
 														<Loader2 className="h-4 w-4 animate-spin" />
