@@ -100,6 +100,30 @@ ProjectListProps) => (
 	</Card>
 );
 
+export const AdminCard = ({ role }) => {
+	if (role !== "admin") return null;
+
+	return (
+		<Card className="flex-1">
+			<CardHeader className="flex flex-row items-center justify-between">
+				<CardTitle>Administración</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<div className="mb-2 flex items-center justify-between bg-muted p-2">
+					<span className="text-lg font-bold">Gestión de Usuarios</span>
+					<div className="flex gap-2">
+						<Link href="/admin">
+							<Button size="sm" aria-label="Gestión de usuarios">
+								Administrar
+							</Button>
+						</Link>
+					</div>
+				</div>
+			</CardContent>
+		</Card>
+	);
+};
+
 interface ProyectosProps {
 	role: "admin" | "maestro" | "supervisor";
 }
@@ -119,7 +143,7 @@ function Proyectos({ role }: ProyectosProps) {
 		}
 	);
 
-	if (isLoading) return <div className="text-center p-4">Loading...</div>;
+	if (isLoading) return <div className="text-center p-4">Cargando...</div>;
 
 	if (error)
 		return (
@@ -155,6 +179,7 @@ function Proyectos({ role }: ProyectosProps) {
 				// onReview={handleReview}
 				role={role}
 			/>
+			<AdminCard role={role} />
 		</div>
 	);
 }
@@ -182,8 +207,6 @@ function App() {
 
 	return (
 		<div className="flex flex-auto align-middle flex-col justify-center items-center container mx-auto p-4 space-y-4">
-			<h1 className="text-xl font-extrabold">Prueba de Vistas Casa Experto</h1>
-			{/* Renderizar el componente de proyectos según su rol*/}
 			<Proyectos role={role} />
 		</div>
 	);
