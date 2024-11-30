@@ -44,16 +44,15 @@ const UnassignedProjectList = ({
 							<span className="text-lg font-bold">{project.nombre}</span>
 							<div className="flex gap-2">
 								<Button size="sm">Crear Cotización</Button>
-								{role === "admin" ||
-									(role === "supervisor" && (
-										<Link
-											href={{
-												pathname: "/asignacion",
-												query: { id: project.idProyecto },
-											}}>
-											<Button size="sm">Asignar</Button>
-										</Link>
-									))}
+								{(role === "admin" || role === "supervisor") && (
+									<Link
+										href={{
+											pathname: "/asignacion",
+											query: { id: project.idProyecto },
+										}}>
+										<Button size="sm">Asignar</Button>
+									</Link>
+								)}
 								{role === "admin" ||
 									(role === "supervisor" && (
 										<Button size="sm" onClick={() => onAssign?.(project.id)}>
