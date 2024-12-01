@@ -88,8 +88,15 @@ ProjectListProps) => (
 						<Badge>En progreso</Badge>
 						<div className="flex items-center gap-2">
 							<span className="font-medium">${project.price}</span>
+							<Link
+								href={{
+									pathname: "/revisar-cotizacion",
+									query: { id: project.idProyecto },
+								}}>
+								<Button size="sm">Revisar Cotizacion</Button>
+							</Link>
 							<Button size="sm" onClick={() => onReview?.(project.id)}>
-								Revisar
+								Revisar Proyecto
 							</Button>
 						</div>
 					</div>

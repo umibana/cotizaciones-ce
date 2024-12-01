@@ -19,12 +19,14 @@ public class Cotizacion {
     private Long id_Cotizacion;
 
     private String nombre;
+    private String Apellido;
 
     private String descripcion;
 
     private Integer validezOferta;
 
-    private String condDePago;
+    private String condDePagoAdelantado; // Ejemplo 60%
+    private String condDePagoContraEntrega; //Ejemplo 40%
 
     private Integer plazoDeEntrega;
 
@@ -32,15 +34,15 @@ public class Cotizacion {
 
     private String notas;
 
-    private Double porcentaje;
+    private Double porcentaje; //Se refiere a la metrica de % de utilidad
 
-    private String estado;
+    private String estado; //En revision y Aprobada
 
     private Long idProyecto;
 
     private Long id_Cliente;
 
-    private Long idUser;
+    private Long idUser; //ID del trabajador que hizo la cotizacion
 
     private LocalDateTime timestamp;
 

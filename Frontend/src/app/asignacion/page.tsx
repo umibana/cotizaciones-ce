@@ -84,14 +84,20 @@ export default function Asignacion() {
 			return;
 		}
 
-		try {
-			//@ts-expect-error nose
-			await assignWorkersMutation.mutateAsync({ workerIds: selectedWorkers });
-			alert("Colaboradores asignados correctamente");
-		} catch (err) {
-			console.error("Error details:", err);
-			alert(`Hubo un error al asignar los colaboradores: ${err}`);
-		}
+		assignWorkersMutation.mutate({ workerIds: selectedWorkers }, {
+			onSuccess: () => {
+				alert("Colaboradores asignados correctamente");
+				window.location.href = '/';
+			},
+			onError: (error) => {
+				console.error("Error details:", error);
+				if (error instanceof Error) {
+					alert(`Hubo un error al asignar los colaboradores: ${error.message}`);
+				} else {
+					alert(`Hubo un error al asignar los colaboradores: ${JSON.stringify(error)}`);
+				}
+			},
+		});
 	};
 
 	// Combined loading and error states

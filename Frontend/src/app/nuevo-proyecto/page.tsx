@@ -70,6 +70,7 @@ export default function NuevoProyecto() {
 			onSuccess: () => {
 				alert("Proyecto creado exitosamente!");
 				handleClear();
+				window.location.href = '/';
 			},
 			onError: (error) => {
 				console.error("Error creating project:", error);

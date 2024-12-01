@@ -49,8 +49,8 @@ public class CotizacionController {
     }
 
     @GetMapping("/proyecto/{proyectoId}")
-    public ResponseEntity<List<Cotizacion>> getCotizacionesByProyecto(@PathVariable Long id_Proyecto) {
-        return ResponseEntity.ok(cotizacionService.getCotizacionesByProyecto(id_Proyecto));
+    public ResponseEntity<Cotizacion> getCotizacionByProyecto(@PathVariable Long proyectoId) {
+        return ResponseEntity.ok(cotizacionService.getCotizacionByProyecto(proyectoId));
     }
 
     @GetMapping("/estado/{estado}")

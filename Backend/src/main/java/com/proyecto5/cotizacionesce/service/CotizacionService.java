@@ -58,7 +58,8 @@ public class CotizacionService {
                 .map(existing -> {
                     existing.setValidezOferta(cotizacion.getValidezOferta());
                     existing.setPrecioTentativo(cotizacion.getPrecioTentativo());
-                    existing.setCondDePago(cotizacion.getCondDePago());
+                    existing.setCondDePagoAdelantado(cotizacion.getCondDePagoAdelantado());
+                    existing.setCondDePagoContraEntrega(cotizacion.getCondDePagoContraEntrega());
                     existing.setPlazoDeEntrega(cotizacion.getPlazoDeEntrega());
                     existing.setNotas(cotizacion.getNotas());
                     existing.setPorcentaje(cotizacion.getPorcentaje());
@@ -77,7 +78,7 @@ public class CotizacionService {
                 .orElseThrow(() -> new RuntimeException("Cotización no encontrada"));
     }
 
-    public List<Cotizacion> getCotizacionesByProyecto(Long id_Proyecto) {
+    public Cotizacion getCotizacionByProyecto(Long id_Proyecto) {
         return cotizacionRepository.findByIdProyecto(id_Proyecto);
     }
 

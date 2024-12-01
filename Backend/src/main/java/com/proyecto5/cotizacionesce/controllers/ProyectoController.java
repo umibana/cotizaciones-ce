@@ -55,12 +55,16 @@ public class ProyectoController {
     }
 
     @PostMapping("/{projectId}/asignar")
-    public ResponseEntity<String> asignarColaboradores(@PathVariable Long projectId, @RequestBody AsignarColaboradoresDTO request) {
+    public ResponseEntity<?> asignarColaboradores(@PathVariable Long projectId, @RequestBody AsignarColaboradoresDTO request) {
         try {
             proyectoService.asignarColaboradoresAlProyecto(projectId, request.getWorkerIds());
-            return ResponseEntity.ok("Colaboradores asignados correctamente");
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Trabajadores asignados correctamente");
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error al asignar colaboradores: " + e.getMessage());
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Error al asignar el proyecto: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
 
