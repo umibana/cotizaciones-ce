@@ -86,9 +86,9 @@ public class ProyectoController {
     }
 
     //hacer controller para buscar segun email y retorne todos los proyectos asociados, retornar un array
-    @GetMapping("/asignadosEmail")
-    public ResponseEntity<List<Proyecto>> listarProyectosAsignadosPorEmail(Long idUser){
-        List<Proyecto> proyecto = proyectoService.getProyectoByIdUser(idUser);
+    @PostMapping("/asignadosEmail")
+    public ResponseEntity<List<Proyecto>> listarProyectosAsignadosPorEmail(@RequestBody String email){
+        List<Proyecto> proyecto = proyectoService.listaProyectosAsignadosPorEmail(email);
         return ResponseEntity.ok(proyecto);
     }
 }

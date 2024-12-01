@@ -16,6 +16,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLOutput;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +31,8 @@ public class ProyectoService {
 
     @Autowired
     private ClienteService clienteService;
+    @Autowired
+    private ProyectoUserService proyectoUserService;
     @Autowired
     private ImagenCotizacionService imagenCotizacionService;
 
@@ -97,8 +100,17 @@ public class ProyectoService {
         proyectoRepository.save(proyecto);
     }
 
-    public List<Proyecto> listaProyectosAsignadosPorEmail(@Param("email") String email){
-        return userRepository.findProyectosByEmail(email);
+    public List<Proyecto> listaProyectosAsignadosPorEmail(String email){
+        Optional<User> usuario = userRepository.findUserByEmail(email);
+        Long id_usuario = usuario.get().getIdUser();
+        List<ProyectoUser> ListaproyectosUser = proyectoUserService.getProyectoAsignados(id_usuario);
+        List<Proyecto> ListaProyectos = new ArrayList<>();
+        for(ProyectoUser proyectoUser : ListaproyectosUser){
+            Optional<Proyecto> proyectoAdd = proyectoRepository.findById(proyectoUser.idProyecto);
+            // Agregar el proyecto a la lista si existe
+            proyectoAdd.ifPresent(ListaProyectos::add);
+        }
+        return ListaProyectos;
     }
 
 }
