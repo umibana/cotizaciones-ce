@@ -24,8 +24,10 @@ public class Cotizacion {
     private String descripcion;
 
     private Integer validezOferta;
-
+    @Column(name = "cond_pago_adelantado")
     private String condDePagoAdelantado; // Ejemplo 60%
+
+    @Column(name = "cond_pago_contra")
     private String condDePagoContraEntrega; //Ejemplo 40%
 
     private Integer plazoDeEntrega;
