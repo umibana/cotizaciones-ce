@@ -71,17 +71,21 @@ public class ProyectoService {
 
 
 
-    public Proyecto estadoRevision(Proyecto unProyecto){
-        unProyecto.setIdProyecto(unProyecto.getIdProyecto());
-        unProyecto.setNombre(unProyecto.getNombre());
-        unProyecto.setDireccion(unProyecto.getDireccion());
-        unProyecto.setDescripcion(unProyecto.getDescripcion());
-        unProyecto.setEstado("En Revision de cotizacion");
-        unProyecto.setFechaVisita(unProyecto.getFechaVisita());
-        unProyecto.setIdCliente(unProyecto.getIdCliente());
-        unProyecto.setIdUser(unProyecto.getIdUser());
-        return unProyecto;
+    public Proyecto estadoRevision(Long idProyecto){
+
+        Proyecto proyecto = proyectoRepository.findByIdProyecto(idProyecto)
+                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
+
+        if("sin asignar".equals(proyecto.getEstado())){
+            proyecto.setEstado("en revision de cotizacion");
+            proyecto = proyectoRepository.save(proyecto);
+        }else{
+            throw new RuntimeException("El proyecto no estaba en estado 'sin asignar'");
+        }
+
+        return proyecto;
     }
+
 
 
     public void asignarColaboradoresAlProyecto(Long projectId, List<Long> workerIds){

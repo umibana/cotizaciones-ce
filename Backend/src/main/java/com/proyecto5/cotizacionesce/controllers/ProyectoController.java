@@ -79,13 +79,12 @@ public class ProyectoController {
         return ResponseEntity.ok(listaProyectosAsignados);
     }
 
-    @PostMapping("/estados")
-    public ResponseEntity<Proyecto> estadoRevision(Proyecto unProyecto){
-        proyectoService.estadoRevision(unProyecto);
-        return ResponseEntity.ok(unProyecto);
+    @PutMapping("/estados/{idProyecto}")
+    public ResponseEntity<Proyecto> estadoRevision(Long idProyecto){
+        Proyecto proyecto = proyectoService.estadoRevision(idProyecto);
+        return ResponseEntity.ok(proyecto);
     }
 
-    //hacer controller para buscar segun email y retorne todos los proyectos asociados, retornar un array
     @PostMapping("/asignadosEmail")
     public ResponseEntity<List<Proyecto>> listarProyectosAsignadosPorEmail(@RequestBody String email){
         List<Proyecto> proyecto = proyectoService.listaProyectosAsignadosPorEmail(email);
