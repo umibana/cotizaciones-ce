@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Send, Trash2, Search, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -61,6 +61,7 @@ interface CotizacionRequestDTO {
 	offerValidity: number;
 	advancePayment: number;
 	remainingPayment: number;
+	workTime: number;
 
 }
 
@@ -116,6 +117,12 @@ export default function QuotationForm() {
 	const [remainingPayment, setRemainingPayment] = useState(50);
 	const [workTime, setWorkTime] = useState(15);
 
+	useEffect(() => {
+		if (advancePayment + remainingPayment > 100) {
+		  toast.error("El porcentaje total no puede superar el 100%");
+		}
+	  }, [advancePayment, remainingPayment]);
+
 	const {
 		data: availableMaterials,
 		isLoading,
@@ -158,8 +165,20 @@ export default function QuotationForm() {
 		setMaterials((prev) => prev.filter((item) => item.id !== id));
 	};
 
+	const validatePayments = (): boolean => {
+		const total = advancePayment + remainingPayment;
+		if (total !== 100) {
+		  toast.error(`El porcentaje total debe ser 100%. Actualmente es ${total}%`);
+		  return false;
+		}
+		return true;
+	  };
+
 	const handleSubmitQuotation = async (event: React.FormEvent) => {
 		event.preventDefault();
+
+		if (!validatePayments()) return;
+
 		const quotationData: CotizacionRequestDTO = {
 			nombre: quotationName,
 			descripcion: quotationDescription,
@@ -174,9 +193,10 @@ export default function QuotationForm() {
 				precio: item.precio,
 			})),
 			notas: quotationNotes,
-			offerValidity: number,
+			offerValidity: offerValidity,
 			advancePayment: advancePayment,
 			remainingPayment: remainingPayment,
+			workTime: workTime,
 		};
 
 		console.log(quotationData);
@@ -199,6 +219,9 @@ export default function QuotationForm() {
 	};
 
 	const generatePDF = async () => {
+
+		if (!validatePayments()) return;
+
 		try {
 			// Format items for the PDF
 			const formattedItems = [
@@ -227,6 +250,10 @@ export default function QuotationForm() {
 					items={formattedItems}
 					notes={quotationNotes}
 					offerValidity={offerValidity}
+					advancePayment={advancePayment}
+					remainingPayment={remainingPayment}
+					workTime={workTime}
+
 				/>
 			).toBlob();
 
@@ -469,6 +496,7 @@ export default function QuotationForm() {
 						variant="outline"
 						onClick={generatePDF}
 						disabled={
+							advancePayment + remainingPayment !== 100 ||
 							!quotationName ||
 							!quotationDescription ||
 							(materials.length === 0 && extraItems.length === 0)

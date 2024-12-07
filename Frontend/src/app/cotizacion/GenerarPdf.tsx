@@ -147,6 +147,9 @@ interface QuotationPDFProps {
 	}[];
 	notes?: string;
 	offerValidity: number;
+	advancePayment: number;
+	remainingPayment: number;
+	workTime: number;
 }
 
 export const QuotationPDF = ({
@@ -173,9 +176,10 @@ export const QuotationPDF = ({
 	const total = subtotal + iva;
 	// const validez = 10;
 	// const plazo = 10;
-	const adelantado = 99;
-	const contraEntrega = 1;
+	const adelantado = advancePayment;
+	const contraEntrega = remainingPayment;
 	const validez = offerValidity;
+	const tiempoEntrega = workTime;
 
 	return (
 		<Document>
@@ -236,7 +240,7 @@ export const QuotationPDF = ({
 					</View>
 					<View style={styles.termsBox}>
 						<Text style={styles.termsTitle}>Plazo Entrega</Text>
-						<Text>15 días hábiles</Text>
+						<Text>{tiempoEntrega}</Text>
 					</View>
 				</View>
 
