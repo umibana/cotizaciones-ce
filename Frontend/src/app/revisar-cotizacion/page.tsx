@@ -6,6 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useSearchParams } from "next/navigation";
 import { useAuthenticatedQuery } from "@/hooks/useAuth";
+import { MdiRenameBox } from '@/components/ui/rename-icon';
+import { MdDriveFileRenameOutline } from "react-icons/md";
+import Link from "next/link";
 
 // Interfaces para los datos de la cotización
 interface ManoDeObra {
@@ -29,9 +32,9 @@ interface ItemExtra {
 
 interface Cotizacion {
     validezOferta: number;
-    condPagoAdelantado: number;
-    condPagoContraEntrega: number;
-    plazoEntrega: number;
+    condDePagoAdelantado: number;
+    condDePagoContraEntrega: number;
+    plazoDeEntrega: number;
     precioTentativo: number;
     notas: string;
     // manosDeObra: ManoDeObra[]; Se implementara cuando bryan tenga listo su HU
@@ -112,6 +115,9 @@ export default function RevisarCotizacion() {
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="validez">Validez Oferta (días)</Label>
+                            <Link href={`/editar-validez?id=${cotizacionId}`}> {/* Enlace al icono */}
+                                <MdDriveFileRenameOutline className="ml-2 cursor-pointer" /> {/* Icono con estilo */}
+                            </Link>
                             <Input
                                 id="validez"
                                 type="number"
@@ -126,7 +132,7 @@ export default function RevisarCotizacion() {
                             <Input
                                 id="pagoAdelantado"
                                 type="number"
-                                value={cotizacionData?.condPagoAdelantado || ""}
+                                value={cotizacionData?.condDePagoAdelantado || ""}
                                 readOnly
                             />
                         </div>
@@ -137,7 +143,7 @@ export default function RevisarCotizacion() {
                             <Input
                                 id="pagoContraEntrega"
                                 type="number"
-                                value={cotizacionData?.condPagoContraEntrega || ""}
+                                value={cotizacionData?.condDePagoContraEntrega || ""}
                                 readOnly
                             />
                         </div>
@@ -146,7 +152,7 @@ export default function RevisarCotizacion() {
                             <Input
                                 id="plazoEntrega"
                                 type="number"
-                                value={cotizacionData?.plazoEntrega || ""}
+                                value={cotizacionData?.plazoDeEntrega || ""}
                                 readOnly
                             />
                         </div>

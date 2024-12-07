@@ -8,6 +8,14 @@ import { FaTrash } from "react-icons/fa";
 import { useAuthenticatedQuery } from "@/hooks/useAuth";
 import { Badge } from "@/components/ui/badge";
 import {useState} from "react";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -85,21 +93,38 @@ ProjectListProps) => (
 				{projects.map((project: any) => (
 					<div
 						key={project.idProyecto}
-						className="mb-2 flex items-center justify-between bg-muted  p-2">
-						<span className="text-lg font-bold">{project.nombre}</span>
-						<Badge>En progreso</Badge>
-						<div className="flex items-center gap-2">
-							<span className="font-medium">${project.price}</span>
-							<Link
-								href={{
-									pathname: "/revisar-cotizacion",
-									query: { id: project.idProyecto },
-								}}>
-								<Button size="sm">Revisar Cotizacion</Button>
-							</Link>
-							<Button size="sm" onClick={() => onReview?.(project.id)}>
-								Revisar Proyecto
-							</Button>
+						className="mb-2 flex flex-wrap items-center justify-between bg-muted p-2">
+						{/* Nombre del proyecto con texto truncado en pantallas pequeñas */}
+						<span className="text-lg font-bold w-full sm:w-auto overflow-hidden text-ellipsis">
+							{project.nombre}
+						</span>
+						<Badge className="sm:ml-2">En progreso</Badge>
+						<div className="flex items-center gap-2 w-full sm:w-auto mt-2 sm:mt-0">
+							<span className="font-medium">{project.price}</span>
+
+							{/* Dropdown Menu */}
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<Button size="sm">Acciones</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent align="end">
+									<DropdownMenuLabel>Opciones</DropdownMenuLabel>
+									<DropdownMenuItem>
+										<Link
+											href={{
+												pathname: "/revisar-cotizacion",
+												query: {id: project.idProyecto},
+											}}>
+											Revisar Cotización
+										</Link>
+									</DropdownMenuItem>
+									<DropdownMenuItem onClick={() => onReview?.(project.id)}>
+										Revisar Proyecto
+									</DropdownMenuItem>
+									<DropdownMenuSeparator/>
+									{/* Aquí puedes agregar más opciones si es necesario */}
+								</DropdownMenuContent>
+							</DropdownMenu>
 						</div>
 					</div>
 				))}
@@ -109,28 +134,28 @@ ProjectListProps) => (
 );
 
 const ProyectosCotizados = ({
-							   projects,
-							   onReview,
-						   }: ProjectListProps) => (
+								projects,
+								onReview,
+							}: ProjectListProps) => (
 	<Card className="flex-1">
 		<CardHeader>
 			<CardTitle>Proyectos cotizados</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<ScrollArea className="h-[200px] w-full rounded-md border p-4">
-						<span className="text-lg font-bold"></span>
-						<div className="flex items-center gap-2">
-							<span className="font-medium"></span>
-						</div>
+				<span className="text-lg font-bold"></span>
+				<div className="flex items-center gap-2">
+					<span className="font-medium"></span>
+				</div>
 			</ScrollArea>
 		</CardContent>
 	</Card>
 );
 
 const ProyectosAprobados = ({
-								 projects,
-								 onReview,
-							 }: ProjectListProps) => (
+								projects,
+								onReview,
+							}: ProjectListProps) => (
 	<Card className="flex-1">
 		<CardHeader>
 			<CardTitle>Proyectos aprobados</CardTitle>
@@ -147,9 +172,9 @@ const ProyectosAprobados = ({
 );
 
 const ProyectosTerminados = ({
-								  projects,
-								  onReview,
-							  }: ProjectListProps) => (
+								 projects,
+								 onReview,
+							 }: ProjectListProps) => (
 	<Card className="flex-1">
 		<CardHeader>
 			<CardTitle>Proyectos terminados</CardTitle>
@@ -198,7 +223,7 @@ interface ProyectosProps {
 }
 
 function Proyectos({ role }: ProyectosProps) {
-	// Estado para controlar el filtro seleccionado
+	// Estado para controlar el filtro seleccionado de proyectos
 	const [selectedFilter, setSelectedFilter] = useState<string>("Sin asignar");
 
 	// Endpoint de la API según el rol, deberia cambiarse después
@@ -240,7 +265,7 @@ function Proyectos({ role }: ProyectosProps) {
 	return (
 		<div className="container mx-auto p-4 space-y-4">
 			{/* Botones de filtros con flechas */}
-			<div className="flex items-center gap-2 mb-4">
+			<div className="flex flex-wrap items-center gap-2 mb-4">
 				<Button
 					size="sm"
 					variant={selectedFilter === "Sin asignar" ? "default" : "outline"}
