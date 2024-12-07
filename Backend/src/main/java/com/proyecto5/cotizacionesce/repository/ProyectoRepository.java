@@ -11,5 +11,7 @@ import java.util.Optional;
 @Repository
 public interface ProyectoRepository extends JpaRepository<Proyecto, Long> {
     List<Proyecto> findByIdUser(Long idUser);
+
+    //idea: buscar por query?
     Optional<Proyecto> findByIdProyecto(Long idProyecto);
 }

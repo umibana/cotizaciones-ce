@@ -80,7 +80,7 @@ public class ProyectoController {
     }
 
     @PutMapping("/estados/{idProyecto}")
-    public ResponseEntity<Proyecto> estadoRevision(Long idProyecto){
+    public ResponseEntity<Proyecto> estadoRevision(@PathVariable Long idProyecto){
         Proyecto proyecto = proyectoService.estadoRevision(idProyecto);
         return ResponseEntity.ok(proyecto);
     }
