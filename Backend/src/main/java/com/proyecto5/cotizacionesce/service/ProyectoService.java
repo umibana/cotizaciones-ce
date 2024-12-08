@@ -76,7 +76,7 @@ public class ProyectoService {
                 .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
 
         if("Sin asignar".equals(proyecto.getEstado())){
-            proyecto.setEstado("en revision de cotizacion");
+            proyecto.setEstado("Preparacion de cotizacion");
             proyecto = proyectoRepository.save(proyecto);
         }else{
             throw new RuntimeException("El proyecto no estaba en estado 'Sin asignar'");
@@ -84,7 +84,6 @@ public class ProyectoService {
 
         return proyecto;
     }
-
 
 
     public void asignarColaboradoresAlProyecto(Long projectId, List<Long> workerIds){

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,9 +29,9 @@ interface ItemExtra {
 
 interface Cotizacion {
     validezOferta: number;
-    condPagoAdelantado: number;
-    condPagoContraEntrega: number;
-    plazoEntrega: number;
+    condDePagoAdelantado: string;
+    condDePagoContraEntrega: string;
+    plazoDeEntrega: number;
     precioTentativo: number;
     notas: string;
     // manosDeObra: ManoDeObra[]; Se implementara cuando bryan tenga listo su HU
@@ -73,6 +73,12 @@ export default function RevisarCotizacion() {
     const handleUtilidadChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUtilidadEmpresa(parseFloat(e.target.value));
     };
+
+    
+    const handleEnviarCotizacion = () => {
+
+    };
+    
 
     // Función para guardar la métrica de utilidad (implementar la lógica de guardado)
     /*
@@ -125,8 +131,8 @@ export default function RevisarCotizacion() {
                             </Label>
                             <Input
                                 id="pagoAdelantado"
-                                type="number"
-                                value={cotizacionData?.condPagoAdelantado || ""}
+                                type="string"
+                                value={cotizacionData?.condDePagoAdelantado || ""}
                                 readOnly
                             />
                         </div>
@@ -136,8 +142,8 @@ export default function RevisarCotizacion() {
                             </Label>
                             <Input
                                 id="pagoContraEntrega"
-                                type="number"
-                                value={cotizacionData?.condPagoContraEntrega || ""}
+                                type="string"
+                                value={cotizacionData?.condDePagoContraEntrega || ""}
                                 readOnly
                             />
                         </div>
@@ -146,7 +152,7 @@ export default function RevisarCotizacion() {
                             <Input
                                 id="plazoEntrega"
                                 type="number"
-                                value={cotizacionData?.plazoEntrega || ""}
+                                value={cotizacionData?.plazoDeEntrega || ""}
                                 readOnly
                             />
                         </div>
@@ -250,6 +256,14 @@ export default function RevisarCotizacion() {
                     </div>
                 </CardContent>
             </Card>
+            <div>
+                <Button
+                    type="submit"
+                    className="w-full"
+                    onClick={handleEnviarCotizacion}>
+                    Enviar cotizacion
+                </Button>
+            </div>
         </div>
     );
 }

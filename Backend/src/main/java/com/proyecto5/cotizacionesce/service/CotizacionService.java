@@ -27,6 +27,8 @@ public class CotizacionService {
     private final CotizacionMaterialService cotizacionMaterialService;
     @Autowired
     private final PersonalizadoService personalizadoService;
+    @Autowired
+    private final ProyectoService proyectoService;
 
 
     public Cotizacion createCotizacion(CotizacionRequestDTO request) {
@@ -35,6 +37,7 @@ public class CotizacionService {
         cotizacion.setNombre(request.getNombre());
         cotizacion.setDescripcion(request.getDescripcion());
         cotizacion.setTimestamp(LocalDateTime.now());
+        cotizacion.setIdProyecto(request.getIdProyecto());
 
         // Guardar cotización para obtener el id
         Cotizacion savedCotizacion = cotizacionRepository.save(cotizacion);
@@ -49,6 +52,9 @@ public class CotizacionService {
                 request.getExtraItems(),
                 savedCotizacion.getId_Cotizacion()
         );
+
+        //en este punto se debe ejecutar estadoRevision del service de proyecto
+        proyectoService.estadoRevision(request.getIdProyecto());
 
         return savedCotizacion;
     }

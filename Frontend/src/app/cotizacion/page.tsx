@@ -18,8 +18,10 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import Materiales from "../materiales/page";
+import { useSearchParams } from 'next/navigation';
 
 import { QuotationPDF } from "./GenerarPdf";
+import { id } from "date-fns/locale";
 
 interface ApiMaterial {
 	idMaterial: number;
@@ -79,7 +81,8 @@ const getMaterials = async (): Promise<Material[]> => {
 		...item,
 	}));
 };
-const createQuotation = async (quotationData: CotizacionRequestDTO) => {
+
+const createQuotation = async (quotationData: CotizacionRequestDTO, projectId: string | null) => {
 	try {
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_BACKEND_URL}/cotizaciones/crear`,
@@ -88,12 +91,12 @@ const createQuotation = async (quotationData: CotizacionRequestDTO) => {
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(quotationData),
+				body: JSON.stringify({ quotationData, idProyecto: projectId }),
 			}
 		);
-
 		if (!response.ok) {
-			throw new Error("Failed to create quotation");
+			const errorDetails = await response.json();
+			throw new Error(`Failed to create quotation: ${errorDetails.message}`);
 		}
 
 		const data = await response.json();
@@ -105,6 +108,10 @@ const createQuotation = async (quotationData: CotizacionRequestDTO) => {
 };
 
 export default function QuotationForm() {
+	const searchParams = useSearchParams(); 
+	const projectId = searchParams.get('id');
+	//console.log('Project ID:', projectId);
+
 	const [materials, setMaterials] = useState<MaterialItem[]>([]);
 	const [extraItems, setExtraItems] = useState<ExtraItem[]>([]);
 	const [filter, setFilter] = useState("");
@@ -179,6 +186,11 @@ export default function QuotationForm() {
 
 		if (!validatePayments()) return;
 
+		if (!projectId) { 
+			toast.error("No se encontró el ID del proyecto."); 
+			return; 
+		}
+
 		const quotationData: CotizacionRequestDTO = {
 			nombre: quotationName,
 			descripcion: quotationDescription,
@@ -199,8 +211,9 @@ export default function QuotationForm() {
 			workTime: workTime,
 		};
 
-		console.log(quotationData);
-		const result = await createQuotation(quotationData);
+		console.log("Sending data:", quotationData);
+		
+		const result = await createQuotation(quotationData, projectId);
 
 		if (result.error) {
 			toast.error("Failed to create quotation. Please try again.");

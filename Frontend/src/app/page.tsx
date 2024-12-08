@@ -45,7 +45,13 @@ const UnassignedProjectList = ({
 							<span className="text-lg font-bold">{project.nombre}</span>
 							<Badge>Sin asignar</Badge>
 							<div className="flex gap-2">
-								<Button size="sm">Crear Cotización</Button>
+								<Link rel="stylesheet" 
+									href={{
+										pathname: "/cotizacion",
+										query: {id: project.idProyecto}
+									}}>
+									<Button size="sm">Crear Cotización</Button>
+								</Link>
 								{(role === "admin" || role === "supervisor") && (
 									<Link
 										href={{
