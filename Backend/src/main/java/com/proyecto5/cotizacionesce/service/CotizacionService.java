@@ -6,6 +6,7 @@ import com.proyecto5.cotizacionesce.dto.PersonalizadoDTO;
 import com.proyecto5.cotizacionesce.entity.Cotizacion;
 import com.proyecto5.cotizacionesce.entity.CotizacionMaterial;
 import com.proyecto5.cotizacionesce.entity.Personalizado;
+import com.proyecto5.cotizacionesce.entity.Proyecto;
 import com.proyecto5.cotizacionesce.repository.CotizacionMaterialRepository;
 import com.proyecto5.cotizacionesce.repository.CotizacionRepository;
 import com.proyecto5.cotizacionesce.repository.PersonalizadoRepository;
@@ -27,6 +28,9 @@ public class CotizacionService {
     private final CotizacionMaterialService cotizacionMaterialService;
     @Autowired
     private final PersonalizadoService personalizadoService;
+    @Autowired
+    private final ProyectoService proyectoService;
+
 
 
     public Cotizacion createCotizacion(CotizacionRequestDTO request) {
@@ -34,6 +38,18 @@ public class CotizacionService {
         Cotizacion cotizacion = new Cotizacion();
         cotizacion.setNombre(request.getNombre());
         cotizacion.setDescripcion(request.getDescripcion());
+        cotizacion.setNotas(request.getNotas());
+        cotizacion.setCondDePagoAdelantado(String.valueOf(request.getCondPagoAdelantado()));
+        cotizacion.setCondDePagoContraEntrega(String.valueOf(request.getCondPagoContraEntrega()));
+        cotizacion.setValidezOferta(request.getValidezOferta());
+        cotizacion.setPlazoDeEntrega(request.getPlazoDeEntrega());
+
+        if (request.getIdProyecto() != null) {
+            Proyecto proyecto = proyectoService.getProyectoById(request.getIdProyecto())
+                    .orElseThrow(() -> new IllegalArgumentException("Proyecto no encontrado"));
+            cotizacion.setIdProyecto(proyecto.getIdProyecto()); // Asociar el proyecto a la cotización
+        }
+
         cotizacion.setTimestamp(LocalDateTime.now());
 
         // Guardar cotización para obtener el id
