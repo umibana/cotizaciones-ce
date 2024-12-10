@@ -1,5 +1,5 @@
-# Base image
-FROM eclipse-temurin:17-jdk-alpine
+# Use buildx-compatible syntax
+FROM --platform=$TARGETPLATFORM eclipse-temurin:latest
 
 # Set working directory
 WORKDIR /app
@@ -22,4 +22,5 @@ RUN ./mvnw package -DskipTests
 EXPOSE 8080
 
 # Run the application
-CMD ["java", "-jar", "target/*.jar"]
+# CMD ["java", "-jar", "target/*.jar"]
+CMD ["java", "-jar", "target/cotizacionesce-0.0.1-SNAPSHOT.jar"]

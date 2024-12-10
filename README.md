@@ -12,9 +12,16 @@
 
 3. Editar el archivo `.env` con sus llaves de API
 
-4. Start the application
+4. Iniciar la aplicación
+
+   ### Opción 1: Usar imagen pre-construida (recomendado)
    ```bash
-   docker compose up
+   docker compose --profile prod up
+   ```
+
+   ### Opción 2: Construir localmente
+   ```bash
+   docker compose --profile dev up --build
    ```
 
 La aplicación estará disponible en:
