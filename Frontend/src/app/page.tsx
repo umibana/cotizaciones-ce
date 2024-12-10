@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FaTrash } from "react-icons/fa";
 import { useAuthenticatedQuery } from "@/hooks/useAuth";
 import { Badge } from "@/components/ui/badge";
-import {useState} from "react";
+import { useState } from "react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -53,10 +53,11 @@ const UnassignedProjectList = ({
 							<span className="text-lg font-bold">{project.nombre}</span>
 							<Badge>Sin asignar</Badge>
 							<div className="flex gap-2">
-								<Link rel="stylesheet" 
+								<Link
+									rel="stylesheet"
 									href={{
 										pathname: "/cotizacion",
-										query: {id: project.idProyecto}
+										query: { id: project.idProyecto },
 									}}>
 									<Button size="sm">Crear Cotización</Button>
 								</Link>
@@ -119,7 +120,7 @@ ProjectListProps) => (
 										<Link
 											href={{
 												pathname: "/revisar-cotizacion",
-												query: {id: project.idProyecto},
+												query: { id: project.idProyecto },
 											}}>
 											Revisar Cotización
 										</Link>
@@ -127,7 +128,7 @@ ProjectListProps) => (
 									<DropdownMenuItem onClick={() => onReview?.(project.id)}>
 										Revisar Proyecto
 									</DropdownMenuItem>
-									<DropdownMenuSeparator/>
+									<DropdownMenuSeparator />
 									{/* Aquí puedes agregar más opciones si es necesario */}
 								</DropdownMenuContent>
 							</DropdownMenu>
@@ -139,10 +140,7 @@ ProjectListProps) => (
 	</Card>
 );
 
-const ProyectosCotizados = ({
-								projects,
-								onReview,
-							}: ProjectListProps) => (
+const ProyectosCotizados = () => (
 	<Card className="flex-1">
 		<CardHeader>
 			<CardTitle>Proyectos cotizados</CardTitle>
@@ -158,10 +156,7 @@ const ProyectosCotizados = ({
 	</Card>
 );
 
-const ProyectosAprobados = ({
-								projects,
-								onReview,
-							}: ProjectListProps) => (
+const ProyectosAprobados = () => (
 	<Card className="flex-1">
 		<CardHeader>
 			<CardTitle>Proyectos aprobados</CardTitle>
@@ -177,10 +172,7 @@ const ProyectosAprobados = ({
 	</Card>
 );
 
-const ProyectosTerminados = ({
-								 projects,
-								 onReview,
-							 }: ProjectListProps) => (
+const ProyectosTerminados = () => (
 	<Card className="flex-1">
 		<CardHeader>
 			<CardTitle>Proyectos terminados</CardTitle>
@@ -195,10 +187,6 @@ const ProyectosTerminados = ({
 		</CardContent>
 	</Card>
 );
-
-
-
-
 
 export const AdminCard = ({ role }) => {
 	if (role !== "admin") return null;
@@ -276,8 +264,11 @@ function Proyectos({ role }: ProyectosProps) {
 					size="sm"
 					variant={selectedFilter === "Sin asignar" ? "default" : "outline"}
 					onClick={() => setSelectedFilter("Sin asignar")}
-					className={selectedFilter === "Sin asignar" ? "bg-red-500 text-white" : "bg-white text-red-500 border border-red-500"}
-				>
+					className={
+						selectedFilter === "Sin asignar"
+							? "bg-red-500 text-white"
+							: "bg-white text-red-500 border border-red-500"
+					}>
 					Sin asignar
 				</Button>
 
@@ -290,8 +281,11 @@ function Proyectos({ role }: ProyectosProps) {
 						selectedFilter === "Preparacion cotizacion" ? "default" : "outline"
 					}
 					onClick={() => setSelectedFilter("Preparacion cotizacion")}
-					className={selectedFilter === "Preparacion cotizacion" ? "bg-orange-500 text-white" : "bg-white text-orange-500 border border-orange-500"}
-				>
+					className={
+						selectedFilter === "Preparacion cotizacion"
+							? "bg-orange-500 text-white"
+							: "bg-white text-orange-500 border border-orange-500"
+					}>
 					Preparacion cotizacion
 				</Button>
 
@@ -302,8 +296,11 @@ function Proyectos({ role }: ProyectosProps) {
 					size="sm"
 					variant={selectedFilter === "Cotizado" ? "default" : "outline"}
 					onClick={() => setSelectedFilter("Cotizado")}
-					className={selectedFilter === "Cotizado" ? "bg-cyan-500 text-white" : "bg-white text-cyan-500 border border-cyan-500"}
-				>
+					className={
+						selectedFilter === "Cotizado"
+							? "bg-cyan-500 text-white"
+							: "bg-white text-cyan-500 border border-cyan-500"
+					}>
 					Cotizado
 				</Button>
 
@@ -314,8 +311,11 @@ function Proyectos({ role }: ProyectosProps) {
 					size="sm"
 					variant={selectedFilter === "Aprobado" ? "default" : "outline"}
 					onClick={() => setSelectedFilter("Aprobado")}
-					className={selectedFilter === "Aprobado" ? "bg-green-500 text-white" : "bg-white text-green-500 border border-green-500"}
-				>
+					className={
+						selectedFilter === "Aprobado"
+							? "bg-green-500 text-white"
+							: "bg-white text-green-500 border border-green-500"
+					}>
 					Aprobado
 				</Button>
 
@@ -326,8 +326,11 @@ function Proyectos({ role }: ProyectosProps) {
 					size="sm"
 					variant={selectedFilter === "Terminado" ? "default" : "outline"}
 					onClick={() => setSelectedFilter("Terminado")}
-					className={selectedFilter === "Terminado" ? "bg-gray-500 text-white" : "bg-white text-gray-500 border border-gray-500"}
-				>
+					className={
+						selectedFilter === "Terminado"
+							? "bg-gray-500 text-white"
+							: "bg-white text-gray-500 border border-gray-500"
+					}>
 					Terminado
 				</Button>
 			</div>
@@ -339,23 +342,15 @@ function Proyectos({ role }: ProyectosProps) {
 			{selectedFilter === "Preparacion cotizacion" && (
 				<AssignedProjectList projects={projects.assigned} role={role} />
 			)}
-			{selectedFilter === "Cotizado" && (
-				<ProyectosCotizados role={role} />
-			)}
-			{selectedFilter === "Aprobado" && (
-				<ProyectosAprobados role={role} />
-			)}
-			{selectedFilter === "Terminado" && (
-				<ProyectosTerminados role={role} />
-			)}
-
+			{selectedFilter === "Cotizado" && <ProyectosCotizados />}
+			{selectedFilter === "Aprobado" && <ProyectosAprobados />}
+			{selectedFilter === "Terminado" && <ProyectosTerminados />}
 
 			{/* Mostrar la tarjeta de administración si corresponde */}
 			<AdminCard role={role} />
 		</div>
 	);
 }
-
 
 function App() {
 	const { isAdmin, isMaestro, isSupervisor, isAuthenticated } = useRoles();

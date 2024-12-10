@@ -22,15 +22,15 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+
 import { useRoles } from "@/hooks/useRoles";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 interface Auth0User {
 	user_id: string;
 	email: string;
 	name: string;
 	nickname?: string;
+	connection: string;
 	app_metadata?: {
 		role?: string;
 	};

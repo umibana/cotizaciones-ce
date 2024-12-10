@@ -18,10 +18,9 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import Materiales from "../materiales/page";
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams } from "next/navigation";
 
 import { QuotationPDF } from "./GenerarPdf";
-import { id } from "date-fns/locale";
 
 interface ApiMaterial {
 	idMaterial: number;
@@ -54,7 +53,7 @@ interface ManoObraDTO {
 	rendimientoMaterialM2: number;
 	costoMaterialUnitario: number;
 	manoObraPorM2: number;
-  }
+}
 
 interface CotizacionRequestDTO {
 	nombre: string;
@@ -73,17 +72,18 @@ interface CotizacionRequestDTO {
 	condPagoAdelantado: number;
 	condPagoContraEntrega: number;
 	plazoDeEntrega: number;
-
 }
 
-const fetchProyecto = async (projectId: string) => {
-	const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/${projectId}`);
-	if (!response.ok) {
-	  throw new Error("Error al cargar el proyecto");
-	}
-	return response.json();
-  };
-
+// Comentado para que funcione en vercel mientras
+// const fetchProyecto = async (projectId: string) => {
+// 	const response = await fetch(
+// 		`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/${projectId}`
+// 	);
+// 	if (!response.ok) {
+// 		throw new Error("Error al cargar el proyecto");
+// 	}
+// 	return response.json();
+// };
 
 const getMaterials = async (): Promise<Material[]> => {
 	const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/materiales/all`;
@@ -100,7 +100,10 @@ const getMaterials = async (): Promise<Material[]> => {
 	}));
 };
 
-const createQuotation = async (quotationData: CotizacionRequestDTO, projectId: string | null) => {
+const createQuotation = async (
+	quotationData: CotizacionRequestDTO,
+	projectId: string | null
+) => {
 	try {
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_BACKEND_URL}/cotizaciones/crear`,
@@ -126,8 +129,8 @@ const createQuotation = async (quotationData: CotizacionRequestDTO, projectId: s
 };
 
 export default function QuotationForm() {
-	const searchParams = useSearchParams(); 
-	const projectId = searchParams.get('id');
+	const searchParams = useSearchParams();
+	const projectId = searchParams.get("id");
 	//console.log('Project ID:', projectId);
 
 	const [materials, setMaterials] = useState<MaterialItem[]>([]);
@@ -145,18 +148,18 @@ export default function QuotationForm() {
 
 	const [manoObraOpen, setManoObraOpen] = useState(false);
 	const [manoObraTemp, setManoObraTemp] = useState<ManoObraDTO>({
-	nombreMaterial: "",
-	areaTrabajarM2: 0,
-	rendimientoMaterialM2: 0,
-	costoMaterialUnitario: 0,
-	manoObraPorM2: 0,
+		nombreMaterial: "",
+		areaTrabajarM2: 0,
+		rendimientoMaterialM2: 0,
+		costoMaterialUnitario: 0,
+		manoObraPorM2: 0,
 	});
 
 	useEffect(() => {
 		if (condPagoAdelantado + condPagoContraEntrega > 100) {
-		  toast.error("El porcentaje total no puede superar el 100%");
+			toast.error("El porcentaje total no puede superar el 100%");
 		}
-	  }, [condPagoAdelantado, condPagoContraEntrega]);
+	}, [condPagoAdelantado, condPagoContraEntrega]);
 
 	const {
 		data: availableMaterials,
@@ -196,31 +199,31 @@ export default function QuotationForm() {
 		);
 	};
 
-	const addManoObra = () => {
-		setManoObras((prev) => [
-		  ...prev,
-		  {
-			nombreMaterial: "",
-			areaTrabajarM2: 0,
-			rendimientoMaterialM2: 0,
-			costoMaterialUnitario: 0,
-			manoObraPorM2: 0,
-		  },
-		]);
-	};
+	// Comentado para que funcione en vercel mientras
+	// const addManoObra = () => {
+	// 	setManoObras((prev) => [
+	// 	  ...prev,
+	// 	  {
+	// 		nombreMaterial: "",
+	// 		areaTrabajarM2: 0,
+	// 		rendimientoMaterialM2: 0,
+	// 		costoMaterialUnitario: 0,
+	// 		manoObraPorM2: 0,
+	// 	  },
+	// 	]);
+	// };
 
-	const updateManoObra = (index: number, field: keyof ManoObraDTO, value: any) => {
-		setManoObras((prev) => {
-		  const updated = [...prev];
-		  updated[index] = { ...updated[index], [field]: value };
-		  return updated;
-		});
-	};
+	// const updateManoObra = (index: number, field: keyof ManoObraDTO, value: any) => {
+	// 	setManoObras((prev) => {
+	// 	  const updated = [...prev];
+	// 	  updated[index] = { ...updated[index], [field]: value };
+	// 	  return updated;
+	// 	});
+	// };
 
 	const removeManoObra = (index: number) => {
 		setManoObras((prev) => prev.filter((_, i) => i !== index));
 	};
-	
 
 	const removeMaterial = (id: number) => {
 		setMaterials((prev) => prev.filter((item) => item.id !== id));
@@ -229,20 +232,22 @@ export default function QuotationForm() {
 	const validatePayments = (): boolean => {
 		const total = condPagoAdelantado + condPagoContraEntrega;
 		if (total !== 100) {
-		  toast.error(`El porcentaje total debe ser 100%. Actualmente es ${total}%`);
-		  return false;
+			toast.error(
+				`El porcentaje total debe ser 100%. Actualmente es ${total}%`
+			);
+			return false;
 		}
 		return true;
-	  };
+	};
 
 	const handleSubmitQuotation = async (event: React.FormEvent) => {
 		event.preventDefault();
 
 		if (!validatePayments()) return;
 
-		if (!projectId) { 
-			toast.error("No se encontró el ID del proyecto."); 
-			return; 
+		if (!projectId) {
+			toast.error("No se encontró el ID del proyecto.");
+			return;
 		}
 
 		const quotationData: CotizacionRequestDTO = {
@@ -267,7 +272,7 @@ export default function QuotationForm() {
 		};
 
 		console.log("Sending data:", quotationData);
-		
+
 		const result = await createQuotation(quotationData, projectId);
 
 		if (result.error) {
@@ -288,7 +293,6 @@ export default function QuotationForm() {
 	};
 
 	const generatePDF = async () => {
-
 		if (!validatePayments()) return;
 
 		try {
@@ -474,7 +478,6 @@ export default function QuotationForm() {
 					</CardContent>
 				</Card>
 
-
 				<Card className="mb-6">
 					<CardHeader className="flex flex-row items-center justify-between">
 						<CardTitle>Mano de Obra</CardTitle>
@@ -482,8 +485,7 @@ export default function QuotationForm() {
 							type="button"
 							variant="outline"
 							size="icon"
-							onClick={() => setManoObraOpen(true)}
-						>
+							onClick={() => setManoObraOpen(true)}>
 							<Plus className="h-4 w-4" />
 						</Button>
 					</CardHeader>
@@ -493,20 +495,38 @@ export default function QuotationForm() {
 							<table className="table-auto w-full border-collapse border border-gray-300">
 								<thead className="bg-gray-100">
 									<tr>
-										<th className="border border-gray-300 px-4 py-2 text-left">Nombre del Material</th>
-										<th className="border border-gray-300 px-4 py-2 text-center">Área (m²)</th>
-										<th className="border border-gray-300 px-4 py-2 text-center">Rendimiento (m²/unidad)</th>
-										<th className="border border-gray-300 px-4 py-2 text-center">Costo Unitario</th>
-										<th className="border border-gray-300 px-4 py-2 text-center">Mano de Obra</th>
-										<th className="border border-gray-300 px-4 py-2 text-center">Acciones</th>
+										<th className="border border-gray-300 px-4 py-2 text-left">
+											Nombre del Material
+										</th>
+										<th className="border border-gray-300 px-4 py-2 text-center">
+											Área (m²)
+										</th>
+										<th className="border border-gray-300 px-4 py-2 text-center">
+											Rendimiento (m²/unidad)
+										</th>
+										<th className="border border-gray-300 px-4 py-2 text-center">
+											Costo Unitario
+										</th>
+										<th className="border border-gray-300 px-4 py-2 text-center">
+											Mano de Obra
+										</th>
+										<th className="border border-gray-300 px-4 py-2 text-center">
+											Acciones
+										</th>
 									</tr>
 								</thead>
 								<tbody>
 									{manoObras.map((obra, index) => (
 										<tr key={index} className="hover:bg-gray-50">
-											<td className="border border-gray-300 px-4 py-2">{obra.nombreMaterial}</td>
-											<td className="border border-gray-300 px-4 py-2 text-center">{obra.areaTrabajarM2}</td>
-											<td className="border border-gray-300 px-4 py-2 text-center">{obra.rendimientoMaterialM2}</td>
+											<td className="border border-gray-300 px-4 py-2">
+												{obra.nombreMaterial}
+											</td>
+											<td className="border border-gray-300 px-4 py-2 text-center">
+												{obra.areaTrabajarM2}
+											</td>
+											<td className="border border-gray-300 px-4 py-2 text-center">
+												{obra.rendimientoMaterialM2}
+											</td>
 											<td className="border border-gray-300 px-4 py-2 text-center">
 												${obra.costoMaterialUnitario.toLocaleString()}
 											</td>
@@ -518,8 +538,7 @@ export default function QuotationForm() {
 													variant="destructive"
 													size="icon"
 													onClick={() => removeManoObra(index)}
-													aria-label="Eliminar mano de obra"
-												>
+													aria-label="Eliminar mano de obra">
 													<Trash2 className="h-4 w-4" />
 												</Button>
 											</td>
@@ -530,8 +549,6 @@ export default function QuotationForm() {
 						</div>
 					</CardContent>
 				</Card>
-
-
 
 				<Card className="mb-6">
 					<CardHeader>
@@ -556,12 +573,16 @@ export default function QuotationForm() {
 					<CardContent>
 						<div className="space-y-4">
 							<div>
-								<Label htmlFor="validezOferta">Validez de la Oferta (días)</Label>
+								<Label htmlFor="validezOferta">
+									Validez de la Oferta (días)
+								</Label>
 								<Input
 									id="validezOferta"
 									type="number"
 									value={validezOferta}
-									onChange={(e) => setValidezOferta(parseInt(e.target.value) || 0)}
+									onChange={(e) =>
+										setValidezOferta(parseInt(e.target.value) || 0)
+									}
 									placeholder="Ingrese la validez de la oferta en días"
 									required
 								/>
@@ -572,7 +593,9 @@ export default function QuotationForm() {
 									id="condPagoAdelantado"
 									type="number"
 									value={condPagoAdelantado}
-									onChange={(e) => setCondPagoAdelantado(parseInt(e.target.value) || 0)}
+									onChange={(e) =>
+										setCondPagoAdelantado(parseInt(e.target.value) || 0)
+									}
 									placeholder="Ingrese el porcentaje de pago adelantado"
 									required
 								/>
@@ -583,7 +606,9 @@ export default function QuotationForm() {
 									id="condPagoContraEntrega"
 									type="number"
 									value={condPagoContraEntrega}
-									onChange={(e) => setCondPagoContraEntrega(parseInt(e.target.value) || 0)}
+									onChange={(e) =>
+										setCondPagoContraEntrega(parseInt(e.target.value) || 0)
+									}
 									placeholder="Ingrese el porcentaje de pago contra entrega"
 									required
 								/>
@@ -594,7 +619,9 @@ export default function QuotationForm() {
 									id="deliveryTime"
 									type="number"
 									value={plazoDeEntrega}
-									onChange={(e) => setplazoDeEntrega(parseInt(e.target.value) || 0)}
+									onChange={(e) =>
+										setplazoDeEntrega(parseInt(e.target.value) || 0)
+									}
 									placeholder="Ingrese el plazo de entrega en días"
 									required
 								/>
@@ -616,105 +643,108 @@ export default function QuotationForm() {
 				</Dialog>
 
 				<Dialog open={manoObraOpen} onOpenChange={setManoObraOpen}>
-				<DialogContent className="max-w-lg" onClick={(e) => e.stopPropagation()}>
-					<DialogHeader>
-					<DialogTitle>Agregar Mano de Obra</DialogTitle>
-					</DialogHeader>
-					<div className="space-y-4">
-					<div>
-						<Label htmlFor="nombreMaterial">Nombre del Material</Label>
-						<Input
-						id="nombreMaterial"
-						value={manoObraTemp.nombreMaterial}
-						onChange={(e) =>
-							setManoObraTemp({
-							...manoObraTemp,
-							nombreMaterial: e.target.value,
-							})
-						}
-						placeholder="Ejemplo: Pintura"
-						required
-						/>
-					</div>
-					<div>
-						<Label htmlFor="areaTrabajarM2">Área a Trabajar (m²)</Label>
-						<Input
-						id="areaTrabajarM2"
-						type="number"
-						value={manoObraTemp.areaTrabajarM2}
-						onChange={(e) =>
-							setManoObraTemp({
-							...manoObraTemp,
-							areaTrabajarM2: parseFloat(e.target.value) || 0,
-							})
-						}
-						placeholder="Ejemplo: 50"
-						/>
-					</div>
-					<div>
-						<Label htmlFor="rendimientoMaterialM2">
-						Rendimiento del Material (m²/unidad)
-						</Label>
-						<Input
-						id="rendimientoMaterialM2"
-						type="number"
-						value={manoObraTemp.rendimientoMaterialM2}
-						onChange={(e) =>
-							setManoObraTemp({
-							...manoObraTemp,
-							rendimientoMaterialM2: parseFloat(e.target.value) || 0,
-							})
-						}
-						placeholder="Ejemplo: 25"
-						/>
-					</div>
-					<div>
-						<Label htmlFor="costoMaterialUnitario">Costo Material Unitario</Label>
-						<Input
-						id="costoMaterialUnitario"
-						type="number"
-						value={manoObraTemp.costoMaterialUnitario}
-						onChange={(e) =>
-							setManoObraTemp({
-							...manoObraTemp,
-							costoMaterialUnitario: parseFloat(e.target.value) || 0,
-							})
-						}
-						placeholder="Ejemplo: 30000"
-						/>
-					</div>
-					<div>
-						<Label htmlFor="manoObraPorM2">Mano de Obra por m²</Label>
-						<Input
-						id="manoObraPorM2"
-						type="number"
-						value={manoObraTemp.manoObraPorM2}
-						onChange={(e) =>
-							setManoObraTemp({
-							...manoObraTemp,
-							manoObraPorM2: parseFloat(e.target.value) || 0,
-							})
-						}
-						placeholder="Ejemplo: 5000"
-						/>
-					</div>
-					<Button
-						onClick={() => {
-						setManoObras([...manoObras, manoObraTemp]); // Agrega la nueva entrada
-						setManoObraOpen(false); // Cierra el modal
-						setManoObraTemp({
-							nombreMaterial: "",
-							areaTrabajarM2: 0,
-							rendimientoMaterialM2: 0,
-							costoMaterialUnitario: 0,
-							manoObraPorM2: 0,
-						}); // Resetea los datos temporales
-						}}
-					>
-						Agregar Mano de Obra
-					</Button>
-					</div>
-				</DialogContent>
+					<DialogContent
+						className="max-w-lg"
+						onClick={(e) => e.stopPropagation()}>
+						<DialogHeader>
+							<DialogTitle>Agregar Mano de Obra</DialogTitle>
+						</DialogHeader>
+						<div className="space-y-4">
+							<div>
+								<Label htmlFor="nombreMaterial">Nombre del Material</Label>
+								<Input
+									id="nombreMaterial"
+									value={manoObraTemp.nombreMaterial}
+									onChange={(e) =>
+										setManoObraTemp({
+											...manoObraTemp,
+											nombreMaterial: e.target.value,
+										})
+									}
+									placeholder="Ejemplo: Pintura"
+									required
+								/>
+							</div>
+							<div>
+								<Label htmlFor="areaTrabajarM2">Área a Trabajar (m²)</Label>
+								<Input
+									id="areaTrabajarM2"
+									type="number"
+									value={manoObraTemp.areaTrabajarM2}
+									onChange={(e) =>
+										setManoObraTemp({
+											...manoObraTemp,
+											areaTrabajarM2: parseFloat(e.target.value) || 0,
+										})
+									}
+									placeholder="Ejemplo: 50"
+								/>
+							</div>
+							<div>
+								<Label htmlFor="rendimientoMaterialM2">
+									Rendimiento del Material (m²/unidad)
+								</Label>
+								<Input
+									id="rendimientoMaterialM2"
+									type="number"
+									value={manoObraTemp.rendimientoMaterialM2}
+									onChange={(e) =>
+										setManoObraTemp({
+											...manoObraTemp,
+											rendimientoMaterialM2: parseFloat(e.target.value) || 0,
+										})
+									}
+									placeholder="Ejemplo: 25"
+								/>
+							</div>
+							<div>
+								<Label htmlFor="costoMaterialUnitario">
+									Costo Material Unitario
+								</Label>
+								<Input
+									id="costoMaterialUnitario"
+									type="number"
+									value={manoObraTemp.costoMaterialUnitario}
+									onChange={(e) =>
+										setManoObraTemp({
+											...manoObraTemp,
+											costoMaterialUnitario: parseFloat(e.target.value) || 0,
+										})
+									}
+									placeholder="Ejemplo: 30000"
+								/>
+							</div>
+							<div>
+								<Label htmlFor="manoObraPorM2">Mano de Obra por m²</Label>
+								<Input
+									id="manoObraPorM2"
+									type="number"
+									value={manoObraTemp.manoObraPorM2}
+									onChange={(e) =>
+										setManoObraTemp({
+											...manoObraTemp,
+											manoObraPorM2: parseFloat(e.target.value) || 0,
+										})
+									}
+									placeholder="Ejemplo: 5000"
+								/>
+							</div>
+							<Button
+								onClick={() => {
+									setManoObras([...manoObras, manoObraTemp]); // Agrega la nueva entrada
+									setManoObraOpen(false); // Cierra el modal
+									setManoObraTemp({
+										nombreMaterial: "",
+										areaTrabajarM2: 0,
+										rendimientoMaterialM2: 0,
+										costoMaterialUnitario: 0,
+										manoObraPorM2: 0,
+									}); // Resetea los datos temporales
+								}}>
+								Agregar Mano de Obra
+							</Button>
+						</div>
+					</DialogContent>
 				</Dialog>
 
 				<div className="flex gap-4">
