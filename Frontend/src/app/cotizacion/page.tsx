@@ -637,7 +637,6 @@ export default function QuotationForm() {
 						<DialogHeader>
 							<DialogTitle>Gestión de Materiales</DialogTitle>
 						</DialogHeader>
-						{/* @ts-expect-error Revisar este type despues */}
 						<Materiales isDialog={true} onMaterialAdd={handleMaterialAdd} />
 					</DialogContent>
 				</Dialog>

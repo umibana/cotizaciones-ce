@@ -15,15 +15,12 @@ interface Material {
 	descripcion?: string;
 }
 
-interface MaterialesProps {
-	isDialog?: boolean;
-	onMaterialAdd?: (material: Material) => void;
-}
+// interface MaterialesProps {
+// 	isDialog?: boolean;
+// 	onMaterialAdd?: (material: Material) => void;
+// }
 
-export default function Materiales({
-	isDialog = false,
-	onMaterialAdd,
-}: MaterialesProps) {
+export default function Materiales({ isDialog = false, onMaterialAdd }) {
 	const [isPending] = useTransition();
 
 	// const {
