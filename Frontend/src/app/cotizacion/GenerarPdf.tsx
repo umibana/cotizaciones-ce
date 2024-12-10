@@ -133,6 +133,14 @@ const styles = StyleSheet.create({
 	},
 });
 
+interface ManoObraItem {
+	nombreMaterial: string;
+	areaTrabajarM2: number;
+	rendimientoMaterialM2: number;
+	costoMaterialUnitario: number;
+	manoObraPorM2: number;
+  }
+
 interface QuotationPDFProps {
 	quotationName: string;
 	clientName: string;
@@ -145,6 +153,7 @@ interface QuotationPDFProps {
 		units: number;
 		unitPrice: number;
 	}[];
+	manoObras: ManoObraItem[];
 	notes?: string;
 	offerValidity: number;
 	advancePayment: number;
@@ -161,19 +170,29 @@ export const QuotationPDF = ({
 	date,
 	items,
 	notes,
+	manoObras,
 	offerValidity,
 	advancePayment,
 	remainingPayment,
 	workTime,
 }: QuotationPDFProps) => {
 	const subtotal = items.reduce(
-		(acc, item) => acc + item.units * item.unitPrice,
+		(acc, item) => acc + (item.units * item.unitPrice),
 		0
-	);
+	  );
+
+	  const totalManoObra = manoObras.reduce(
+		(acc, obra) => acc + (obra.areaTrabajarM2 * obra.manoObraPorM2),
+		0
+	  );
+
 	// Hardcodeado por ahora, hay que pasar estas variables
 	// por la otra vista primero!
-	const iva = subtotal * 0.19; // 19% IVA
-	const total = subtotal + iva;
+
+	const IVA = 0.19;
+	const valorIva = subtotal * IVA;
+
+	const totalIVAInc = (subtotal + valorIva) + totalManoObra;
 	// const validez = 10;
 	// const plazo = 10;
 	const adelantado = advancePayment;
@@ -266,21 +285,50 @@ export const QuotationPDF = ({
 					))}
 				</View>
 
-				{/* Totals */}
+
+				{/* Tabla de Mano de Obra */}
+				<View style={styles.table}>
+				<View style={styles.tableHeader}>
+					<Text style={styles.colItem}>Mano de Obra</Text>
+					<Text style={styles.colUnit}>Área (m²)</Text>
+					<Text style={styles.colUnit}>Rendimiento (m²/u)</Text>
+					<Text style={styles.colPrice}>Costo Unitario</Text>
+					<Text style={styles.colTotal}>Costo Total</Text>
+				</View>
+				{manoObras.map((obra, index) => (
+					<View key={index} style={styles.tableRow}>
+						<Text style={styles.colItem}>{obra.nombreMaterial}</Text>
+						<Text style={styles.colUnit}>{obra.areaTrabajarM2}</Text>
+						<Text style={styles.colUnit}>{obra.rendimientoMaterialM2}</Text>
+						<Text style={styles.colPrice}>
+						$ {obra.manoObraPorM2.toLocaleString()}
+						</Text>
+						<Text style={styles.colTotal}>
+						$ {(obra.areaTrabajarM2 * obra.manoObraPorM2).toLocaleString()}
+						</Text>
+					</View>
+					))}
+				</View>
+
+
 				<View style={styles.totals}>
 					<View style={styles.totalRow}>
-						<Text style={styles.totalLabel}>TOTAL Neto</Text>
+						<Text style={styles.totalLabel}>Subtotal</Text>
 						<Text style={styles.totalValue}>$ {subtotal.toLocaleString()}</Text>
 					</View>
 					<View style={styles.totalRow}>
-						<Text style={styles.totalLabel}>IVA</Text>
-						<Text style={styles.totalValue}>$ {iva.toLocaleString()}</Text>
+						<Text style={styles.totalLabel}>IVA (19%)</Text>
+						<Text style={styles.totalValue}>$ {valorIva.toLocaleString()}</Text>
+					</View>
+					<View style={styles.totalRow}>
+						<Text style={styles.totalLabel}>TOTAL Mano de Obra</Text>
+						<Text style={styles.totalValue}>$ {totalManoObra.toLocaleString()}</Text>
 					</View>
 					<View style={styles.totalRow}>
 						<Text style={styles.totalLabel}>TOTAL IVA Inc.</Text>
-						<Text style={styles.totalValue}>$ {total.toLocaleString()}</Text>
+						<Text style={styles.totalValue}>$ {totalIVAInc.toLocaleString()}</Text>
 					</View>
-				</View>
+					</View>
 
 				{/* Notes */}
 				{/* Hardcodeado por ahora, lo que hay que hacer es recibir este texto
