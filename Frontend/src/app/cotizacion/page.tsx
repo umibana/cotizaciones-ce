@@ -75,15 +75,15 @@ interface CotizacionRequestDTO {
 }
 
 // Comentado para que funcione en vercel mientras
-// const fetchProyecto = async (projectId: string) => {
-// 	const response = await fetch(
-// 		`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/${projectId}`
-// 	);
-// 	if (!response.ok) {
-// 		throw new Error("Error al cargar el proyecto");
-// 	}
-// 	return response.json();
-// };
+const fetchProyecto = async (projectId: string) => {
+	const response = await fetch(
+		`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/${projectId}`
+	);
+	if (!response.ok) {
+		throw new Error("Error al cargar el proyecto");
+	}
+	return response.json();
+};
 
 const getMaterials = async (): Promise<Material[]> => {
 	const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/materiales/all`;
@@ -199,27 +199,30 @@ export default function QuotationForm() {
 		);
 	};
 
-	// Comentado para que funcione en vercel mientras
-	// const addManoObra = () => {
-	// 	setManoObras((prev) => [
-	// 	  ...prev,
-	// 	  {
-	// 		nombreMaterial: "",
-	// 		areaTrabajarM2: 0,
-	// 		rendimientoMaterialM2: 0,
-	// 		costoMaterialUnitario: 0,
-	// 		manoObraPorM2: 0,
-	// 	  },
-	// 	]);
-	// };
+	const addManoObra = () => {
+		setManoObras((prev) => [
+			...prev,
+			{
+				nombreMaterial: "",
+				areaTrabajarM2: 0,
+				rendimientoMaterialM2: 0,
+				costoMaterialUnitario: 0,
+				manoObraPorM2: 0,
+			},
+		]);
+	};
 
-	// const updateManoObra = (index: number, field: keyof ManoObraDTO, value: any) => {
-	// 	setManoObras((prev) => {
-	// 	  const updated = [...prev];
-	// 	  updated[index] = { ...updated[index], [field]: value };
-	// 	  return updated;
-	// 	});
-	// };
+	const updateManoObra = (
+		index: number,
+		field: keyof ManoObraDTO,
+		value: any
+	) => {
+		setManoObras((prev) => {
+			const updated = [...prev];
+			updated[index] = { ...updated[index], [field]: value };
+			return updated;
+		});
+	};
 
 	const removeManoObra = (index: number) => {
 		setManoObras((prev) => prev.filter((_, i) => i !== index));

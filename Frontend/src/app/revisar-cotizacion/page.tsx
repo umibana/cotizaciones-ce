@@ -9,26 +9,25 @@ import { useAuthenticatedQuery } from "@/hooks/useAuth";
 import { MdDriveFileRenameOutline } from "react-icons/md";
 import Link from "next/link";
 
-// Comentado para subir a vercel mientras
 // Interfaces para los datos de la cotización
-// interface ManoDeObra {
-// 	// Define las propiedades de una mano de obra, por ejemplo:
-// 	nombre: string;
-// 	costo: number;
-// }
+interface ManoDeObra {
+	// Define las propiedades de una mano de obra, por ejemplo:
+	nombre: string;
+	costo: number;
+}
 
-// interface Material {
-// 	// Define las propiedades de un material, por ejemplo:
-// 	nombre: string;
-// 	cantidad: number;
-// 	precioUnitario: number;
-// }
+interface Material {
+	// Define las propiedades de un material, por ejemplo:
+	nombre: string;
+	cantidad: number;
+	precioUnitario: number;
+}
 
-// interface ItemExtra {
-// 	// Define las propiedades de un item extra, por ejemplo:
-// 	descripcion: string;
-// 	costo: number;
-// }
+interface ItemExtra {
+	// Define las propiedades de un item extra, por ejemplo:
+	descripcion: string;
+	costo: number;
+}
 
 interface Cotizacion {
 	validezOferta: number;
