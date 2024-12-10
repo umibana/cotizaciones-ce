@@ -58,10 +58,10 @@ interface CotizacionRequestDTO {
 		metros?: number;
 		precio: number;
 	}[];
-	offerValidity: number;
-	advancePayment: number;
-	remainingPayment: number;
-	workTime: number;
+	validezOferta: number;
+	condPagoAdelantado: number;
+	condPagoContraEntrega: number;
+	plazoDeEntrega: number;
 
 }
 
@@ -112,16 +112,16 @@ export default function QuotationForm() {
 	const [quotationDescription, setQuotationDescription] = useState("");
 	const [materialesOpen, setMaterialesOpen] = useState(false);
 	const [quotationNotes, setQuotationNotes] = useState("");
-	const [offerValidity, setOfferValidity] = useState(10);
-	const [advancePayment, setAdvancePayment] = useState(50);
-	const [remainingPayment, setRemainingPayment] = useState(50);
-	const [workTime, setWorkTime] = useState(15);
+	const [validezOferta, setValidezOferta] = useState(10);
+	const [condPagoAdelantado, setCondPagoAdelantado] = useState(50);
+	const [condPagoContraEntrega, setCondPagoContraEntrega] = useState(50);
+	const [plazoDeEntrega, setplazoDeEntrega] = useState(15);
 
 	useEffect(() => {
-		if (advancePayment + remainingPayment > 100) {
+		if (condPagoAdelantado + condPagoContraEntrega > 100) {
 		  toast.error("El porcentaje total no puede superar el 100%");
 		}
-	  }, [advancePayment, remainingPayment]);
+	  }, [condPagoAdelantado, condPagoContraEntrega]);
 
 	const {
 		data: availableMaterials,
@@ -166,7 +166,7 @@ export default function QuotationForm() {
 	};
 
 	const validatePayments = (): boolean => {
-		const total = advancePayment + remainingPayment;
+		const total = condPagoAdelantado + condPagoContraEntrega;
 		if (total !== 100) {
 		  toast.error(`El porcentaje total debe ser 100%. Actualmente es ${total}%`);
 		  return false;
@@ -193,10 +193,10 @@ export default function QuotationForm() {
 				precio: item.precio,
 			})),
 			notas: quotationNotes,
-			offerValidity: offerValidity,
-			advancePayment: advancePayment,
-			remainingPayment: remainingPayment,
-			workTime: workTime,
+			validezOferta: validezOferta,
+			condPagoAdelantado: condPagoAdelantado,
+			condPagoContraEntrega: condPagoContraEntrega,
+			plazoDeEntrega: plazoDeEntrega,
 		};
 
 		console.log(quotationData);
@@ -249,10 +249,10 @@ export default function QuotationForm() {
 					date={new Date().toLocaleDateString("es-CL")}
 					items={formattedItems}
 					notes={quotationNotes}
-					offerValidity={offerValidity}
-					advancePayment={advancePayment}
-					remainingPayment={remainingPayment}
-					workTime={workTime}
+					validezOferta={validezOferta}
+					condPagoAdelantado={condPagoAdelantado}
+					condPagoContraEntrega={condPagoContraEntrega}
+					plazoDeEntrega={plazoDeEntrega}
 
 				/>
 			).toBlob();
@@ -427,34 +427,34 @@ export default function QuotationForm() {
 					<CardContent>
 						<div className="space-y-4">
 							<div>
-								<Label htmlFor="offerValidity">Validez de la Oferta (días)</Label>
+								<Label htmlFor="validezOferta">Validez de la Oferta (días)</Label>
 								<Input
-									id="offerValidity"
+									id="validezOferta"
 									type="number"
-									value={offerValidity}
-									onChange={(e) => setOfferValidity(parseInt(e.target.value) || 0)}
+									value={validezOferta}
+									onChange={(e) => setValidezOferta(parseInt(e.target.value) || 0)}
 									placeholder="Ingrese la validez de la oferta en días"
 									required
 								/>
 							</div>
 							<div>
-								<Label htmlFor="advancePayment">% Adelantado</Label>
+								<Label htmlFor="condPagoAdelantado">% Adelantado</Label>
 								<Input
-									id="advancePayment"
+									id="condPagoAdelantado"
 									type="number"
-									value={advancePayment}
-									onChange={(e) => setAdvancePayment(parseInt(e.target.value) || 0)}
+									value={condPagoAdelantado}
+									onChange={(e) => setCondPagoAdelantado(parseInt(e.target.value) || 0)}
 									placeholder="Ingrese el porcentaje de pago adelantado"
 									required
 								/>
 							</div>
 							<div>
-								<Label htmlFor="remainingPayment">% Contra Entrega</Label>
+								<Label htmlFor="condPagoContraEntrega">% Contra Entrega</Label>
 								<Input
-									id="remainingPayment"
+									id="condPagoContraEntrega"
 									type="number"
-									value={remainingPayment}
-									onChange={(e) => setRemainingPayment(parseInt(e.target.value) || 0)}
+									value={condPagoContraEntrega}
+									onChange={(e) => setCondPagoContraEntrega(parseInt(e.target.value) || 0)}
 									placeholder="Ingrese el porcentaje de pago contra entrega"
 									required
 								/>
@@ -464,8 +464,8 @@ export default function QuotationForm() {
 								<Input
 									id="deliveryTime"
 									type="number"
-									value={workTime}
-									onChange={(e) => setWorkTime(parseInt(e.target.value) || 0)}
+									value={plazoDeEntrega}
+									onChange={(e) => setplazoDeEntrega(parseInt(e.target.value) || 0)}
 									placeholder="Ingrese el plazo de entrega en días"
 									required
 								/>
@@ -496,7 +496,7 @@ export default function QuotationForm() {
 						variant="outline"
 						onClick={generatePDF}
 						disabled={
-							advancePayment + remainingPayment !== 100 ||
+							condPagoAdelantado + condPagoContraEntrega !== 100 ||
 							!quotationName ||
 							!quotationDescription ||
 							(materials.length === 0 && extraItems.length === 0)
