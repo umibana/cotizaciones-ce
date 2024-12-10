@@ -76,6 +76,15 @@ interface CotizacionRequestDTO {
 
 }
 
+const fetchProyecto = async (projectId: string) => {
+	const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/${projectId}`);
+	if (!response.ok) {
+	  throw new Error("Error al cargar el proyecto");
+	}
+	return response.json();
+  };
+
+
 const getMaterials = async (): Promise<Material[]> => {
 	const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/materiales/all`;
 	console.log(url);
