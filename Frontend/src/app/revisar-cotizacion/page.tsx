@@ -6,6 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useSearchParams } from "next/navigation";
 import { useAuthenticatedQuery } from "@/hooks/useAuth";
+import { MdiRenameBox } from '@/components/ui/rename-icon';
+import { MdDriveFileRenameOutline } from "react-icons/md";
+import Link from "next/link";
 
 // Interfaces para los datos de la cotización
 interface ManoDeObra {
@@ -118,6 +121,9 @@ export default function RevisarCotizacion() {
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="validez">Validez Oferta (días)</Label>
+                            <Link href={`/editar-validez?id=${cotizacionId}`}> {/* Enlace al icono */}
+                                <MdDriveFileRenameOutline className="ml-2 cursor-pointer" /> {/* Icono con estilo */}
+                            </Link>
                             <Input
                                 id="validez"
                                 type="number"
