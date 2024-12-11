@@ -15,7 +15,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {useAuth0} from "@auth0/auth0-react";
+import { useAuth0 } from "@auth0/auth0-react";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -87,7 +87,9 @@ const UnassignedProjectList = ({
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const AssignedProjectList = ({
 	projects,
-	onReview, role}: ProjectListProps) => (
+	onReview,
+	role,
+}: ProjectListProps) => (
 	<Card className="flex-1">
 		<CardHeader>
 			<CardTitle>Proyectos asignados</CardTitle>
@@ -221,26 +223,34 @@ function Proyectos({ role }: ProyectosProps) {
 		role === "maestro" || role === "supervisor"
 			? "/asignadosEmail"
 			: role === "jefe de operaciones"
-				? "/proyectos/all"
-				: null;
+			? "/proyectos/all"
+			: null;
 
-	const usuario_info = useAuth0()
+	const usuario_info = useAuth0();
 	const usuario_info_email = usuario_info?.user?.email ?? null;
 	// console.log(usuario_info_email);
-	const requestBody = endpoint === "/asignadosEmail" ? { email: usuario_info_email } : undefined;
+	const requestBody =
+		endpoint === "/asignadosEmail" ? { email: usuario_info_email } : undefined;
 	console.log(`${process.env.NEXT_PUBLIC_BACKEND_URL}${endpoint}`);
 
 	// Obtener los datos de la API usando hook de useAuth
 	const { data, isLoading, error } = useAuthenticatedQuery<any[]>(
 		["projects", role],
 		`${process.env.NEXT_PUBLIC_BACKEND_URL}${endpoint}`,
-			options: {
-				method: requestBody ? "POST" : "GET",
-				headers: { "Content-Type": "application/json" },
-				body: requestBody ? JSON.stringify(requestBody) : undefined,
-			},
-		},
 		{
+			queryFn: async () => {
+				const response = await fetch(
+					`${process.env.NEXT_PUBLIC_BACKEND_URL}${endpoint}`,
+					{
+						method: requestBody ? "POST" : "GET",
+						body: requestBody ? JSON.stringify(requestBody) : undefined,
+					}
+				);
+				if (!response.ok) {
+					throw new Error("Network response was not ok");
+				}
+				return response.json();
+			},
 			staleTime: 0,
 			cacheTime: 0,
 			refetchOnMount: true,
@@ -259,8 +269,11 @@ function Proyectos({ role }: ProyectosProps) {
 
 	// Aca esta temporal, deberia manejarse diferente si es maestro
 	const projects = {
-		unassigned: data?.filter((project) => project.estado === "Sin asignar") ?? [],
-		assigned: data?.filter((project) => project.estado === "Preparacion cotizacion") ?? [],
+		unassigned:
+			data?.filter((project) => project.estado === "Sin asignar") ?? [],
+		assigned:
+			data?.filter((project) => project.estado === "Preparacion cotizacion") ??
+			[],
 		cotizados: data?.filter((project) => project.estado === "Cotizado") ?? [],
 		aprobados: data?.filter((project) => project.estado === "Aprobado") ?? [],
 		terminados: data?.filter((project) => project.estado === "Terminado") ?? [],
