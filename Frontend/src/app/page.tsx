@@ -170,13 +170,7 @@ const ProyectosCotizados = ({ projects,role }: ProjectListProps) => (
 							<DropdownMenuContent align="end">
 								<DropdownMenuLabel>Opciones</DropdownMenuLabel>
 								{(role === "jefe de operaciones" || role === "supervisor" ) && (<DropdownMenuItem>
-									<Link
-										href={{
-											pathname: "/revisar-cotizacion",
-											query: { id: project.idProyecto },
-										}}>
 										Actualizar: Aprobado
-									</Link>
 								</DropdownMenuItem>)}
 								<DropdownMenuItem>
 									<Link
@@ -229,13 +223,7 @@ const ProyectosAprobados = ({ projects, role}: ProjectListProps) => (
 							<DropdownMenuContent align="end">
 								<DropdownMenuLabel>Opciones</DropdownMenuLabel>
 								{(role === "jefe de operaciones" || role === "supervisor" ) && (<DropdownMenuItem>
-									<Link
-										href={{
-											pathname: "/revisar-cotizacion",
-											query: { id: project.idProyecto },
-										}}>
-										Actualizar: Terminado
-									</Link>
+									Actualizar: Terminado
 								</DropdownMenuItem>)}
 								<DropdownMenuItem>
 									<Link
