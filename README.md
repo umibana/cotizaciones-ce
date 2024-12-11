@@ -27,3 +27,15 @@
 La aplicación estará disponible en:
 - Backend: http://localhost:8080
 - Base de datos: localhost:5432
+
+
+## Para desarollar
+
+1. Clonar y después construir
+```bash
+docker buildx build --platform linux/amd64,linux/arm64 \
+  -t SU-USERNAME/NOMBRE-DE-IMAGEN:latest \
+  -f Backend/Dockerfile \
+  --push \
+  ./Backend
+  ```

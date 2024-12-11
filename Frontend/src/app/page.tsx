@@ -45,7 +45,7 @@ const UnassignedProjectList = ({
 				)}
 			</CardHeader>
 			<CardContent>
-				<ScrollArea className="h-[200px] w-full rounded-md border p-4">
+				<ScrollArea className="h-[350px] w-full rounded-md border p-4">
 					{projects.map((project: any) => (
 						<div
 							key={project.idProyecto}
@@ -138,15 +138,13 @@ const AssignedProjectList = ({
 	</Card>
 );
 
-const ProyectosCotizados = ({
-								projects,
-							}: ProjectListProps) => (
+const ProyectosCotizados = ({ projects }: ProjectListProps) => (
 	<Card className="flex-1">
 		<CardHeader>
 			<CardTitle>Proyectos cotizados</CardTitle>
 		</CardHeader>
 		<CardContent>
-			<ScrollArea className="h-[200px] w-full rounded-md border p-4">
+			<ScrollArea className="h-[350px] w-full rounded-md border p-4">
 				{projects.map((project: any) => (
 					<div
 						key={project.idProyecto}
@@ -155,7 +153,8 @@ const ProyectosCotizados = ({
 						<span className="text-lg font-bold w-full sm:w-auto overflow-hidden text-ellipsis">
 							{project.nombre}
 						</span>
-					</div>))}
+					</div>
+				))}
 			</ScrollArea>
 		</CardContent>
 	</Card>
@@ -167,7 +166,7 @@ const ProyectosAprobados = () => (
 			<CardTitle>Proyectos aprobados</CardTitle>
 		</CardHeader>
 		<CardContent>
-			<ScrollArea className="h-[200px] w-full rounded-md border p-4">
+			<ScrollArea className="h-[350px] w-full rounded-md border p-4">
 				<span className="text-lg font-bold"></span>
 				<div className="flex items-center gap-2">
 					<span className="font-medium"></span>
@@ -183,7 +182,7 @@ const ProyectosTerminados = () => (
 			<CardTitle>Proyectos terminados</CardTitle>
 		</CardHeader>
 		<CardContent>
-			<ScrollArea className="h-[200px] w-full rounded-md border p-4">
+			<ScrollArea className="h-[350px] w-full rounded-md border p-4">
 				<span className="text-lg font-bold"></span>
 				<div className="flex items-center gap-2">
 					<span className="font-medium"></span>
@@ -382,7 +381,9 @@ function Proyectos({ role }: ProyectosProps) {
 			{selectedFilter === "Preparacion cotizacion" && (
 				<AssignedProjectList projects={projects.assigned} role={role} />
 			)}
-			{selectedFilter === "Cotizado" && <ProyectosCotizados projects={projects.cotizados}/>}
+			{selectedFilter === "Cotizado" && (
+				<ProyectosCotizados projects={projects.cotizados} />
+			)}
 			{selectedFilter === "Aprobado" && <ProyectosAprobados />}
 			{selectedFilter === "Terminado" && <ProyectosTerminados />}
 
