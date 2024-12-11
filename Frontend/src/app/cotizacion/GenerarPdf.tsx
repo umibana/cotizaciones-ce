@@ -175,9 +175,10 @@ export const QuotationPDF = ({
 	advancePayment,
 	remainingPayment,
 	workTime,
+	earningPercentaje,
 }: QuotationPDFProps) => {
 	const subtotal = items.reduce(
-		(acc, item) => acc + (item.units * item.unitPrice),
+		(acc, item) => acc + (item.units * item.unitPrice) + (item.units * item.unitPrice) *(earningPercentaje/100),
 		0
 	  );
 
@@ -276,10 +277,10 @@ export const QuotationPDF = ({
 							<Text style={styles.colItem}>{item.description}</Text>
 							<Text style={styles.colUnit}>{item.units}</Text>
 							<Text style={styles.colPrice}>
-								$ {item.unitPrice.toLocaleString()}
+								$ {(item.unitPrice + (item.unitPrice* (earningPercentaje/100))).toLocaleString()}
 							</Text>
 							<Text style={styles.colTotal}>
-								$ {(item.units * item.unitPrice).toLocaleString()}
+								$ {((item.units * item.unitPrice) + (item.units * item.unitPrice)*(earningPercentaje/100)).toLocaleString()}
 							</Text>
 						</View>
 					))}

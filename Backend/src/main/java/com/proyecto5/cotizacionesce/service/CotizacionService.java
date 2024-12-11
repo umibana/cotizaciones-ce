@@ -37,19 +37,18 @@ public class CotizacionService {
         Cotizacion cotizacion = new Cotizacion();
         cotizacion.setNombre(request.getNombre());
         cotizacion.setDescripcion(request.getDescripcion());
-        /*
         cotizacion.setNotas(request.getNotas());
-        cotizacion.setCondDePagoAdelantado(String.valueOf(request.getCondPagoAdelantado()));
-        cotizacion.setCondDePagoContraEntrega(String.valueOf(request.getCondPagoContraEntrega()));
+        cotizacion.setCondPagoAdelantado(String.valueOf(request.getCondPagoAdelantado()));
+        cotizacion.setCondPagoContraEntrega(String.valueOf(request.getCondPagoContraEntrega()));
         cotizacion.setValidezOferta(request.getValidezOferta());
         cotizacion.setPlazoDeEntrega(request.getPlazoDeEntrega());
+        cotizacion.setPorcentaje(request.getPorcentaje());
 
         if (request.getIdProyecto() != null) {
             Proyecto proyecto = proyectoService.getProyectoById(request.getIdProyecto())
                     .orElseThrow(() -> new IllegalArgumentException("Proyecto no encontrado"));
             cotizacion.setIdProyecto(proyecto.getIdProyecto()); // Asociar el proyecto a la cotización
         }
-         */
 
         cotizacion.setTimestamp(LocalDateTime.now());
         cotizacion.setIdProyecto(request.getIdProyecto());
@@ -79,8 +78,8 @@ public class CotizacionService {
                 .map(existing -> {
                     existing.setValidezOferta(cotizacion.getValidezOferta());
                     existing.setPrecioTentativo(cotizacion.getPrecioTentativo());
-                    existing.setCondDePagoAdelantado(cotizacion.getCondDePagoAdelantado());
-                    existing.setCondDePagoContraEntrega(cotizacion.getCondDePagoContraEntrega());
+                    existing.setCondPagoAdelantado(cotizacion.getCondPagoAdelantado());
+                    existing.setCondPagoContraEntrega(cotizacion.getCondPagoContraEntrega());
                     existing.setPlazoDeEntrega(cotizacion.getPlazoDeEntrega());
                     existing.setNotas(cotizacion.getNotas());
                     existing.setPorcentaje(cotizacion.getPorcentaje());

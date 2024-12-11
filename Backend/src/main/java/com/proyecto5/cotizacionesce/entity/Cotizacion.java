@@ -25,10 +25,10 @@ public class Cotizacion {
 
     private Integer validezOferta;
     @Column(name = "cond_pago_adelantado")
-    private String condDePagoAdelantado; // Ejemplo 60%
+    private String condPagoAdelantado; // Ejemplo 60%
 
     @Column(name = "cond_pago_contra")
-    private String condDePagoContraEntrega; //Ejemplo 40%
+    private String condPagoContraEntrega; //Ejemplo 40%
 
     private Integer plazoDeEntrega;
 
@@ -36,7 +36,7 @@ public class Cotizacion {
 
     private String notas;
 
-    private Double porcentaje; //Se refiere a la metrica de % de utilidad
+    private Integer porcentaje; //Se refiere a la metrica de % de utilidad
 
     private String estado; //En revision y Aprobada
 

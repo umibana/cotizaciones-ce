@@ -72,6 +72,7 @@ interface CotizacionRequestDTO {
 	condPagoAdelantado: number;
 	condPagoContraEntrega: number;
 	plazoDeEntrega: number;
+	porcentaje: number;
 }
 
 // Comentado para que funcione en vercel mientras
@@ -124,7 +125,7 @@ const createQuotation = async (
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ quotationData, idProyecto: projectId }),
+				body: JSON.stringify(quotationData),
 			}
 		);
 		if (!response.ok) {
@@ -169,6 +170,7 @@ export default function QuotationForm() {
 	const [condPagoAdelantado, setCondPagoAdelantado] = useState(50);
 	const [condPagoContraEntrega, setCondPagoContraEntrega] = useState(50);
 	const [plazoDeEntrega, setplazoDeEntrega] = useState(15);
+	const [porcentaje, setPorcentaje] = useState(20);
 	const [manoObras, setManoObras] = useState<ManoObraDTO[]>([]);
 
 	const [manoObraOpen, setManoObraOpen] = useState(false);
@@ -297,6 +299,9 @@ export default function QuotationForm() {
 			condPagoAdelantado: condPagoAdelantado,
 			condPagoContraEntrega: condPagoContraEntrega,
 			plazoDeEntrega: plazoDeEntrega,
+			porcentaje: porcentaje,
+			idProyecto: parseInt(projectId),
+			idUser: proyecto?.idUser,
 		};
 
 		console.log("Sending data:", quotationData);
@@ -355,6 +360,7 @@ export default function QuotationForm() {
 					advancePayment={condPagoAdelantado}
 					remainingPayment={condPagoContraEntrega}
 					workTime={plazoDeEntrega}
+					earningPercentaje={porcentaje}
 				/>
 			).toBlob();
 
@@ -577,6 +583,30 @@ export default function QuotationForm() {
 						</div>
 					</CardContent>
 				</Card>
+
+				<Card className="mb-6">
+					<CardHeader>
+						<CardTitle>Métrica de ganancia</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<div className="space-y-4">
+							<div>
+								<Label htmlFor="earningPercentaje">Porcentaje</Label>
+								<Input
+									id="earningPercentaje"
+									type="number"
+									value={porcentaje}
+									onChange={(e) =>
+										setPorcentaje(parseInt(e.target.value) || 0)
+									}
+									placeholder="Ingrese el porcentaje de ganancia (Ejemplo: 20)"
+									required
+								/>
+							</div>
+						</div>
+					</CardContent>
+				</Card>
+
 
 				<Card className="mb-6">
 					<CardHeader>
