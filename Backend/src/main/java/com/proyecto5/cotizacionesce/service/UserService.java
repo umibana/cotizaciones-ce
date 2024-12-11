@@ -1,6 +1,7 @@
 package com.proyecto5.cotizacionesce.service;
 
 import com.proyecto5.cotizacionesce.entity.User;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.proyecto5.cotizacionesce.repository.UserRepository;
@@ -25,6 +26,12 @@ public class UserService {
 
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
+    }
+
+    public Long getIdByEmail(String email) {
+        Optional<User> usuario = userRepository.findUserByEmail(email);
+        Long id_usuario = usuario.get().getIdUser();
+        return id_usuario;
     }
 
     public List<User> getAllUsers() {

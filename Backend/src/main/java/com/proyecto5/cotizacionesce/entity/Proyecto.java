@@ -35,6 +35,6 @@ public class Proyecto {
     public Long idCliente;
 
     @Column(name = "id_User")
-    public Long idUser;
+    public Long idUserBase;
 
 }

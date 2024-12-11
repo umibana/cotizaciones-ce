@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,7 +13,15 @@ import {
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useAuthenticatedMutation } from "@/hooks/useAuth";
+import { useAuthenticatedMutation, useAuthenticatedQuery } from "@/hooks/useAuth";
+import { useAuth0 } from "@auth0/auth0-react";
+
+// Add a type for the API response
+type ProjectResponse = {
+	success: boolean;
+	message?: string;
+	error?: string;
+};
 
 type proyectoData = {
 	nombre: string;
@@ -26,16 +34,43 @@ type proyectoData = {
 	clienteNombre: string;
 	clienteNumero: string;
 	clienteDireccion: string;
+	idCreador: string | undefined;
 };
 
-// Add a type for the API response
-type ProjectResponse = {
-	success: boolean;
-	message?: string;
-	error?: string;
-};
+
 
 export default function NuevoProyecto() {
+	const usuario_info = useAuth0();
+	const usuario_info_email = usuario_info?.user?.email ?? null;
+
+	const [userId, setUserId] = useState<string | null>(null);
+	const getUserId = async (email: string) => {
+		try {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/idporemail`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({email:email}),
+			});
+
+			if (response.ok) {
+				const idUser = await response.json();
+				setUserId(idUser); // Establecer el ID en el estado
+				console.log("se logro");
+			} else {
+				console.error("Error al obtener el ID del usuario");
+			}
+		} catch (error) {
+			console.error("Error al hacer la solicitud:", error);
+		}
+	};
+
+
+	if (usuario_info_email && !userId) {
+		getUserId(usuario_info_email);
+	}
+
 	const [proyecto, setProyecto] = useState<proyectoData>({
 		nombre: "",
 		descripcion: "",
@@ -47,7 +82,10 @@ export default function NuevoProyecto() {
 		clienteNumero: "",
 		clienteCorreo: "",
 		clienteDireccion: "",
+		idCreador: userId,
 	});
+
+	// Obtener los datos de la API usando hook de useAuth
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
@@ -66,14 +104,21 @@ export default function NuevoProyecto() {
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		createProjectMutation.mutate(proyecto, {
+
+		// Asigna el ID del creador (userId) al proyecto antes de enviarlo
+		const proyectoConId = {
+			...proyecto,
+			idCreador: userId?.toString() ?? undefined, // Asigna el ID si está disponible
+		};
+
+		createProjectMutation.mutate(proyectoConId, {
 			onSuccess: () => {
 				alert("Proyecto creado exitosamente!");
 				handleClear();
-				window.location.href = '/';
+				window.location.href = "/";
 			},
 			onError: (error) => {
-				console.error("Error creating project:", error);
+				console.error("Error creando el proyecto:", error);
 				alert("Error al crear el proyecto");
 			},
 		});
@@ -91,13 +136,15 @@ export default function NuevoProyecto() {
 			clienteNumero: "",
 			clienteCorreo: "",
 			clienteDireccion: "",
+			idCreador: "",
 		});
 	};
 
 	return (
 		<form
 			onSubmit={handleSubmit}
-			className="container mx-auto p-4 max-w-2xl space-y-8">
+			className="container mx-auto p-4 max-w-2xl space-y-8"
+		>
 			<Card>
 				<CardHeader>
 					<CardTitle>Nuevo Proyecto</CardTitle>
@@ -143,7 +190,8 @@ export default function NuevoProyecto() {
 									className={cn(
 										"w-full justify-start text-left font-normal",
 										!proyecto.fechaVisita && "text-muted-foreground"
-									)}>
+									)}
+								>
 									<CalendarIcon className="mr-2 h-4 w-4" />
 									{proyecto.fechaVisita ? (
 										format(proyecto.fechaVisita, "PPP")

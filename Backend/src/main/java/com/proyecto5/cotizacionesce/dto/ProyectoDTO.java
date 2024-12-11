@@ -15,4 +15,6 @@ public class ProyectoDTO {
     public String clienteNombre;
     public String clienteNumero;
     public String clienteDireccion;
+
+    public Long idCreador;
 }

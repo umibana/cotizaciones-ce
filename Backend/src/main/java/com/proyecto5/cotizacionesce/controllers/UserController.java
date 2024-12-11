@@ -62,4 +62,11 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/idporemail")
+    public ResponseEntity<Long> getIdByEmail(@RequestBody Map<String, String> payload) {
+        String email = payload.get("email");
+        Long idUser = userService.getIdByEmail(email);
+        return ResponseEntity.ok(idUser);
+    }
 }

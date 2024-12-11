@@ -68,8 +68,14 @@ const UnassignedProjectList = ({
 												Asignar
 											</Link>
 										</DropdownMenuItem>
-										<DropdownMenuItem onClick={() => onReview?.(project.id)}>
-											Revisar Proyecto
+										<DropdownMenuItem>
+											<Link
+												href={{
+													pathname: "/revisar-proyecto",
+													query: { id: project.idProyecto },
+												}}>
+												Revisar Proyecto
+											</Link>
 										</DropdownMenuItem>
 										<DropdownMenuSeparator/>
 										{/* Aquí puedes agregar más opciones si es necesario */}
@@ -121,8 +127,14 @@ const AssignedProjectList = ({
 											Crear Cotización
 										</Link>
 									</DropdownMenuItem>
-									<DropdownMenuItem onClick={() => onReview?.(project.id)}>
-										Revisar Proyecto
+									<DropdownMenuItem>
+										<Link
+											href={{
+												pathname: "/revisar-proyecto",
+												query: { id: project.idProyecto },
+											}}>
+											Revisar Proyecto
+										</Link>
 									</DropdownMenuItem>
 									<DropdownMenuSeparator />
 									{/* Aquí puedes agregar más opciones si es necesario */}
@@ -175,8 +187,14 @@ const ProyectosCotizados = ({ projects,role }: ProjectListProps) => (
 										Revisar Cotización
 									</Link>
 								</DropdownMenuItem>
-								<DropdownMenuItem onClick={() => onReview?.(project.id)}>
-									Revisar Proyecto
+								<DropdownMenuItem>
+									<Link
+										href={{
+											pathname: "/revisar-proyecto",
+											query: { id: project.idProyecto },
+										}}>
+										Revisar Proyecto
+									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuSeparator />
 								{/* Aquí puedes agregar más opciones si es necesario */}
@@ -228,8 +246,14 @@ const ProyectosAprobados = ({ projects, role}: ProjectListProps) => (
 										Revisar Cotización
 									</Link>
 								</DropdownMenuItem>
-								<DropdownMenuItem onClick={() => onReview?.(project.id)}>
-									Revisar Proyecto
+								<DropdownMenuItem>
+									<Link
+										href={{
+											pathname: "/revisar-proyecto",
+											query: { id: project.idProyecto },
+										}}>
+										Revisar Proyecto
+									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuSeparator />
 								{/* Aquí puedes agregar más opciones si es necesario */}
@@ -272,8 +296,14 @@ const ProyectosTerminados = ({ projects, role }: ProjectListProps) => (
 										Revisar Cotización
 									</Link>
 								</DropdownMenuItem>
-								<DropdownMenuItem onClick={() => onReview?.(project.id)}>
-									Revisar Proyecto
+								<DropdownMenuItem>
+									<Link
+										href={{
+											pathname: "/revisar-proyecto",
+											query: { id: project.idProyecto },
+										}}>
+										Revisar Proyecto
+									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuSeparator />
 								{/* Aquí puedes agregar más opciones si es necesario */}
@@ -319,7 +349,7 @@ function Proyectos({ role }: ProyectosProps) {
 	const [selectedFilter, setSelectedFilter] = useState<string>(() => {
 		switch (role) {
 			case "maestro":
-				return "Cotizado"
+				return "Cotizado";
 			case "supervisor":
 				return "Preparacion cotizacion";
 			case "jefe de operaciones":

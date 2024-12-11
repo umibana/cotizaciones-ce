@@ -43,7 +43,6 @@ public class ProyectoService {
         return proyectoRepository.findById(idProyecto);
     }
 
-    public List<Proyecto> getProyectoByIdUser(Long idUser){ return proyectoRepository.findByIdUser(idUser); }
 
     public Proyecto saveProyecto(Proyecto proyecto) {
         return proyectoRepository.save(proyecto);
@@ -68,8 +67,9 @@ public class ProyectoService {
         proyecto.setDireccion(proyectoDTO.direccion);
         proyecto.setEstado(proyectoDTO.estado);
         proyecto.setFechaVisita(proyectoDTO.fechaVisita);
-
+        proyecto.setIdUserBase(proyectoDTO.idCreador);
         proyecto.setIdCliente(cliente.getUniqueID());
+
 
         return proyectoRepository.save(proyecto);
     }
