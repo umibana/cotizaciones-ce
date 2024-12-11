@@ -58,12 +58,17 @@ public class ProyectoService {
                 proyectoDTO.clienteCorreo
         );
 
+        if (cliente.getUniqueID() == null) {
+            throw new RuntimeException("El cliente no se creó correctamente.");
+        }
+
         Proyecto proyecto = new Proyecto();
         proyecto.setNombre(proyectoDTO.nombre);
         proyecto.setDescripcion(proyectoDTO.descripcion);
         proyecto.setDireccion(proyectoDTO.direccion);
         proyecto.setEstado(proyectoDTO.estado);
         proyecto.setFechaVisita(proyectoDTO.fechaVisita);
+
         proyecto.setIdCliente(cliente.getUniqueID());
 
         return proyectoRepository.save(proyecto);
