@@ -83,4 +83,6 @@ public class CotizacionRequestDTO {
     public void setExtraItems(List<PersonalizadoDTO> extraItems) {
         this.extraItems = extraItems;
     }
+
+    private List<ManoObraRequestDTO> manoObras;
 }

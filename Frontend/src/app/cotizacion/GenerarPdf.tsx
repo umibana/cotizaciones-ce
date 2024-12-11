@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
 });
 
 interface ManoObraItem {
-	nombreMaterial: string;
+	nombreManoObra: string;
 	areaTrabajarM2: number;
 	rendimientoMaterialM2: number;
 	costoMaterialUnitario: number;
@@ -298,7 +298,7 @@ export const QuotationPDF = ({
 				</View>
 				{manoObras.map((obra, index) => (
 					<View key={index} style={styles.tableRow}>
-						<Text style={styles.colItem}>{obra.nombreMaterial}</Text>
+						<Text style={styles.colItem}>{obra.nombreManoObra}</Text>
 						<Text style={styles.colUnit}>{obra.areaTrabajarM2}</Text>
 						<Text style={styles.colUnit}>{obra.rendimientoMaterialM2}</Text>
 						<Text style={styles.colPrice}>

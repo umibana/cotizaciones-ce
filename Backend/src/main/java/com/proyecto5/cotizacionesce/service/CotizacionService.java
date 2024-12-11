@@ -1,12 +1,10 @@
 package com.proyecto5.cotizacionesce.service;
 
 import com.proyecto5.cotizacionesce.dto.CotizacionRequestDTO;
+import com.proyecto5.cotizacionesce.dto.ManoObraRequestDTO;
 import com.proyecto5.cotizacionesce.dto.MaterialRequestDTO;
 import com.proyecto5.cotizacionesce.dto.PersonalizadoDTO;
-import com.proyecto5.cotizacionesce.entity.Cotizacion;
-import com.proyecto5.cotizacionesce.entity.CotizacionMaterial;
-import com.proyecto5.cotizacionesce.entity.Personalizado;
-import com.proyecto5.cotizacionesce.entity.Proyecto;
+import com.proyecto5.cotizacionesce.entity.*;
 import com.proyecto5.cotizacionesce.repository.CotizacionMaterialRepository;
 import com.proyecto5.cotizacionesce.repository.CotizacionRepository;
 import com.proyecto5.cotizacionesce.repository.PersonalizadoRepository;
@@ -30,6 +28,8 @@ public class CotizacionService {
     private final PersonalizadoService personalizadoService;
     @Autowired
     private final ProyectoService proyectoService;
+    @Autowired
+    private final ManoObraService manoObraService;
 
 
     public Cotizacion createCotizacion(CotizacionRequestDTO request) {
@@ -43,6 +43,7 @@ public class CotizacionService {
         cotizacion.setValidezOferta(request.getValidezOferta());
         cotizacion.setPlazoDeEntrega(request.getPlazoDeEntrega());
         cotizacion.setPorcentaje(request.getPorcentaje());
+
 
         if (request.getIdProyecto() != null) {
             Proyecto proyecto = proyectoService.getProyectoById(request.getIdProyecto())
@@ -64,6 +65,11 @@ public class CotizacionService {
         // En caso de tener items personalizados, se crearan con el método
         personalizadoService.createPersonalizados(
                 request.getExtraItems(),
+                savedCotizacion.getId_Cotizacion()
+        );
+        System.out.println(request.getManoObras());
+        manoObraService.createManoObras(
+                request.getManoObras(),
                 savedCotizacion.getId_Cotizacion()
         );
 

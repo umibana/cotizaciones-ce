@@ -48,7 +48,7 @@ interface ExtraItem {
 }
 
 interface ManoObraDTO {
-	nombreMaterial: string;
+	nombreManoObra: string;
 	areaTrabajarM2: number;
 	rendimientoMaterialM2: number;
 	costoMaterialUnitario: number;
@@ -175,7 +175,7 @@ export default function QuotationForm() {
 
 	const [manoObraOpen, setManoObraOpen] = useState(false);
 	const [manoObraTemp, setManoObraTemp] = useState<ManoObraDTO>({
-		nombreMaterial: "",
+		nombreManoObra: "",
 		areaTrabajarM2: 0,
 		rendimientoMaterialM2: 0,
 		costoMaterialUnitario: 0,
@@ -230,7 +230,7 @@ export default function QuotationForm() {
 		setManoObras((prev) => [
 			...prev,
 			{
-				nombreMaterial: "",
+				nombreManoObra: "",
 				areaTrabajarM2: 0,
 				rendimientoMaterialM2: 0,
 				costoMaterialUnitario: 0,
@@ -553,7 +553,7 @@ export default function QuotationForm() {
 									{manoObras.map((obra, index) => (
 										<tr key={index} className="hover:bg-gray-50">
 											<td className="border border-gray-300 px-4 py-2">
-												{obra.nombreMaterial}
+												{obra.nombreManoObra}
 											</td>
 											<td className="border border-gray-300 px-4 py-2 text-center">
 												{obra.areaTrabajarM2}
@@ -706,14 +706,14 @@ export default function QuotationForm() {
 						</DialogHeader>
 						<div className="space-y-4">
 							<div>
-								<Label htmlFor="nombreMaterial">Nombre de la mano de obra</Label>
+								<Label htmlFor="nombreManoObra">Nombre de la mano de obra</Label>
 								<Input
-									id="nombreMaterial"
-									value={manoObraTemp.nombreMaterial}
+									id="nombreManoObra"
+									value={manoObraTemp.nombreManoObra}
 									onChange={(e) =>
 										setManoObraTemp({
 										...manoObraTemp,
-										nombreMaterial: e.target.value,
+										nombreManoObra: e.target.value,
 										})
 									}
 									placeholder="Ejemplo: Pintura"
@@ -787,7 +787,7 @@ export default function QuotationForm() {
 									setManoObras([...manoObras, manoObraTemp]); // Agrega la nueva entrada
 									setManoObraOpen(false); // Cierra el modal
 									setManoObraTemp({
-										nombreMaterial: "",
+										nombreManoObra: "",
 										areaTrabajarM2: 0,
 										rendimientoMaterialM2: 0,
 										costoMaterialUnitario: 0,
