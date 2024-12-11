@@ -231,7 +231,6 @@ function Proyectos({ role }: ProyectosProps) {
 	// console.log(usuario_info_email);
 	const requestBody =
 		endpoint === "/asignadosEmail" ? { email: usuario_info_email } : undefined;
-	console.log(`${process.env.NEXT_PUBLIC_BACKEND_URL}${endpoint}`);
 
 	// Obtener los datos de la API usando hook de useAuth
 	const { data, isLoading, error } = useAuthenticatedQuery<any[]>(
@@ -239,13 +238,22 @@ function Proyectos({ role }: ProyectosProps) {
 		`${process.env.NEXT_PUBLIC_BACKEND_URL}${endpoint}`,
 		{
 			queryFn: async () => {
+				const requestConfig: RequestInit = {
+					method: requestBody ? "POST" : "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+				};
+
+				if (requestBody) {
+					requestConfig.body = JSON.stringify(requestBody);
+				}
+
 				const response = await fetch(
 					`${process.env.NEXT_PUBLIC_BACKEND_URL}${endpoint}`,
-					{
-						method: requestBody ? "POST" : "GET",
-						body: requestBody ? JSON.stringify(requestBody) : undefined,
-					}
+					requestConfig
 				);
+
 				if (!response.ok) {
 					throw new Error("Network response was not ok");
 				}
