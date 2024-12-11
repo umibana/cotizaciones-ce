@@ -11,6 +11,7 @@ import java.util.List;
 @Setter
 @Getter
 public class CotizacionRequestDTO {
+    @Getter
     @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
 
@@ -18,6 +19,7 @@ public class CotizacionRequestDTO {
     private String descripcion;
 
     private Long idProyecto;  // This will come from the first fetch
+    private Long idUser;
 
     @NotEmpty(message = "Debe incluir al menos un material")
     private List<MaterialRequestDTO> materials;
@@ -26,6 +28,8 @@ public class CotizacionRequestDTO {
 
     private String notas;
 
+    @NotNull(message = "El porcentaje es obligatorio")
+    private Integer porcentaje;
 
 
     @NotNull(message = "El plazo de entrega es obligatorio")
@@ -41,13 +45,13 @@ public class CotizacionRequestDTO {
     @NotNull(message = "La validez de la oferta es obligatoria")
     private Integer validezOferta;
 
-    public String getNombre() {
-        return nombre;
-    }
+    @Getter
+    private List<ManoObraRequestDTO> manoObras;
 
     public Long getIdProyecto() {
         return idProyecto;
     }
+
 
     public void setIdProyecto(Long idProyecto) {
         this.idProyecto = idProyecto;
@@ -81,4 +85,9 @@ public class CotizacionRequestDTO {
     public void setExtraItems(List<PersonalizadoDTO> extraItems) {
         this.extraItems = extraItems;
     }
+
+    public void setManoObras(List<ManoObraRequestDTO> manoObra) {
+        this.manoObras = manoObra;
+    }
 }
+
