@@ -1,6 +1,5 @@
 package com.proyecto5.cotizacionesce.controllers;
 
-
 import com.proyecto5.cotizacionesce.dto.AsignarColaboradoresDTO;
 import com.proyecto5.cotizacionesce.dto.ProyectoDTO;
 import com.proyecto5.cotizacionesce.entity.Proyecto;
@@ -36,17 +35,18 @@ public class ProyectoController {
     }
 
     @PostMapping
-    public ResponseEntity<Proyecto> create(@RequestBody Proyecto proyecto){
+    public ResponseEntity<Proyecto> create(@RequestBody Proyecto proyecto) {
         Proyecto proyectoNuevo = proyectoService.saveProyecto(proyecto);
         return ResponseEntity.ok(proyectoNuevo);
     }
+
     @PostMapping("/nuevo")
     public ResponseEntity<?> createProyecto(@RequestBody ProyectoDTO request) {
         try {
             Proyecto proyecto = proyectoService.createProyecto(request);
             Map<String, String> response = new HashMap<>();
             response.put("message", "Proyecto " + proyecto.getIdProyecto() + " creada exitosamente");
-            return ResponseEntity.ok(response);  // Send JSON
+            return ResponseEntity.ok(response); // Send JSON
         } catch (Exception e) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("message", "Error al crear el proyecto: " + e.getMessage());
@@ -55,7 +55,8 @@ public class ProyectoController {
     }
 
     @PostMapping("/{projectId}/asignar")
-    public ResponseEntity<?> asignarColaboradores(@PathVariable Long projectId, @RequestBody AsignarColaboradoresDTO request) {
+    public ResponseEntity<?> asignarColaboradores(@PathVariable Long projectId,
+            @RequestBody AsignarColaboradoresDTO request) {
         try {
             proyectoService.asignarColaboradoresAlProyecto(projectId, request.getWorkerIds());
             Map<String, String> response = new HashMap<>();
@@ -73,6 +74,7 @@ public class ProyectoController {
         List<ProyectoUser> listaProyectosAsignados = proyectoUserService.getProyectosUsers();
         return ResponseEntity.ok(listaProyectosAsignados);
     }
+
     @GetMapping("/asignados/{idUser}")
     public ResponseEntity<List<ProyectoUser>> listarProyectosAsignadosPorUsuario(@PathVariable Long idUser) {
         List<ProyectoUser> listaProyectosAsignados = proyectoUserService.getProyectoAsignados(idUser);
@@ -80,14 +82,14 @@ public class ProyectoController {
     }
 
     @PutMapping("/estados/{idProyecto}")
-    public ResponseEntity<Proyecto> estadoRevision(@PathVariable Long idProyecto){
+    public ResponseEntity<Proyecto> estadoRevision(@PathVariable Long idProyecto) {
         Proyecto proyecto = proyectoService.estadoRevision(idProyecto);
         return ResponseEntity.ok(proyecto);
     }
 
     @PostMapping("/asignadosEmail")
-    public ResponseEntity<List<Proyecto>> listarProyectosAsignadosPorEmail(@RequestBody String email){
-        System.out.print(email);
+    public ResponseEntity<List<Proyecto>> listarProyectosAsignadosPorEmail(@RequestBody Map<String, String> payload) {
+        String email = payload.get("email");
         List<Proyecto> proyecto = proyectoService.listaProyectosAsignadosPorEmail(email);
         return ResponseEntity.ok(proyecto);
     }

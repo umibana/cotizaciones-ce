@@ -230,7 +230,9 @@ function Proyectos({ role }: ProyectosProps) {
 	const usuario_info_email = usuario_info?.user?.email ?? null;
 	// console.log(usuario_info_email);
 	const requestBody =
-		endpoint === "/proyectos/asignadosEmail" ? { usuario_info_email } : undefined;
+		endpoint === "/proyectos/asignadosEmail"
+			? { email: usuario_info_email }
+			: undefined;
 
 	// Obtener los datos de la API usando hook de useAuth
 	const { data, isLoading, error } = useAuthenticatedQuery<any[]>(
