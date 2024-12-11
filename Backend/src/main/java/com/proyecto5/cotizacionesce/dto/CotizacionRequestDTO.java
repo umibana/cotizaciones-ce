@@ -25,6 +25,8 @@ public class CotizacionRequestDTO {
     private List<PersonalizadoDTO> extraItems;
 
     private String notas;
+    @NotNull(message = "El porcentaje es obligatorio")
+    private Integer porcentaje;
 
 
 
