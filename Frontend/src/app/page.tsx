@@ -50,7 +50,7 @@ const UnassignedProjectList = ({
 						<div
 							key={project.idProyecto}
 							className="mb-2 flex items-center justify-between rounded-lg bg-muted p-2">
-							<span className="text-lg font-bold">{project.nombre}</span>
+							<span className="md:text-lg font-bold">{project.nombre}</span>
 							<div className="flex gap-2">
 								<Link
 									rel="stylesheet"
@@ -95,13 +95,13 @@ const AssignedProjectList = ({
 			<CardTitle>Proyectos asignados</CardTitle>
 		</CardHeader>
 		<CardContent>
-			<ScrollArea className="h-[200px] w-full rounded-md border p-4">
+			<ScrollArea className="h-[350px] w-full rounded-md border p-4">
 				{projects.map((project: any) => (
 					<div
 						key={project.idProyecto}
 						className="mb-2 flex flex-wrap items-center justify-between bg-muted p-2">
 						{/* Nombre del proyecto con texto truncado en pantallas pequeñas */}
-						<span className="text-lg font-bold w-full sm:w-auto overflow-hidden text-ellipsis">
+						<span className="md:text-lg font-bold w-full sm:w-auto overflow-hidden text-ellipsis">
 							{project.nombre}
 						</span>
 						<div className="flex items-center gap-2 w-full sm:w-auto mt-2 sm:mt-0">
@@ -138,17 +138,24 @@ const AssignedProjectList = ({
 	</Card>
 );
 
-const ProyectosCotizados = () => (
+const ProyectosCotizados = ({
+								projects,
+							}: ProjectListProps) => (
 	<Card className="flex-1">
 		<CardHeader>
 			<CardTitle>Proyectos cotizados</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<ScrollArea className="h-[200px] w-full rounded-md border p-4">
-				<span className="text-lg font-bold"></span>
-				<div className="flex items-center gap-2">
-					<span className="font-medium"></span>
-				</div>
+				{projects.map((project: any) => (
+					<div
+						key={project.idProyecto}
+						className="mb-2 flex flex-wrap items-center justify-between bg-muted p-2">
+						{/* Nombre del proyecto con texto truncado en pantallas pequeñas */}
+						<span className="text-lg font-bold w-full sm:w-auto overflow-hidden text-ellipsis">
+							{project.nombre}
+						</span>
+					</div>))}
 			</ScrollArea>
 		</CardContent>
 	</Card>
@@ -375,7 +382,7 @@ function Proyectos({ role }: ProyectosProps) {
 			{selectedFilter === "Preparacion cotizacion" && (
 				<AssignedProjectList projects={projects.assigned} role={role} />
 			)}
-			{selectedFilter === "Cotizado" && <ProyectosCotizados />}
+			{selectedFilter === "Cotizado" && <ProyectosCotizados projects={projects.cotizados}/>}
 			{selectedFilter === "Aprobado" && <ProyectosAprobados />}
 			{selectedFilter === "Terminado" && <ProyectosTerminados />}
 

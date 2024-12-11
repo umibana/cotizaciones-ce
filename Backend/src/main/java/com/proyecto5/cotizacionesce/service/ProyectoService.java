@@ -103,7 +103,7 @@ public class ProyectoService {
         Proyecto proyecto = proyectoRepository.findById(projectId)
                 .orElseThrow(() -> new IllegalArgumentException("Proyecto no encontrado"));
 
-        proyecto.setEstado("Asignado");
+        proyecto.setEstado("Preparacion cotizacion");
         proyectoRepository.save(proyecto);
     }
 
