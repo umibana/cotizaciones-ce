@@ -51,30 +51,30 @@ const UnassignedProjectList = ({
 							key={project.idProyecto}
 							className="mb-2 flex items-center justify-between rounded-lg bg-muted p-2">
 							<span className="md:text-lg font-bold">{project.nombre}</span>
-							<div className="flex gap-2">
-								<Link
-									rel="stylesheet"
-									href={{
-										pathname: "/cotizacion",
-										query: { id: project.idProyecto },
-									}}>
-									<Button size="sm">Crear Cotización</Button>
-								</Link>
-								{(role === "jefe de operaciones" || role === "supervisor") && (
-									<Link
-										href={{
-											pathname: "/asignacion",
-											query: { id: project.idProyecto },
-										}}>
-										<Button size="sm">Asignar</Button>
-									</Link>
-								)}
-								{role === "jefe de operaciones" ||
-									(role === "supervisor" && (
-										<Button size="sm" onClick={() => onAssign?.(project.id)}>
-											<FaTrash />
-										</Button>
-									))}
+							<div className="flex items-center gap-2 w-full sm:w-auto mt-2 sm:mt-0">
+								{/* Dropdown Menu */}
+								<DropdownMenu>
+									<DropdownMenuTrigger asChild>
+										<Button size="sm">Acciones</Button>
+									</DropdownMenuTrigger>
+									<DropdownMenuContent align="end">
+										<DropdownMenuLabel>Opciones</DropdownMenuLabel>
+										<DropdownMenuItem>
+											<Link
+												href={{
+													pathname: "/asignacion",
+													query: {id: project.idProyecto},
+												}}>
+												Asignar
+											</Link>
+										</DropdownMenuItem>
+										<DropdownMenuItem onClick={() => onReview?.(project.id)}>
+											Revisar Proyecto
+										</DropdownMenuItem>
+										<DropdownMenuSeparator/>
+										{/* Aquí puedes agregar más opciones si es necesario */}
+									</DropdownMenuContent>
+								</DropdownMenu>
 							</div>
 						</div>
 					))}
@@ -86,10 +86,10 @@ const UnassignedProjectList = ({
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const AssignedProjectList = ({
-	projects,
-	onReview,
-	role,
-}: ProjectListProps) => (
+								 projects,
+								 onReview,
+								 role,
+							 }: ProjectListProps) => (
 	<Card className="flex-1">
 		<CardHeader>
 			<CardTitle>Proyectos asignados</CardTitle>
@@ -105,8 +105,6 @@ const AssignedProjectList = ({
 							{project.nombre}
 						</span>
 						<div className="flex items-center gap-2 w-full sm:w-auto mt-2 sm:mt-0">
-							<span className="font-medium">{project.price}</span>
-
 							{/* Dropdown Menu */}
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
@@ -117,10 +115,10 @@ const AssignedProjectList = ({
 									<DropdownMenuItem>
 										<Link
 											href={{
-												pathname: "/revisar-cotizacion",
+												pathname: "/cotizacion",
 												query: { id: project.idProyecto },
 											}}>
-											Revisar Cotización
+											Crear Cotización
 										</Link>
 									</DropdownMenuItem>
 									<DropdownMenuItem onClick={() => onReview?.(project.id)}>
@@ -153,6 +151,37 @@ const ProyectosCotizados = ({ projects }: ProjectListProps) => (
 						<span className="text-lg font-bold w-full sm:w-auto overflow-hidden text-ellipsis">
 							{project.nombre}
 						</span>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button size="sm">Acciones</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="end">
+								<DropdownMenuLabel>Opciones</DropdownMenuLabel>
+								<DropdownMenuItem>
+									<Link
+										href={{
+											pathname: "/revisar-cotizacion",
+											query: { id: project.idProyecto },
+										}}>
+										Actualizar: Aprobado
+									</Link>
+								</DropdownMenuItem>
+								<DropdownMenuItem>
+									<Link
+										href={{
+											pathname: "/revisar-cotizacion",
+											query: { id: project.idProyecto },
+										}}>
+										Revisar Cotización
+									</Link>
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => onReview?.(project.id)}>
+									Revisar Proyecto
+								</DropdownMenuItem>
+								<DropdownMenuSeparator />
+								{/* Aquí puedes agregar más opciones si es necesario */}
+							</DropdownMenuContent>
+						</DropdownMenu>
 					</div>
 				))}
 			</ScrollArea>
@@ -160,33 +189,98 @@ const ProyectosCotizados = ({ projects }: ProjectListProps) => (
 	</Card>
 );
 
-const ProyectosAprobados = () => (
+const ProyectosAprobados = ({ projects }: ProjectListProps) => (
 	<Card className="flex-1">
 		<CardHeader>
 			<CardTitle>Proyectos aprobados</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<ScrollArea className="h-[350px] w-full rounded-md border p-4">
-				<span className="text-lg font-bold"></span>
-				<div className="flex items-center gap-2">
-					<span className="font-medium"></span>
-				</div>
+				{projects.map((project: any) => (
+					<div
+						key={project.idProyecto}
+						className="mb-2 flex flex-wrap items-center justify-between bg-muted p-2">
+						{/* Nombre del proyecto con texto truncado en pantallas pequeñas */}
+						<span className="text-lg font-bold w-full sm:w-auto overflow-hidden text-ellipsis">
+							{project.nombre}
+						</span>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button size="sm">Acciones</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="end">
+								<DropdownMenuLabel>Opciones</DropdownMenuLabel>
+								<DropdownMenuItem>
+									<Link
+										href={{
+											pathname: "/revisar-cotizacion",
+											query: { id: project.idProyecto },
+										}}>
+										Actualizar: Terminado
+									</Link>
+								</DropdownMenuItem>
+								<DropdownMenuItem>
+									<Link
+										href={{
+											pathname: "/revisar-cotizacion",
+											query: { id: project.idProyecto },
+										}}>
+										Revisar Cotización
+									</Link>
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => onReview?.(project.id)}>
+									Revisar Proyecto
+								</DropdownMenuItem>
+								<DropdownMenuSeparator />
+								{/* Aquí puedes agregar más opciones si es necesario */}
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</div>
+				))}
 			</ScrollArea>
 		</CardContent>
 	</Card>
 );
 
-const ProyectosTerminados = () => (
+const ProyectosTerminados = ({ projects }: ProjectListProps) => (
 	<Card className="flex-1">
 		<CardHeader>
 			<CardTitle>Proyectos terminados</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<ScrollArea className="h-[350px] w-full rounded-md border p-4">
-				<span className="text-lg font-bold"></span>
-				<div className="flex items-center gap-2">
-					<span className="font-medium"></span>
-				</div>
+				{projects.map((project: any) => (
+					<div
+						key={project.idProyecto}
+						className="mb-2 flex flex-wrap items-center justify-between bg-muted p-2">
+						{/* Nombre del proyecto con texto truncado en pantallas pequeñas */}
+						<span className="text-lg font-bold w-full sm:w-auto overflow-hidden text-ellipsis">
+							{project.nombre}
+						</span>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button size="sm">Acciones</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="end">
+								<DropdownMenuLabel>Opciones</DropdownMenuLabel>
+								<DropdownMenuItem>
+									<Link
+										href={{
+											pathname: "/revisar-cotizacion",
+											query: { id: project.idProyecto },
+										}}>
+										Revisar Cotización
+									</Link>
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => onReview?.(project.id)}>
+									Revisar Proyecto
+								</DropdownMenuItem>
+								<DropdownMenuSeparator />
+								{/* Aquí puedes agregar más opciones si es necesario */}
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</div>
+				))}
 			</ScrollArea>
 		</CardContent>
 	</Card>
@@ -340,7 +434,7 @@ function Proyectos({ role }: ProyectosProps) {
 							? "bg-cyan-500 text-white"
 							: "bg-white text-cyan-500 border border-cyan-500"
 					}>
-					Cotizado
+					Cotizado ({projects.cotizados.length})
 				</Button>
 
 				{/* Flecha */}
@@ -355,7 +449,7 @@ function Proyectos({ role }: ProyectosProps) {
 							? "bg-green-500 text-white"
 							: "bg-white text-green-500 border border-green-500"
 					}>
-					Aprobado
+					Aprobado ({projects.aprobados.length})
 				</Button>
 
 				{/* Flecha */}
@@ -370,7 +464,7 @@ function Proyectos({ role }: ProyectosProps) {
 							? "bg-gray-500 text-white"
 							: "bg-white text-gray-500 border border-gray-500"
 					}>
-					Terminado
+					Terminado ({projects.terminados.length})
 				</Button>
 			</div>
 
@@ -384,8 +478,8 @@ function Proyectos({ role }: ProyectosProps) {
 			{selectedFilter === "Cotizado" && (
 				<ProyectosCotizados projects={projects.cotizados} />
 			)}
-			{selectedFilter === "Aprobado" && <ProyectosAprobados />}
-			{selectedFilter === "Terminado" && <ProyectosTerminados />}
+			{selectedFilter === "Aprobado" && <ProyectosAprobados projects={projects.aprobados}/>}
+			{selectedFilter === "Terminado" && <ProyectosTerminados projects={projects.terminados}/>}
 
 			{/* Mostrar la tarjeta de administración si corresponde */}
 			<AdminCard role={role} />
