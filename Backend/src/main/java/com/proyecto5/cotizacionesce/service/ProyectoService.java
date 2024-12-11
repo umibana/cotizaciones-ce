@@ -80,11 +80,11 @@ public class ProyectoService {
         Proyecto proyecto = proyectoRepository.findByIdProyecto(idProyecto)
                 .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
 
-        if("Sin asignar".equals(proyecto.getEstado())){
-            proyecto.setEstado("Preparacion de cotizacion");
+        if("Preparacion cotizacion".equals(proyecto.getEstado())){
+            proyecto.setEstado("Cotizado");
             proyecto = proyectoRepository.save(proyecto);
         }else{
-            throw new RuntimeException("El proyecto no estaba en estado 'Sin asignar'");
+            throw new RuntimeException("El proyecto no estaba en estado 'Preparacion cotizacion'");
         }
 
         return proyecto;
