@@ -85,6 +85,18 @@ const fetchProyecto = async (projectId: string) => {
 	return response.json();
 };
 
+const fetchCliente = async (idCliente: number) => {
+	const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/clientes/${idCliente}`);
+	if (!response.ok) {
+	  throw new Error("Error al cargar el cliente");
+	}
+	return response.json();
+  };
+
+
+
+
+
 const getMaterials = async (): Promise<Material[]> => {
 	const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/materiales/all`;
 	console.log(url);
@@ -129,8 +141,21 @@ const createQuotation = async (
 };
 
 export default function QuotationForm() {
-	const searchParams = useSearchParams();
-	const projectId = searchParams.get("id");
+	const searchParams = useSearchParams(); 
+	const projectId = searchParams.get('id');
+
+	const { data: proyecto, isLoading: loadingProyecto, isError: errorProyecto } = useQuery({
+		queryKey: ["proyecto", projectId],
+		queryFn: () => fetchProyecto(projectId!),
+		enabled: !!projectId,
+	  });
+
+	  const { data: cliente, isLoading: loadingCliente, isError: errorCliente } = useQuery({
+		queryKey: ["cliente", proyecto?.idCliente],
+		queryFn: () => fetchCliente(proyecto!.idCliente),
+		enabled: !!proyecto?.idCliente, // Sólo ejecuta si existe idCliente
+	  });
+
 	//console.log('Project ID:', projectId);
 
 	const [materials, setMaterials] = useState<MaterialItem[]>([]);
@@ -318,10 +343,10 @@ export default function QuotationForm() {
 			const blob = await pdf(
 				<QuotationPDF
 					quotationName={quotationName}
-					clientName="Cliente Ejemplo"
-					clientPhone="123456789"
-					clientEmail="cliente@ejemplo.com"
-					clientAddress="Dirección del Cliente"
+					clientName={cliente?.nombre}
+					clientPhone={cliente?.telefono}
+					clientEmail={cliente?.email}
+					clientAddress={cliente?.direccion}
 					date={new Date().toLocaleDateString("es-CL")}
 					items={formattedItems}
 					notes={quotationNotes}
@@ -499,7 +524,7 @@ export default function QuotationForm() {
 								<thead className="bg-gray-100">
 									<tr>
 										<th className="border border-gray-300 px-4 py-2 text-left">
-											Nombre del Material
+											Mano de obra
 										</th>
 										<th className="border border-gray-300 px-4 py-2 text-center">
 											Área (m²)
@@ -645,22 +670,20 @@ export default function QuotationForm() {
 				</Dialog>
 
 				<Dialog open={manoObraOpen} onOpenChange={setManoObraOpen}>
-					<DialogContent
-						className="max-w-lg"
-						onClick={(e) => e.stopPropagation()}>
+					<DialogContent className="max-w-lg" onClick={(e) => e.stopPropagation()}>
 						<DialogHeader>
-							<DialogTitle>Agregar Mano de Obra</DialogTitle>
+						<DialogTitle>Agregar Mano de Obra</DialogTitle>
 						</DialogHeader>
 						<div className="space-y-4">
 							<div>
-								<Label htmlFor="nombreMaterial">Nombre del Material</Label>
+								<Label htmlFor="nombreMaterial">Nombre de la mano de obra</Label>
 								<Input
 									id="nombreMaterial"
 									value={manoObraTemp.nombreMaterial}
 									onChange={(e) =>
 										setManoObraTemp({
-											...manoObraTemp,
-											nombreMaterial: e.target.value,
+										...manoObraTemp,
+										nombreMaterial: e.target.value,
 										})
 									}
 									placeholder="Ejemplo: Pintura"
@@ -675,8 +698,8 @@ export default function QuotationForm() {
 									value={manoObraTemp.areaTrabajarM2}
 									onChange={(e) =>
 										setManoObraTemp({
-											...manoObraTemp,
-											areaTrabajarM2: parseFloat(e.target.value) || 0,
+										...manoObraTemp,
+										areaTrabajarM2: parseFloat(e.target.value) || 0,
 										})
 									}
 									placeholder="Ejemplo: 50"
@@ -684,7 +707,7 @@ export default function QuotationForm() {
 							</div>
 							<div>
 								<Label htmlFor="rendimientoMaterialM2">
-									Rendimiento del Material (m²/unidad)
+								Rendimiento del Material (m²/unidad)
 								</Label>
 								<Input
 									id="rendimientoMaterialM2"
@@ -692,25 +715,23 @@ export default function QuotationForm() {
 									value={manoObraTemp.rendimientoMaterialM2}
 									onChange={(e) =>
 										setManoObraTemp({
-											...manoObraTemp,
-											rendimientoMaterialM2: parseFloat(e.target.value) || 0,
+										...manoObraTemp,
+										rendimientoMaterialM2: parseFloat(e.target.value) || 0,
 										})
 									}
 									placeholder="Ejemplo: 25"
 								/>
 							</div>
 							<div>
-								<Label htmlFor="costoMaterialUnitario">
-									Costo Material Unitario
-								</Label>
+								<Label htmlFor="costoMaterialUnitario">Costo Material Unitario</Label>
 								<Input
 									id="costoMaterialUnitario"
 									type="number"
 									value={manoObraTemp.costoMaterialUnitario}
 									onChange={(e) =>
 										setManoObraTemp({
-											...manoObraTemp,
-											costoMaterialUnitario: parseFloat(e.target.value) || 0,
+										...manoObraTemp,
+										costoMaterialUnitario: parseFloat(e.target.value) || 0,
 										})
 									}
 									placeholder="Ejemplo: 30000"
@@ -724,8 +745,8 @@ export default function QuotationForm() {
 									value={manoObraTemp.manoObraPorM2}
 									onChange={(e) =>
 										setManoObraTemp({
-											...manoObraTemp,
-											manoObraPorM2: parseFloat(e.target.value) || 0,
+										...manoObraTemp,
+										manoObraPorM2: parseFloat(e.target.value) || 0,
 										})
 									}
 									placeholder="Ejemplo: 5000"
@@ -742,7 +763,8 @@ export default function QuotationForm() {
 										costoMaterialUnitario: 0,
 										manoObraPorM2: 0,
 									}); // Resetea los datos temporales
-								}}>
+								}}
+							>
 								Agregar Mano de Obra
 							</Button>
 						</div>

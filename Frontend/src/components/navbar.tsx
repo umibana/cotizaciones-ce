@@ -24,9 +24,14 @@ export default function Navbar() {
 					</div>
 
 					{/* Center - Navigation Links */}
-					<div className="hidden md:flex items-center space-x-4">
+					<div className="hidden md:flex items-center">
 						<Link href="/" className="hover:text-gray-600">
-							<img src="/casa_experto_logo.png" alt="Logo" width={100} />
+							<div className=" flex items-center">
+								<img src="/casaexperto.png" alt="Logo" width={80} />
+								<h1 className="text-2xl font-bold text-zinc-200">
+									Casa Experto
+								</h1>
+							</div>
 						</Link>
 					</div>
 
