@@ -316,7 +316,18 @@ interface ProyectosProps {
 
 function Proyectos({ role }: ProyectosProps) {
 	// Estado para controlar el filtro seleccionado de proyectos
-	const [selectedFilter, setSelectedFilter] = useState<string>("Sin asignar");
+	const [selectedFilter, setSelectedFilter] = useState<string>(() => {
+		switch (role) {
+			case "maestro":
+				return "Cotizado"
+			case "supervisor":
+				return "Preparacion cotizacion";
+			case "jefe de operaciones":
+				return "Sin asignar";
+			default:
+				return "Terminado";
+		}
+	});
 
 	// Endpoint de la API según el rol, deberia cambiarse después
 	const endpoint =
