@@ -7,7 +7,7 @@ export function useRoles() {
 
     return {
         roles: userRoles,
-        isAdmin: userRoles.includes('admin'),
+        isAdmin: userRoles.includes('jefe de operaciones'),
         isMaestro: userRoles.includes('maestro'),
         isSupervisor: userRoles.includes('supervisor'),
         hasRole: (role: string) => userRoles.includes(role),
