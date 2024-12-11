@@ -6,7 +6,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FaTrash } from "react-icons/fa";
 import { useAuthenticatedQuery } from "@/hooks/useAuth";
-import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import {
 	DropdownMenu,
@@ -51,7 +50,6 @@ const UnassignedProjectList = ({
 							key={project.idProyecto}
 							className="mb-2 flex items-center justify-between rounded-lg bg-muted p-2">
 							<span className="text-lg font-bold">{project.nombre}</span>
-							<Badge>Sin asignar</Badge>
 							<div className="flex gap-2">
 								<Link
 									rel="stylesheet"
