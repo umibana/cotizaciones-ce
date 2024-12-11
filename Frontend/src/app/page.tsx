@@ -16,6 +16,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {useAuth0} from "@auth0/auth0-react";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -24,7 +25,7 @@ interface ProjectListProps {
 	projects: any[]; // Reemplazar con la interfaz de proyecto cuando esté lista
 	onAssign?: (id: string) => void;
 	onReview?: (id: string) => void;
-	role: "admin" | "maestro" | "supervisor";
+	role: "jefe de operaciones" | "maestro" | "supervisor";
 }
 
 const UnassignedProjectList = ({
@@ -61,7 +62,7 @@ const UnassignedProjectList = ({
 									}}>
 									<Button size="sm">Crear Cotización</Button>
 								</Link>
-								{(role === "admin" || role === "supervisor") && (
+								{(role === "jefe de operaciones" || role === "supervisor") && (
 									<Link
 										href={{
 											pathname: "/asignacion",
@@ -70,7 +71,7 @@ const UnassignedProjectList = ({
 										<Button size="sm">Asignar</Button>
 									</Link>
 								)}
-								{role === "admin" ||
+								{role === "jefe de operaciones" ||
 									(role === "supervisor" && (
 										<Button size="sm" onClick={() => onAssign?.(project.id)}>
 											<FaTrash />
@@ -88,9 +89,7 @@ const UnassignedProjectList = ({
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const AssignedProjectList = ({
 	projects,
-	onReview,
-}: // role,
-ProjectListProps) => (
+	onReview, role}: ProjectListProps) => (
 	<Card className="flex-1">
 		<CardHeader>
 			<CardTitle>Proyectos asignados</CardTitle>
@@ -213,7 +212,7 @@ export const AdminCard = ({ role }) => {
 };
 
 interface ProyectosProps {
-	role: "admin" | "maestro" | "supervisor";
+	role: "jefe de operaciones" | "maestro" | "supervisor";
 }
 
 function Proyectos({ role }: ProyectosProps) {
@@ -221,12 +220,29 @@ function Proyectos({ role }: ProyectosProps) {
 	const [selectedFilter, setSelectedFilter] = useState<string>("Sin asignar");
 
 	// Endpoint de la API según el rol, deberia cambiarse después
-	const endpoint = role === "maestro" ? "/proyectos/all" : "/proyectos/all";
+	const endpoint =
+		role === "maestro" || role === "supervisor"
+			? "/asignadosEmail"
+			: role === "jefe de operaciones"
+				? "/proyectos/all"
+				: null;
+
+	const usuario_info = useAuth0()
+	const usuario_info_email = usuario_info?.user?.email ?? null;
+	// console.log(usuario_info_email);
+	const requestBody = endpoint === "/asignadosEmail" ? { email: usuario_info_email } : undefined;
+	console.log(`${process.env.NEXT_PUBLIC_BACKEND_URL}${endpoint}`);
 
 	// Obtener los datos de la API usando hook de useAuth
 	const { data, isLoading, error } = useAuthenticatedQuery<any[]>(
 		["projects", role],
 		`${process.env.NEXT_PUBLIC_BACKEND_URL}${endpoint}`,
+			options: {
+				method: requestBody ? "POST" : "GET",
+				headers: { "Content-Type": "application/json" },
+				body: requestBody ? JSON.stringify(requestBody) : undefined,
+			},
+		},
 		{
 			staleTime: 0,
 			cacheTime: 0,
@@ -246,14 +262,11 @@ function Proyectos({ role }: ProyectosProps) {
 
 	// Aca esta temporal, deberia manejarse diferente si es maestro
 	const projects = {
-		unassigned:
-			role === "maestro"
-				? []
-				: data?.filter((project) => project.estado === "Sin asignar") ?? [],
-		assigned:
-			role === "maestro"
-				? data ?? []
-				: data?.filter((project) => project.estado !== "Sin asignar") ?? [],
+		unassigned: data?.filter((project) => project.estado === "Sin asignar") ?? [],
+		assigned: data?.filter((project) => project.estado === "Preparacion cotizacion") ?? [],
+		cotizados: data?.filter((project) => project.estado === "Cotizado") ?? [],
+		aprobados: data?.filter((project) => project.estado === "Aprobado") ?? [],
+		terminados: data?.filter((project) => project.estado === "Terminado") ?? [],
 	};
 
 	return (
@@ -362,7 +375,7 @@ function App() {
 
 	// Determinar el rol del usuario
 	const role = isAdmin
-		? "admin"
+		? "jefe de operaciones"
 		: isMaestro
 		? "maestro"
 		: isSupervisor
