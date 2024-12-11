@@ -510,7 +510,7 @@ function Proyectos({ role }: ProyectosProps) {
 			{selectedFilter === "Cotizado" && (
 				<ProyectosCotizados projects={projects.cotizados} role={role}/>
 			)}
-			{selectedFilter === "Aprobado" && <ProyectosAprobados projects={projects.aprobados}/>}
+			{selectedFilter === "Aprobado" && <ProyectosAprobados projects={projects.aprobados} role={role} />}
 			{selectedFilter === "Terminado" && <ProyectosTerminados projects={projects.terminados}/>}
 
 			{/* Mostrar la tarjeta de administración si corresponde */}
