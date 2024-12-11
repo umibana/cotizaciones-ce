@@ -87,6 +87,7 @@ public class ProyectoController {
 
     @PostMapping("/asignadosEmail")
     public ResponseEntity<List<Proyecto>> listarProyectosAsignadosPorEmail(@RequestBody String email){
+        System.out.print(email);
         List<Proyecto> proyecto = proyectoService.listaProyectosAsignadosPorEmail(email);
         return ResponseEntity.ok(proyecto);
     }

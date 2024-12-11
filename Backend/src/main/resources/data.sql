@@ -48,12 +48,18 @@ VALUES
     ('Instalar calefacción', 'Camino Sur 2', 'Sistema de calefacción para toda la casa', 'Terminado', 26);
 
 INSERT INTO proyecto_user(id_proyecto,id_user)
-VALUES(1,1);
+VALUES(1,1),
+      (11,3),
+      (12,3),
+      (13,3),
+      (14,3),
+      (15,3);
 INSERT INTO material (nombre, descripcion, precio)
 VALUES('Aire acondicionado', 'Aire acondicionado de 12000 BTU', 500);
 INSERT INTO users (username,email,name,rut,role)
 VALUES('adminCasaExperto','casaexperto@usach.cl','Casa Experto Administraction','11111111-1','ADMIN'),
-      ('JuanP1','juan@casaexperto.cl','Juan Pablo','11111111-1','Supervisor'),
-      ('JuanP2','juan2@casaexperto.cl','Juan Pablo 2','11111111-1','Jefe de operaciones'),
-      ('JuanP3','juan3@casaexperto.cl','Juan Pablo 3','11111111-1','Maestro'),
-      ('PedroP1','pedro@casaexperto.cl','Pedro Pablo','11111111-1','Maestro');
+      ('Jefe de operaciones','hans@usach.cl','Hans','11111111-1','jefe de operaciones'),
+      ('Maestro','maestro@usach.cl','Juan','11111111-1','maestro'),
+      ('Supervisor','supervisor@usach.cl','Pablo','11111111-1','supervisor'),
+      ('JuanP3','juan3@casaexperto.cl','Juan Pablo 3','11111111-1','maestro'),
+      ('PedroP1','pedro@casaexperto.cl','Pedro Pablo','11111111-1','maestro');

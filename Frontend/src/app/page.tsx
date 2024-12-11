@@ -221,7 +221,7 @@ function Proyectos({ role }: ProyectosProps) {
 	// Endpoint de la API según el rol, deberia cambiarse después
 	const endpoint =
 		role === "maestro" || role === "supervisor"
-			? "/asignadosEmail"
+			? "/proyectos/asignadosEmail"
 			: role === "jefe de operaciones"
 			? "/proyectos/all"
 			: null;
@@ -230,7 +230,7 @@ function Proyectos({ role }: ProyectosProps) {
 	const usuario_info_email = usuario_info?.user?.email ?? null;
 	// console.log(usuario_info_email);
 	const requestBody =
-		endpoint === "/asignadosEmail" ? { email: usuario_info_email } : undefined;
+		endpoint === "/proyectos/asignadosEmail" ? { usuario_info_email } : undefined;
 
 	// Obtener los datos de la API usando hook de useAuth
 	const { data, isLoading, error } = useAuthenticatedQuery<any[]>(
