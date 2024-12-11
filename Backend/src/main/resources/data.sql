@@ -72,6 +72,37 @@ VALUES
     (50, '60', '40', 6, NULL, 'Contrato concluido, esperando pago', 30, 'Terminado', 25, 25, '2024-04-11 12:00:00'),
     (25, '40', '60', 8, NULL, 'En proceso de cierre, ajustes finales', 20, 'Terminado', 26, 26, '2024-04-12 12:00:00');
 
+-- Inserción de datos para la tabla cliente
+INSERT INTO cliente (nombre, rut, telefono, direccion, email)
+VALUES
+    ('Juan Pérez', '12345678-9', '987654321', 'Calle Ficticia 123', 'juan.perez@email.com'),
+    ('María Gómez', '98765432-1', '987654322', 'Avenida Siempre Viva 456', 'maria.gomez@email.com'),
+    ('Carlos Martínez', '11223344-5', '987654323', 'Calle Los Pinos 789', 'carlos.martinez@email.com'),
+    ('Ana Torres', '22334455-6', '987654324', 'Calle Central 1010', 'ana.torres@email.com'),
+    ('Luis García', '33445566-7', '987654325', 'Pasaje Los Álamos 2020', 'luis.garcia@email.com'),
+    ('Laura Rodríguez', '44556677-8', '987654326', 'Avenida Libertador 3030', 'laura.rodriguez@email.com'),
+    ('José Pérez', '55667788-9', '987654327', 'Calle San Martín 4040', 'jose.perez@email.com'),
+    ('Patricia Fernández', '66778899-0', '987654328', 'Avenida de la Paz 5050', 'patricia.fernandez@email.com'),
+    ('Miguel Soto', '77889900-1', '987654329', 'Calle del Sol 6060', 'miguel.soto@email.com'),
+    ('Sofía Martínez', '88990011-2', '987654330', 'Camino Real 7070', 'sofia.martinez@email.com'),
+    ('Ricardo López', '99001122-3', '987654331', 'Calle Los Naranjos 8080', 'ricardo.lopez@email.com'),
+    ('Verónica Díaz', '10111223-4', '987654332', 'Avenida de la Luna 9090', 'veronica.diaz@email.com'),
+    ('Felipe Sánchez', '12131424-5', '987654333', 'Pasaje San Andrés 10101', 'felipe.sanchez@email.com'),
+    ('Mónica Hernández', '13141525-6', '987654334', 'Calle de la Rosa 11111', 'monica.hernandez@email.com'),
+    ('Oscar Pérez', '14161726-7', '987654335', 'Camino de la Esperanza 12121', 'oscar.perez@email.com'),
+    ('Gabriela Ruiz', '15171827-8', '987654336', 'Calle de los Cedros 13131', 'gabriela.ruiz@email.com'),
+    ('Raúl Vargas', '16181928-9', '987654337', 'Avenida Santa María 14141', 'raul.vargas@email.com'),
+    ('Elena García', '17192029-0', '987654338', 'Avenida del Sol 15151', 'elena.garcia@email.com'),
+    ('Javier Sánchez', '18202130-1', '987654339', 'Calle Nueva 16161', 'javier.sanchez@email.com'),
+    ('Paola González', '19212231-2', '987654340', 'Calle de los Álamos 17171', 'paola.gonzalez@email.com'),
+    ('Daniel López', '20222332-3', '987654341', 'Camino del Río 18181', 'daniel.lopez@email.com'),
+    ('Susana Jiménez', '21232433-4', '987654342', 'Callejón del Sol 19191', 'susana.jimenez@email.com'),
+    ('Andrés Castillo', '22242534-5', '987654343', 'Avenida del Mar 20202', 'andres.castillo@email.com'),
+    ('Joaquín Martínez', '23252635-6', '987654344', 'Pasaje La Flor 21212', 'joaquin.martinez@email.com'),
+    ('Carmen Rodríguez', '24262736-7', '987654345', 'Calle Mayor 22222', 'carmen.rodriguez@email.com'),
+    ('Esteban Ruiz', '25272837-8', '987654346', 'Calle del Campo 23232', 'esteban.ruiz@email.com'),
+    ('Lorena Pérez', '26282938-9', '987654347', 'Avenida del Centro 24242', 'lorena.perez@email.com');
+
 INSERT INTO proyecto_user(id_proyecto,id_user)
 VALUES(1,1),
       (12,3),
