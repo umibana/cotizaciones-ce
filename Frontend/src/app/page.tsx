@@ -36,7 +36,7 @@ const UnassignedProjectList = ({
 		<Card className="flex-1">
 			<CardHeader className="flex flex-row items-center justify-between">
 				<CardTitle>Proyectos sin asignar</CardTitle>
-				{role === "admin" && (
+				{role === "jefe de operaciones" && (
 					<Link href="/nuevo-proyecto">
 						<Button size="default" aria-label="Crear nueva cotización">
 							Crear Nuevo Proyecto
@@ -187,7 +187,7 @@ const ProyectosTerminados = () => (
 );
 
 export const AdminCard = ({ role }) => {
-	if (role !== "admin") return null;
+	if (role !== "jefe de operaciones") return null;
 
 	return (
 		<Card className="flex-1">
@@ -302,7 +302,7 @@ function Proyectos({ role }: ProyectosProps) {
 							? "bg-red-500 text-white"
 							: "bg-white text-red-500 border border-red-500"
 					}>
-					Sin asignar
+					Sin asignar ({projects.unassigned.length})
 				</Button>
 
 				{/* Flecha */}
@@ -319,7 +319,7 @@ function Proyectos({ role }: ProyectosProps) {
 							? "bg-orange-500 text-white"
 							: "bg-white text-orange-500 border border-orange-500"
 					}>
-					Preparacion cotizacion
+					Preparacion cotizacion ({projects.assigned.length})
 				</Button>
 
 				{/* Flecha */}

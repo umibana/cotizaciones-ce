@@ -49,11 +49,11 @@ VALUES
 
 INSERT INTO proyecto_user(id_proyecto,id_user)
 VALUES(1,1),
-      (11,3),
       (12,3),
       (13,3),
       (14,3),
-      (15,3);
+      (15,3),
+      (16,3);
 INSERT INTO material (nombre, descripcion, precio)
 VALUES('Aire acondicionado', 'Aire acondicionado de 12000 BTU', 500);
 INSERT INTO users (username,email,name,rut,role)
