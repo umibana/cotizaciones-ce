@@ -136,7 +136,7 @@ const AssignedProjectList = ({
 	</Card>
 );
 
-const ProyectosCotizados = ({ projects }: ProjectListProps) => (
+const ProyectosCotizados = ({ projects,role }: ProjectListProps) => (
 	<Card className="flex-1">
 		<CardHeader>
 			<CardTitle>Proyectos cotizados</CardTitle>
@@ -157,7 +157,7 @@ const ProyectosCotizados = ({ projects }: ProjectListProps) => (
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="end">
 								<DropdownMenuLabel>Opciones</DropdownMenuLabel>
-								<DropdownMenuItem>
+								{(role === "jefe de operaciones" || role === "supervisor" ) && (<DropdownMenuItem>
 									<Link
 										href={{
 											pathname: "/revisar-cotizacion",
@@ -165,7 +165,7 @@ const ProyectosCotizados = ({ projects }: ProjectListProps) => (
 										}}>
 										Actualizar: Aprobado
 									</Link>
-								</DropdownMenuItem>
+								</DropdownMenuItem>)}
 								<DropdownMenuItem>
 									<Link
 										href={{
@@ -189,7 +189,7 @@ const ProyectosCotizados = ({ projects }: ProjectListProps) => (
 	</Card>
 );
 
-const ProyectosAprobados = ({ projects }: ProjectListProps) => (
+const ProyectosAprobados = ({ projects, role}: ProjectListProps) => (
 	<Card className="flex-1">
 		<CardHeader>
 			<CardTitle>Proyectos aprobados</CardTitle>
@@ -210,7 +210,7 @@ const ProyectosAprobados = ({ projects }: ProjectListProps) => (
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="end">
 								<DropdownMenuLabel>Opciones</DropdownMenuLabel>
-								<DropdownMenuItem>
+								{(role === "jefe de operaciones" || role === "supervisor" ) && (<DropdownMenuItem>
 									<Link
 										href={{
 											pathname: "/revisar-cotizacion",
@@ -218,7 +218,7 @@ const ProyectosAprobados = ({ projects }: ProjectListProps) => (
 										}}>
 										Actualizar: Terminado
 									</Link>
-								</DropdownMenuItem>
+								</DropdownMenuItem>)}
 								<DropdownMenuItem>
 									<Link
 										href={{
@@ -242,7 +242,7 @@ const ProyectosAprobados = ({ projects }: ProjectListProps) => (
 	</Card>
 );
 
-const ProyectosTerminados = ({ projects }: ProjectListProps) => (
+const ProyectosTerminados = ({ projects, role }: ProjectListProps) => (
 	<Card className="flex-1">
 		<CardHeader>
 			<CardTitle>Proyectos terminados</CardTitle>
@@ -393,6 +393,7 @@ function Proyectos({ role }: ProyectosProps) {
 		<div className="container mx-auto p-4 space-y-4">
 			{/* Botones de filtros con flechas */}
 			<div className="flex flex-wrap items-center gap-2 mb-4">
+				{role === "jefe de operaciones" && (
 				<Button
 					size="sm"
 					variant={selectedFilter === "Sin asignar" ? "default" : "outline"}
@@ -403,12 +404,14 @@ function Proyectos({ role }: ProyectosProps) {
 							: "bg-white text-red-500 border border-red-500"
 					}>
 					Sin asignar ({projects.unassigned.length})
-				</Button>
+				</Button>)
+				}
 
 				{/* Flecha */}
-				<span className="text-muted-foreground">→</span>
+				{role === "jefe de operaciones" && (
+					<span className="text-muted-foreground">→</span>)}
 
-				<Button
+				{(role === "jefe de operaciones" || role === "supervisor" ) && (<Button
 					size="sm"
 					variant={
 						selectedFilter === "Preparacion cotizacion" ? "default" : "outline"
@@ -420,10 +423,10 @@ function Proyectos({ role }: ProyectosProps) {
 							: "bg-white text-orange-500 border border-orange-500"
 					}>
 					Preparacion cotizacion ({projects.assigned.length})
-				</Button>
+				</Button>)}
 
 				{/* Flecha */}
-				<span className="text-muted-foreground">→</span>
+				{(role === "jefe de operaciones" || role === "supervisor" ) && (<span className="text-muted-foreground">→</span>)}
 
 				<Button
 					size="sm"
@@ -469,14 +472,14 @@ function Proyectos({ role }: ProyectosProps) {
 			</div>
 
 			{/* Renderizado condicional basado en el filtro seleccionado */}
-			{selectedFilter === "Sin asignar" && (
+			{selectedFilter === "Sin asignar" && role === "jefe de operaciones" && (
 				<UnassignedProjectList projects={projects.unassigned} role={role} />
 			)}
-			{selectedFilter === "Preparacion cotizacion" && (
+			{selectedFilter === "Preparacion cotizacion" && (role === "jefe de operaciones" || role === "supervisor" ) && (
 				<AssignedProjectList projects={projects.assigned} role={role} />
 			)}
 			{selectedFilter === "Cotizado" && (
-				<ProyectosCotizados projects={projects.cotizados} />
+				<ProyectosCotizados projects={projects.cotizados} role={role}/>
 			)}
 			{selectedFilter === "Aprobado" && <ProyectosAprobados projects={projects.aprobados}/>}
 			{selectedFilter === "Terminado" && <ProyectosTerminados projects={projects.terminados}/>}
