@@ -105,7 +105,6 @@ ProjectListProps) => (
 						<span className="text-lg font-bold w-full sm:w-auto overflow-hidden text-ellipsis">
 							{project.nombre}
 						</span>
-						<Badge className="sm:ml-2">En progreso</Badge>
 						<div className="flex items-center gap-2 w-full sm:w-auto mt-2 sm:mt-0">
 							<span className="font-medium">{project.price}</span>
 
