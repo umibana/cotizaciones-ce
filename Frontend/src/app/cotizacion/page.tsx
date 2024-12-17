@@ -535,14 +535,14 @@ export default function QuotationForm() {
 										<th className="border border-gray-300 px-4 py-2 text-center">
 											Área (m²)
 										</th>
-										<th className="border border-gray-300 px-4 py-2 text-center">
+										{/* <th className="border border-gray-300 px-4 py-2 text-center">
 											Rendimiento (m²/unidad)
-										</th>
+										</th> */}
 										<th className="border border-gray-300 px-4 py-2 text-center">
 											Costo Unitario
 										</th>
 										<th className="border border-gray-300 px-4 py-2 text-center">
-											Mano de Obra
+											Valor (m²)
 										</th>
 										<th className="border border-gray-300 px-4 py-2 text-center">
 											Acciones
@@ -558,9 +558,9 @@ export default function QuotationForm() {
 											<td className="border border-gray-300 px-4 py-2 text-center">
 												{obra.areaTrabajarM2}
 											</td>
-											<td className="border border-gray-300 px-4 py-2 text-center">
+											{/* <td className="border border-gray-300 px-4 py-2 text-center">
 												{obra.rendimientoMaterialM2}
-											</td>
+											</td> */}
 											<td className="border border-gray-300 px-4 py-2 text-center">
 												${obra.costoMaterialUnitario.toLocaleString()}
 											</td>
@@ -735,7 +735,7 @@ export default function QuotationForm() {
 									placeholder="Ejemplo: 50"
 								/>
 							</div>
-							<div>
+							{/* <div>
 								<Label htmlFor="rendimientoMaterialM2">
 								Rendimiento del Material (m²/unidad)
 								</Label>
@@ -751,9 +751,9 @@ export default function QuotationForm() {
 									}
 									placeholder="Ejemplo: 25"
 								/>
-							</div>
+							</div> */}
 							<div>
-								<Label htmlFor="costoMaterialUnitario">Costo Material Unitario</Label>
+								<Label htmlFor="costoMaterialUnitario">Costo Unitario del Material</Label>
 								<Input
 									id="costoMaterialUnitario"
 									type="number"
@@ -768,7 +768,7 @@ export default function QuotationForm() {
 								/>
 							</div>
 							<div>
-								<Label htmlFor="manoObraPorM2">Mano de Obra por m²</Label>
+								<Label htmlFor="manoObraPorM2">Costo Mano de Obra por m²</Label>
 								<Input
 									id="manoObraPorM2"
 									type="number"

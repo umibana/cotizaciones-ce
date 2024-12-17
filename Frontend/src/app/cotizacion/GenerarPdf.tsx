@@ -267,7 +267,7 @@ export const QuotationPDF = ({
 				{/* Table */}
 				<View style={styles.table}>
 					<View style={styles.tableHeader}>
-						<Text style={styles.colItem}>Descripción</Text>
+						<Text style={styles.colItem}>Materiales</Text>
 						<Text style={styles.colUnit}>Unid - sup mt2</Text>
 						<Text style={styles.colPrice}>Precio Unit.</Text>
 						<Text style={styles.colTotal}>Precio Total</Text>
@@ -292,7 +292,7 @@ export const QuotationPDF = ({
 				<View style={styles.tableHeader}>
 					<Text style={styles.colItem}>Mano de Obra</Text>
 					<Text style={styles.colUnit}>Área (m²)</Text>
-					<Text style={styles.colUnit}>Rendimiento (m²/u)</Text>
+					{/* <Text style={styles.colUnit}>Rendimiento (m²/u)</Text> */}
 					<Text style={styles.colPrice}>Costo Unitario</Text>
 					<Text style={styles.colTotal}>Costo Total</Text>
 				</View>
@@ -300,7 +300,7 @@ export const QuotationPDF = ({
 					<View key={index} style={styles.tableRow}>
 						<Text style={styles.colItem}>{obra.nombreManoObra}</Text>
 						<Text style={styles.colUnit}>{obra.areaTrabajarM2}</Text>
-						<Text style={styles.colUnit}>{obra.rendimientoMaterialM2}</Text>
+						{/* <Text style={styles.colUnit}>{obra.rendimientoMaterialM2}</Text> */}
 						<Text style={styles.colPrice}>
 						$ {obra.manoObraPorM2.toLocaleString()}
 						</Text>
@@ -353,7 +353,7 @@ export const QuotationPDF = ({
 					compra de materiales, contratación de personal y agendar trabajos (no
 					reembolsables en caso de el cliente decida no realizar los trabajos o
 					bien decida unilateralmente no continuar los trabajos una vez
-					comenzados), y {contraEntrega} al término de éstos una vez entregada
+					comenzados), y {contraEntrega}% al término de éstos una vez entregada
 					la propiedad.
 				</Text>
 			</Page>
