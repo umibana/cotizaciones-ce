@@ -68,12 +68,15 @@ public class CotizacionService {
                 savedCotizacion.getId_Cotizacion()
         );
         System.out.println(request.getManoObras());
-        manoObraService.createManoObras(
-                request.getManoObras(),
-                savedCotizacion.getId_Cotizacion()
-        );
 
-        //en este punto se debe ejecutar estadoRevision del service de proyecto
+
+        // Paso 1: Asignar el ID de cotización a cada mano de obra
+        request.getManoObras().forEach(obra -> obra.setIdCotizacion(savedCotizacion.getId_Cotizacion()));
+
+        // Paso 2: Guardar las manos de obra
+        manoObraService.guardarManoObra(request.getManoObras());
+
+        // Actualizar el estado del proyecto
         proyectoService.estadoRevision(request.getIdProyecto());
 
         return savedCotizacion;

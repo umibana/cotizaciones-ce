@@ -8,4 +8,6 @@ import java.util.List;
 
 @Repository
 public interface ManoObraRepository extends JpaRepository<ManoObra, Long> {
+
+    List<ManoObra> findByIdCotizacion(Long idCotizacion);
 }

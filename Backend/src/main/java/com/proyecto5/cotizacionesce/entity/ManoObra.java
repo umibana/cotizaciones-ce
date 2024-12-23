@@ -18,14 +18,11 @@ public class ManoObra {
     @Column(name = "area_trabajar_M2", nullable = false)
     private Integer areaTrabajarM2;
 
-    @Column(name = "rendimiento_material", nullable = false)
-    private Integer rendimientoMaterialM2;
+    @Column(name = "costo_unitario", nullable = false)
+    private Integer costoUnitario;
 
-    @Column(name = "costo_material_unitario", nullable = false)
-    private Integer costoMaterialUnitario;
-
-    @Column(name = "mano_obra_por_m2", nullable = false)
-    private Integer manoObraPorM2;
+    @Column(name = "valor_por_m2", nullable = false)
+    private Integer valorPorM2;
 
     @Column(name = "id_cotizacion", nullable = false)
     private Long idCotizacion;

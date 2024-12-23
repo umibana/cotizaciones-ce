@@ -10,9 +10,9 @@ public class ManoObraRequestDTO {
     private Long idManoObra;
     private String nombreManoObra;
     private Integer areaTrabajarM2;
-    private Integer rendimientoMaterialM2;
-    private Integer costoMaterialUnitario;
-    private Integer manoObraPorM2;
+    private Integer costoUnitario;
+    private Integer valorPorM2;
+    private Long idCotizacion;
 
     // Getters y Setters
     public String getNombreMaterial() {
@@ -29,25 +29,18 @@ public class ManoObraRequestDTO {
         this.areaTrabajarM2 = areaTrabajarM2;
     }
 
-    public Integer getRendimientoMaterial() {
-        return rendimientoMaterialM2;
+    public Integer getCostoUnitario() {
+        return costoUnitario;
     }
-    public void setRendimientoMaterial(Integer rendimientoMaterial) {
-        this.rendimientoMaterialM2 = rendimientoMaterial;
-    }
-
-    public Integer getCostoMaterialUnitario() {
-        return costoMaterialUnitario;
-    }
-    public void setCostoMaterialUnitario(Integer costoMaterialUnitario) {
-        this.costoMaterialUnitario = costoMaterialUnitario;
+    public void setCostoMaterialUnitario(Integer costoUnitario) {
+        this.costoUnitario = costoUnitario;
     }
 
-    public Integer getManoObraPorM2() {
-        return manoObraPorM2;
+    public Integer getValorPorM2() {
+        return valorPorM2;
     }
-    public void setManoObraPorM2(Integer manoObraPorM2) {
-        this.manoObraPorM2 = manoObraPorM2;
+    public void setValorPorM2(Integer valorPorM2) {
+        this.valorPorM2 = valorPorM2;
     }
 
 
