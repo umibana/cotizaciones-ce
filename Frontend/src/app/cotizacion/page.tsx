@@ -52,7 +52,7 @@ interface ManoObraDTO {
 	areaTrabajarM2: number;
 	rendimientoMaterialM2: number;
 	costoMaterialUnitario: number;
-	manoObraPorM2: number;
+	valorPorM2: number;
 }
 
 interface CotizacionRequestDTO {
@@ -179,7 +179,7 @@ export default function QuotationForm() {
 		areaTrabajarM2: 0,
 		rendimientoMaterialM2: 0,
 		costoMaterialUnitario: 0,
-		manoObraPorM2: 0,
+		valorPorM2: 0,
 	});
 
 	useEffect(() => {
@@ -234,7 +234,7 @@ export default function QuotationForm() {
 				areaTrabajarM2: 0,
 				rendimientoMaterialM2: 0,
 				costoMaterialUnitario: 0,
-				manoObraPorM2: 0,
+				valorPorM2: 0,
 			},
 		]);
 	};
@@ -293,7 +293,14 @@ export default function QuotationForm() {
 				metros: item.m2,
 				precio: item.precio,
 			})),
-			manoObras: manoObras,
+			manoObras: manoObras.map((obra) => ({
+				idManoObra: obra.idManoObra || null, // Permite actualizaciones
+				nombreManoObra: obra.nombreManoObra,
+				areaTrabajarM2: obra.areaTrabajarM2,
+				costoUnitario: obra.costoMaterialUnitario, // Costo unitario
+				valorPorM2: obra.valorPorM2,            // Valor por m²
+				idCotizacion: parseInt(projectId),        // Asignar el ID de cotización
+			})),
 			notas: quotationNotes,
 			validezOferta: validezOferta,
 			condPagoAdelantado: condPagoAdelantado,
@@ -565,7 +572,7 @@ export default function QuotationForm() {
 												${obra.costoMaterialUnitario.toLocaleString()}
 											</td>
 											<td className="border border-gray-300 px-4 py-2 text-center">
-												${obra.manoObraPorM2.toLocaleString()}
+												${obra.valorPorM2.toLocaleString()}
 											</td>
 											<td className="border border-gray-300 px-4 py-2 text-center">
 												<Button
@@ -768,15 +775,15 @@ export default function QuotationForm() {
 								/>
 							</div>
 							<div>
-								<Label htmlFor="manoObraPorM2">Costo Mano de Obra por m²</Label>
+								<Label htmlFor="valorPorM2">Costo Mano de Obra por m²</Label>
 								<Input
-									id="manoObraPorM2"
+									id="valorPorM2"
 									type="number"
-									value={manoObraTemp.manoObraPorM2}
+									value={manoObraTemp.valorPorM2}
 									onChange={(e) =>
 										setManoObraTemp({
 										...manoObraTemp,
-										manoObraPorM2: parseFloat(e.target.value) || 0,
+										valorPorM2: parseFloat(e.target.value) || 0,
 										})
 									}
 									placeholder="Ejemplo: 5000"
@@ -791,7 +798,7 @@ export default function QuotationForm() {
 										areaTrabajarM2: 0,
 										rendimientoMaterialM2: 0,
 										costoMaterialUnitario: 0,
-										manoObraPorM2: 0,
+										valorPorM2: 0,
 									}); // Resetea los datos temporales
 								}}
 							>

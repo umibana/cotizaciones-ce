@@ -138,7 +138,7 @@ interface ManoObraItem {
 	areaTrabajarM2: number;
 	rendimientoMaterialM2: number;
 	costoMaterialUnitario: number;
-	manoObraPorM2: number;
+	valorPorM2: number;
   }
 
 interface QuotationPDFProps {
@@ -183,7 +183,7 @@ export const QuotationPDF = ({
 	  );
 
 	  const totalManoObra = manoObras.reduce(
-		(acc, obra) => acc + (obra.areaTrabajarM2 * obra.manoObraPorM2),
+		(acc, obra) => acc + (obra.areaTrabajarM2 * obra.valorPorM2),
 		0
 	  );
 
@@ -289,25 +289,33 @@ export const QuotationPDF = ({
 
 				{/* Tabla de Mano de Obra */}
 				<View style={styles.table}>
-				<View style={styles.tableHeader}>
-					<Text style={styles.colItem}>Mano de Obra</Text>
-					<Text style={styles.colUnit}>Área (m²)</Text>
-					{/* <Text style={styles.colUnit}>Rendimiento (m²/u)</Text> */}
-					<Text style={styles.colPrice}>Costo Unitario</Text>
-					<Text style={styles.colTotal}>Costo Total</Text>
-				</View>
-				{manoObras.map((obra, index) => (
-					<View key={index} style={styles.tableRow}>
-						<Text style={styles.colItem}>{obra.nombreManoObra}</Text>
-						<Text style={styles.colUnit}>{obra.areaTrabajarM2}</Text>
-						{/* <Text style={styles.colUnit}>{obra.rendimientoMaterialM2}</Text> */}
-						<Text style={styles.colPrice}>
-						$ {obra.manoObraPorM2.toLocaleString()}
-						</Text>
-						<Text style={styles.colTotal}>
-						$ {(obra.areaTrabajarM2 * obra.manoObraPorM2).toLocaleString()}
-						</Text>
+					<View style={styles.tableHeader}>
+						<Text style={styles.colItem}>Mano de Obra</Text>
+						<Text style={styles.colUnit}>Área (m²)</Text>
+						{/* <Text style={styles.colPrice}>Costo Unitario</Text> */}
+						<Text style={styles.colPrice}>Valor por m²</Text>
+						<Text style={styles.colTotal}>Costo Total</Text>
 					</View>
+					{manoObras.map((obra, index) => (
+						<View key={index} style={styles.tableRow}>
+							<Text style={styles.colItem}>{obra.nombreManoObra}</Text>
+							<Text style={styles.colUnit}>{obra.areaTrabajarM2}</Text>
+
+							{/* Costo Unitario */}
+							{/* <Text style={styles.colPrice}>
+								$ {obra.costoMaterialUnitario.toLocaleString()}
+							</Text> */}
+
+							{/* Valor por m² */}
+							<Text style={styles.colPrice}>
+								$ {obra.valorPorM2.toLocaleString()}
+							</Text>
+
+							{/* Costo Total */}
+							<Text style={styles.colTotal}>
+								$ {(obra.areaTrabajarM2 * obra.valorPorM2).toLocaleString()}
+							</Text>
+						</View>
 					))}
 				</View>
 
