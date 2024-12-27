@@ -18,7 +18,6 @@ public class SendGridService {
 
     private static SendGrid sendGrid;
 
-    @Autowired
     public SendGridService(SendGrid sendGrid){
         this.sendGrid = sendGrid;
     }

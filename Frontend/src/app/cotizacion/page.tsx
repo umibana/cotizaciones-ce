@@ -59,7 +59,7 @@ interface CotizacionRequestDTO {
 	nombre: string;
 	descripcion: string;
 	notas: string;
-	idProyecto?: number;
+	idProyecto: string;
 	materials: { idMaterial: number; cantidad: number }[];
 	extraItems: {
 		nombre: string;
@@ -170,7 +170,11 @@ export default function QuotationForm() {
 	const [condPagoAdelantado, setCondPagoAdelantado] = useState(50);
 	const [condPagoContraEntrega, setCondPagoContraEntrega] = useState(50);
 	const [plazoDeEntrega, setplazoDeEntrega] = useState(15);
+<<<<<<< Updated upstream
 	const [porcentaje, setPorcentaje] = useState(20);
+=======
+	const [idProyecto] = useState("");
+>>>>>>> Stashed changes
 	const [manoObras, setManoObras] = useState<ManoObraDTO[]>([]);
 
 	const [manoObraOpen, setManoObraOpen] = useState(false);
@@ -306,6 +310,7 @@ export default function QuotationForm() {
 			condPagoAdelantado: condPagoAdelantado,
 			condPagoContraEntrega: condPagoContraEntrega,
 			plazoDeEntrega: plazoDeEntrega,
+<<<<<<< Updated upstream
 			porcentaje: porcentaje,
 			idProyecto: parseInt(projectId),
 			idUser: proyecto?.idUser,
@@ -313,6 +318,12 @@ export default function QuotationForm() {
 
 		console.log("Sending data:", quotationData);
 
+=======
+			idProyecto: idProyecto,
+		};
+
+		console.log("Sending data:", quotationData);
+>>>>>>> Stashed changes
 		const result = await createQuotation(quotationData, projectId);
 
 		if (result.error) {

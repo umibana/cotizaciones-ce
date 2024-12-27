@@ -34,12 +34,13 @@ public class CotizacionService {
 
     public Cotizacion createCotizacion(CotizacionRequestDTO request) {
         // Crear cotización
+
         Cotizacion cotizacion = new Cotizacion();
         cotizacion.setNombre(request.getNombre());
         cotizacion.setDescripcion(request.getDescripcion());
         cotizacion.setNotas(request.getNotas());
-        cotizacion.setCondPagoAdelantado(String.valueOf(request.getCondPagoAdelantado()));
-        cotizacion.setCondPagoContraEntrega(String.valueOf(request.getCondPagoContraEntrega()));
+        cotizacion.setCondPagoAdelantado(String.valueOf(request.getCondDePagoAdelantado()));
+        cotizacion.setCondPagoContraEntrega(String.valueOf(request.getCondDePagoContraEntrega()));
         cotizacion.setValidezOferta(request.getValidezOferta());
         cotizacion.setPlazoDeEntrega(request.getPlazoDeEntrega());
         cotizacion.setPorcentaje(request.getPorcentaje());

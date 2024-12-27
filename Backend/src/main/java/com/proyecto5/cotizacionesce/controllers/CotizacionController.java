@@ -1,5 +1,4 @@
 package com.proyecto5.cotizacionesce.controllers;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.proyecto5.cotizacionesce.entity.Cotizacion;
 import com.proyecto5.cotizacionesce.service.CotizacionService;
 import jakarta.validation.Valid;
@@ -23,11 +22,7 @@ public class CotizacionController {
     @PostMapping("/crear")
     public ResponseEntity<?> createCotizacion(@Valid @RequestBody CotizacionRequestDTO request) {
         try {
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(request);
-            System.out.println("Datos recibidos en el backend: " + json);
-
+            System.out.println("ID Proyecto recibido: " + request.getIdProyecto());
             Cotizacion cotizacion = cotizacionService.createCotizacion(request);
             Map<String, String> response = new HashMap<>();
             response.put("message", "Cotización " + cotizacion.getId_Cotizacion() + " creada exitosamente");

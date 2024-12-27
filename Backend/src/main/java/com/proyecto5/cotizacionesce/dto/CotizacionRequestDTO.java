@@ -28,17 +28,15 @@ public class CotizacionRequestDTO {
     @NotNull(message = "El porcentaje es obligatorio")
     private Integer porcentaje;
 
-
-
     @NotNull(message = "El plazo de entrega es obligatorio")
     private Integer plazoDeEntrega;
 
 
     @NotNull(message = "La condicion de pago es obligatoria")
-    private Integer condPagoAdelantado;
+    private Integer condDePagoAdelantado;
 
     @NotNull(message = "La condicion de pago es obligatoria")
-    private Integer condPagoContraEntrega;
+    private Integer condDePagoContraEntrega;
 
     @NotNull(message = "La validez de la oferta es obligatoria")
     private Integer validezOferta;

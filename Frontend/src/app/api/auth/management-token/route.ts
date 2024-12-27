@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server';
 export async function GET() {
     try {
 
-
         const params = new URLSearchParams({
             grant_type: 'client_credentials',
             client_id: process.env.NEXT_PUBLIC_AUTH0_MANAGEMENT_CLIENT_ID!,
