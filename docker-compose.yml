@@ -61,6 +61,33 @@ services:
     networks:
       - app-network
 
+  frontend-prod:
+    profiles: ["prod"]
+    image: umibana/cotizaciones-ce-frontend:latest # Update this to your image name
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend-prod:8080
+    depends_on:
+      - backend-prod
+    networks:
+      - app-network
+
+  # Frontend service for development
+  frontend-dev:
+    profiles: ["dev"]
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend-dev:8080
+    depends_on:
+      - backend-dev
+    networks:
+      - app-network
+
   db:
     image: postgres:15-alpine
     ports:

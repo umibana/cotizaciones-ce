@@ -39,3 +39,12 @@ docker buildx build --platform linux/amd64,linux/arm64 \
   --push \
   ./Backend
   ```
+
+```bash
+docker buildx build --platform linux/amd64,linux/arm64 \                               
+   -t umibana/cotizaciones-ce-frontend:latest \
+   -f Frontend/Dockerfile \
+   --push \
+   ./Frontend
+```                                  
+
