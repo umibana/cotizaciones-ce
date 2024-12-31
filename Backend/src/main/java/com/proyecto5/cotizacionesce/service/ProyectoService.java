@@ -35,6 +35,8 @@ public class ProyectoService {
     private ProyectoUserService proyectoUserService;
     @Autowired
     private ImagenCotizacionService imagenCotizacionService;
+    @Autowired
+    private UserService userService;
 
     public List<Proyecto> getProyectos(){
         return(List<Proyecto>) proyectoRepository.findAll();
@@ -90,6 +92,47 @@ public class ProyectoService {
         return proyecto;
     }
 
+    //borrador de cambio de estado a "aprobado"
+    public Proyecto estadoAprobado(Long idProyecto){
+        Proyecto proyecto = proyectoRepository.findByIdProyecto(idProyecto)
+                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
+
+        if("Cotizado".equals(proyecto.getEstado())){
+            proyecto.setEstado("Aprobado");
+            proyecto = proyectoRepository.save(proyecto);
+        }else{
+            throw new RuntimeException("El proyecto no estaba en estado 'Cotizado'");
+        }
+        return proyecto;
+    }
+
+    //borrador de cambiar estado a "terminado"
+    public Proyecto estadoTerminado(Long idProyecto){
+        Proyecto proyecto = proyectoRepository.findByIdProyecto(idProyecto)
+                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
+
+        if("Aprobado".equals(proyecto.getEstado())){
+            proyecto.setEstado("Terminado");
+            proyecto = proyectoRepository.save(proyecto);
+        }else{
+            throw new RuntimeException("El proyecto no estaba en estado 'Aprobado'");
+        }
+        return proyecto;
+    }
+
+    //borrador de cambio de estado "rechazado"
+    public Proyecto estadoRechazado(Long idProyecto){
+        Proyecto proyecto = proyectoRepository.findByIdProyecto(idProyecto)
+                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
+
+        if("Cotizado".equals(proyecto.getEstado())){
+            proyecto.setEstado("Rechazado");
+            proyecto = proyectoRepository.save(proyecto);
+        }else{
+            throw new RuntimeException("El proyecto no estaba en estado 'Preparacion cotizacion'");
+        }
+        return proyecto;
+    }
 
     public void asignarColaboradoresAlProyecto(Long projectId, List<Long> workerIds){
 
@@ -98,11 +141,13 @@ public class ProyectoService {
             proyectoUser.setIdProyecto(projectId);
             proyectoUser.setIdUser(workerId);
             proyectoUserRepository.save(proyectoUser);
+            //aqui iria envio del aviso por correo
+            Optional<User> user = userService.getUserById(workerId);
+
         }
 
         Proyecto proyecto = proyectoRepository.findById(projectId)
                 .orElseThrow(() -> new IllegalArgumentException("Proyecto no encontrado"));
-
         proyecto.setEstado("Preparacion cotizacion");
         proyectoRepository.save(proyecto);
     }

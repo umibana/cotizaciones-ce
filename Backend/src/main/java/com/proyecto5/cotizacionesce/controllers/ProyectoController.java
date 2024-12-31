@@ -87,6 +87,18 @@ public class ProyectoController {
         return ResponseEntity.ok(proyecto);
     }
 
+    @PutMapping("/aprobados/{idProyecto}")
+    public ResponseEntity<Proyecto> estadoAprobado(@PathVariable Long idProyecto){
+        Proyecto proyecto = proyectoService.estadoAprobado(idProyecto);
+        return ResponseEntity.ok(proyecto);
+    }
+
+    @PutMapping("/terminados/{idProyecto}")
+    public ResponseEntity<Proyecto> estadoTerminado(@PathVariable Long idProyecto){
+        Proyecto proyecto = proyectoService.estadoTerminado(idProyecto);
+        return ResponseEntity.ok(proyecto);
+    }
+
     @PostMapping("/asignadosEmail")
     public ResponseEntity<List<Proyecto>> listarProyectosAsignadosPorEmail(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
