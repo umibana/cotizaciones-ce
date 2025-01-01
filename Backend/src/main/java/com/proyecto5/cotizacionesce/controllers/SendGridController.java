@@ -19,7 +19,8 @@ public class SendGridController {
     }
 
     @PostMapping("/enviar")
-    public String enviarEmail(@RequestParam String fromEmail, @RequestParam String toEmail, @RequestParam String subject, @RequestParam String body){
-        return SendGridService.sendEmail(fromEmail, toEmail, subject, body);
+    public String enviarEmail(@RequestParam String toEmail,
+                              @RequestParam String subject, @RequestParam String body) {
+        return sendGridService.sendEmail(toEmail, subject, body);
     }
 }

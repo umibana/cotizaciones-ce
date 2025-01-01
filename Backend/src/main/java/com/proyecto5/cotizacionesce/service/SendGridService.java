@@ -9,6 +9,7 @@ import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -16,13 +17,16 @@ import java.io.IOException;
 @Service
 public class SendGridService {
 
-    private static SendGrid sendGrid;
+    private final SendGrid sendGrid;
 
     public SendGridService(SendGrid sendGrid){
         this.sendGrid = sendGrid;
     }
 
-    public static String sendEmail(String fromEmail, String toEmail, String subject, String body){
+    @Value("${sendgrid.email.from}")
+    private String fromEmail;
+
+    public String sendEmail(String toEmail, String subject, String body){
         Email from = new Email(fromEmail);
         Email to = new Email(toEmail);
         Content content = new Content("text/html",body);
