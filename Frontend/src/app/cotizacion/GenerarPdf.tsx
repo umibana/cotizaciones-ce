@@ -139,7 +139,7 @@ interface ManoObraItem {
 	rendimientoMaterialM2: number;
 	costoMaterialUnitario: number;
 	valorPorM2: number;
-  }
+}
 
 interface QuotationPDFProps {
 	quotationName: string;
@@ -159,6 +159,7 @@ interface QuotationPDFProps {
 	advancePayment: number;
 	remainingPayment: number;
 	workTime: number;
+	earningPercentaje: number;
 }
 
 export const QuotationPDF = ({
@@ -178,14 +179,17 @@ export const QuotationPDF = ({
 	earningPercentaje,
 }: QuotationPDFProps) => {
 	const subtotal = items.reduce(
-		(acc, item) => acc + (item.units * item.unitPrice) + (item.units * item.unitPrice) *(earningPercentaje/100),
+		(acc, item) =>
+			acc +
+			item.units * item.unitPrice +
+			item.units * item.unitPrice * (earningPercentaje / 100),
 		0
-	  );
+	);
 
-	  const totalManoObra = manoObras.reduce(
-		(acc, obra) => acc + (obra.areaTrabajarM2 * obra.valorPorM2),
+	const totalManoObra = manoObras.reduce(
+		(acc, obra) => acc + obra.areaTrabajarM2 * obra.valorPorM2,
 		0
-	  );
+	);
 
 	// Hardcodeado por ahora, hay que pasar estas variables
 	// por la otra vista primero!
@@ -193,7 +197,7 @@ export const QuotationPDF = ({
 	const IVA = 0.19;
 	const valorIva = subtotal * IVA;
 
-	const totalIVAInc = (subtotal + valorIva) + totalManoObra;
+	const totalIVAInc = subtotal + valorIva + totalManoObra;
 	// const validez = 10;
 	// const plazo = 10;
 	const adelantado = advancePayment;
@@ -277,15 +281,22 @@ export const QuotationPDF = ({
 							<Text style={styles.colItem}>{item.description}</Text>
 							<Text style={styles.colUnit}>{item.units}</Text>
 							<Text style={styles.colPrice}>
-								$ {(item.unitPrice + (item.unitPrice* (earningPercentaje/100))).toLocaleString()}
+								${" "}
+								{(
+									item.unitPrice +
+									item.unitPrice * (earningPercentaje / 100)
+								).toLocaleString()}
 							</Text>
 							<Text style={styles.colTotal}>
-								$ {((item.units * item.unitPrice) + (item.units * item.unitPrice)*(earningPercentaje/100)).toLocaleString()}
+								${" "}
+								{(
+									item.units * item.unitPrice +
+									item.units * item.unitPrice * (earningPercentaje / 100)
+								).toLocaleString()}
 							</Text>
 						</View>
 					))}
 				</View>
-
 
 				{/* Tabla de Mano de Obra */}
 				<View style={styles.table}>
@@ -319,7 +330,6 @@ export const QuotationPDF = ({
 					))}
 				</View>
 
-
 				<View style={styles.totals}>
 					<View style={styles.totalRow}>
 						<Text style={styles.totalLabel}>Subtotal</Text>
@@ -331,13 +341,17 @@ export const QuotationPDF = ({
 					</View>
 					<View style={styles.totalRow}>
 						<Text style={styles.totalLabel}>TOTAL Mano de Obra</Text>
-						<Text style={styles.totalValue}>$ {totalManoObra.toLocaleString()}</Text>
+						<Text style={styles.totalValue}>
+							$ {totalManoObra.toLocaleString()}
+						</Text>
 					</View>
 					<View style={styles.totalRow}>
 						<Text style={styles.totalLabel}>TOTAL IVA Inc.</Text>
-						<Text style={styles.totalValue}>$ {totalIVAInc.toLocaleString()}</Text>
+						<Text style={styles.totalValue}>
+							$ {totalIVAInc.toLocaleString()}
+						</Text>
 					</View>
-					</View>
+				</View>
 
 				{/* Notes */}
 				{/* Hardcodeado por ahora, lo que hay que hacer es recibir este texto
@@ -347,7 +361,7 @@ export const QuotationPDF = ({
 						<Text style={styles.notesTitle}>NOTAS:</Text>
 						<Text>{notes}</Text>
 					</View>
-)}
+				)}
 
 				{/* Footer */}
 				<Text style={styles.footer}>

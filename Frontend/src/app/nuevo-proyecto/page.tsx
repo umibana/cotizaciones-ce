@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,7 +13,7 @@ import {
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useAuthenticatedMutation, useAuthenticatedQuery } from "@/hooks/useAuth";
+import { useAuthenticatedMutation } from "@/hooks/useAuth";
 import { useAuth0 } from "@auth0/auth0-react";
 
 // Add a type for the API response
@@ -37,8 +37,6 @@ type proyectoData = {
 	idCreador: string | undefined;
 };
 
-
-
 export default function NuevoProyecto() {
 	const usuario_info = useAuth0();
 	const usuario_info_email = usuario_info?.user?.email ?? null;
@@ -46,13 +44,16 @@ export default function NuevoProyecto() {
 	const [userId, setUserId] = useState<string | null>(null);
 	const getUserId = async (email: string) => {
 		try {
-			const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/idporemail`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({email:email}),
-			});
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/idporemail`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ email: email }),
+				}
+			);
 
 			if (response.ok) {
 				const idUser = await response.json();
@@ -65,7 +66,6 @@ export default function NuevoProyecto() {
 			console.error("Error al hacer la solicitud:", error);
 		}
 	};
-
 
 	if (usuario_info_email && !userId) {
 		getUserId(usuario_info_email);
@@ -143,8 +143,7 @@ export default function NuevoProyecto() {
 	return (
 		<form
 			onSubmit={handleSubmit}
-			className="container mx-auto p-4 max-w-2xl space-y-8"
-		>
+			className="container mx-auto p-4 max-w-2xl space-y-8">
 			<Card>
 				<CardHeader>
 					<CardTitle>Nuevo Proyecto</CardTitle>
@@ -190,8 +189,7 @@ export default function NuevoProyecto() {
 									className={cn(
 										"w-full justify-start text-left font-normal",
 										!proyecto.fechaVisita && "text-muted-foreground"
-									)}
-								>
+									)}>
 									<CalendarIcon className="mr-2 h-4 w-4" />
 									{proyecto.fechaVisita ? (
 										format(proyecto.fechaVisita, "PPP")

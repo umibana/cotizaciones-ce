@@ -1,14 +1,12 @@
 "use client";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useSearchParams } from "next/navigation";
 import { useAuthenticatedQuery } from "@/hooks/useAuth";
-import { MdDriveFileRenameOutline } from "react-icons/md";
-import Link from "next/link";
-import {Plus} from "lucide-react";
+import { Plus } from "lucide-react";
 
 // Interfaces para los datos de la cotización
 interface ManoDeObra {
@@ -54,11 +52,14 @@ export default function RevisarCotizacion() {
 	const [nuevoValorValidez, setNuevoValorValidez] = useState<number | "">("");
 
 	const [dialogPagoAdelantado, setDialogPagoAdelantado] = useState(false);
-	const [nuevoPagoAdelantado, setNuevoPagoAdelantado] = useState<string | "">("");
-
+	const [nuevoPagoAdelantado, setNuevoPagoAdelantado] = useState<string | "">(
+		""
+	);
 
 	// Estados iniciales
-	const [nuevoPagoContraEntrega, setNuevoPagoContraEntrega] = useState<string | "">("");
+	const [nuevoPagoContraEntrega, setNuevoPagoContraEntrega] = useState<
+		string | ""
+	>("");
 	const [nuevoPlazoEntrega, setNuevoPlazoEntrega] = useState<number | "">("");
 	const [nuevasNotas, setNuevasNotas] = useState<string | "">("");
 	const [nuevoPrecioTotal, setNuevoPrecioTotal] = useState<number | "">("");
@@ -110,28 +111,34 @@ export default function RevisarCotizacion() {
 	const abrirDialogoPagoAdelantado = () => setIsDialogOpenPagoAdelantado(true);
 	const cerrarDialogo = () => setIsDialogOpen(false);
 
-	const cerrarDialogoPagoAdelantado = () => setIsDialogOpenPagoAdelantado(false);
+	const cerrarDialogoPagoAdelantado = () =>
+		setIsDialogOpenPagoAdelantado(false);
 
 	// Manejo del cambio en el input del nuevo valor de validez
 	const handleNuevoValorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setNuevoValorValidez(parseInt(e.target.value) || "");
 	};
 
-	const handleNuevoPagoAdelantado = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setNuevoPagoAdelantado(parseInt(e.target.value) || "");
+	const handleNuevoPagoAdelantado = (
+		e: React.ChangeEvent<HTMLInputElement>
+	) => {
+		setNuevoPagoAdelantado(e.target.value || "");
 	};
 
 	// Función para enviar el nuevo valor al backend
 	// Función genérica para actualizar valores en el backend
 	const actualizarValor = async (endpoint: string, body: any) => {
 		try {
-			const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/cotizaciones/${cotizacionId}/${endpoint}`, {
-				method: "PUT",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(body),
-			});
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_BACKEND_URL}/cotizaciones/${cotizacionId}/${endpoint}`,
+				{
+					method: "PUT",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(body),
+				}
+			);
 
 			if (response.ok) {
 				alert("Valor actualizado correctamente");
@@ -169,10 +176,14 @@ export default function RevisarCotizacion() {
 							<Dialog
 								title="Editar Validez Oferta"
 								value={nuevoValorValidez}
-								onChange={(e) => setNuevoValorValidez(parseInt(e.target.value) || "")}
+								onChange={(e) =>
+									setNuevoValorValidez(parseInt(e.target.value) || "")
+								}
 								onCancel={() => setDialogValidez(false)}
 								onSave={() => {
-									actualizarValor("validez-oferta", { validezOferta: nuevoValorValidez });
+									actualizarValor("validez-oferta", {
+										validezOferta: nuevoValorValidez,
+									});
 									setDialogValidez(false);
 								}}
 							/>
@@ -200,18 +211,21 @@ export default function RevisarCotizacion() {
 								onChange={(e) => setNuevoPagoAdelantado(e.target.value)}
 								onCancel={() => setDialogPagoAdelantado(false)}
 								onSave={() => {
-									actualizarValor("pago-adelantado", { condPagoAdelantado: nuevoPagoAdelantado });
+									actualizarValor("pago-adelantado", {
+										condPagoAdelantado: nuevoPagoAdelantado,
+									});
 									setDialogPagoAdelantado(false);
 								}}
 							/>
 						)}
 
-
 						<div className="space-y-2">
 							<Label htmlFor="pagoContraEntrega">
 								Condición Pago Contra Entrega (%)
 							</Label>
-							<Button size="sm" onClick={() => setDialogPagoContraEntrega(true)}>
+							<Button
+								size="sm"
+								onClick={() => setDialogPagoContraEntrega(true)}>
 								<Plus className="h-4 w-4" />
 							</Button>
 							<Input
@@ -229,7 +243,9 @@ export default function RevisarCotizacion() {
 								onChange={(e) => setNuevoPagoContraEntrega(e.target.value)}
 								onCancel={() => setDialogPagoContraEntrega(false)}
 								onSave={() => {
-									actualizarValor("pago-contra-entrega", { condPagoContraEntrega: nuevoPagoContraEntrega });
+									actualizarValor("pago-contra-entrega", {
+										condPagoContraEntrega: nuevoPagoContraEntrega,
+									});
 									setDialogPagoContraEntrega(false);
 								}}
 							/>
@@ -253,10 +269,14 @@ export default function RevisarCotizacion() {
 							<Dialog
 								title="Editar Plazo de Entrega"
 								value={nuevoPlazoEntrega}
-								onChange={(e) => setNuevoPlazoEntrega(parseInt(e.target.value) || "")}
+								onChange={(e) =>
+									setNuevoPlazoEntrega(parseInt(e.target.value) || "")
+								}
 								onCancel={() => setDialogPlazoEntrega(false)}
 								onSave={() => {
-									actualizarValor("plazo-entrega", { plazoDeEntrega: nuevoPlazoEntrega });
+									actualizarValor("plazo-entrega", {
+										plazoDeEntrega: nuevoPlazoEntrega,
+									});
 									setDialogPlazoEntrega(false);
 								}}
 							/>
@@ -305,15 +325,18 @@ export default function RevisarCotizacion() {
 							<Dialog
 								title="Editar Precio Total"
 								value={nuevoPrecioTotal}
-								onChange={(e) => setNuevoPrecioTotal(parseFloat(e.target.value) || "")}
+								onChange={(e) =>
+									setNuevoPrecioTotal(parseFloat(e.target.value) || "")
+								}
 								onCancel={() => setDialogPrecioTotal(false)}
 								onSave={() => {
-									actualizarValor("precio-total", { precioTentativo: nuevoPrecioTotal });
+									actualizarValor("precio-total", {
+										precioTentativo: nuevoPrecioTotal,
+									});
 									setDialogPrecioTotal(false);
 								}}
 							/>
 						)}
-
 					</div>
 				</CardContent>
 			</Card>
@@ -419,7 +442,9 @@ function Dialog({ title, value, onChange, onCancel, onSave }: any) {
 					<Input type="text" value={value} onChange={onChange} />
 				</div>
 				<div className="mt-4 flex justify-end">
-					<Button onClick={onCancel} className="mr-2">Cancelar</Button>
+					<Button onClick={onCancel} className="mr-2">
+						Cancelar
+					</Button>
 					<Button onClick={onSave}>Guardar</Button>
 				</div>
 			</div>
