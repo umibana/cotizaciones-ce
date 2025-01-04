@@ -368,7 +368,7 @@ export default function RevisarCotizacion() {
 
 			<Card className="mb-8">
 				<CardHeader>
-					<CardTitle>Manos de Obra</CardTitle>
+					<CardTitle>Manos de obra</CardTitle>
 				</CardHeader>
 				<CardContent>
 					{isManoObraLoading ? (
@@ -377,17 +377,33 @@ export default function RevisarCotizacion() {
 							<span className="ml-2">Cargando mano de obra...</span>
 						</div>
 					) : manoObra?.length ? (
-						<>
+						<table className="table-auto w-full border-collapse border border-gray-300">
+							<thead>
+							<tr>
+								<th className="border border-gray-300 px-4 py-2 text-left">Nombre mano de obra</th>
+								<th className="border border-gray-300 px-4 py-2 text-left">Area a trabajar</th>
+								<th className="border border-gray-300 px-4 py-2 text-left">Valor por M2</th>
+								<th className="border border-gray-300 px-4 py-2 text-left">Costo total</th>
+							</tr>
+							</thead>
+							<tbody>
 							{manoObra.map((item) => (
-								<div key={item.nombre} className="mb-2">
-									{item.nombre} - ${item.costoUnitario}
-								</div>
+								<tr key={item.nombre}>
+									<td className="border border-gray-300 px-4 py-2">{item.nombre}</td>
+									<td className="border border-gray-300 px-4 py-2">{item.areaTrabajarM2}</td>
+									<td className="border border-gray-300 px-4 py-2">{item.valorPorM2}</td>
+									<td className="border border-gray-300 px-4 py-2">{item.valorPorM2*2}</td>
+								</tr>
 							))}
-							<div className="font-bold mt-4">
-								Total: $
-								{manoObra.reduce((acc, curr) => acc + curr.costoUnitario, 0)}
-							</div>
-						</>
+							</tbody>
+							<tfoot>
+							<tr>
+								<td className="font-bold px-4 py-2 text-right" colSpan="2">
+									Total: ${manoObra.reduce((acc, curr) => acc + curr.costoUnitario, 0)}
+								</td>
+							</tr>
+							</tfoot>
+						</table>
 					) : (
 						<div className="text-center py-4 text-gray-500">
 							No hay mano de obra disponible
@@ -395,6 +411,7 @@ export default function RevisarCotizacion() {
 					)}
 				</CardContent>
 			</Card>
+
 
 			<Card className="mb-8">
 				<CardHeader>
@@ -407,20 +424,33 @@ export default function RevisarCotizacion() {
 							<span className="ml-2">Cargando materiales...</span>
 						</div>
 					) : materiales?.length ? (
-						<>
+						<table className="table-auto w-full border-collapse border border-gray-300">
+							<thead>
+							<tr>
+								<th className="border border-gray-300 px-4 py-2 text-left">Nombre material</th>
+								<th className="border border-gray-300 px-4 py-2 text-left">Cantidad</th>
+								<th className="border border-gray-300 px-4 py-2 text-left">Precio por unidad</th>
+								<th className="border border-gray-300 px-4 py-2 text-left">Costo total</th>
+							</tr>
+							</thead>
+							<tbody>
 							{materiales.map((material) => (
-								<div key={material.nombre} className="mb-2">
-									{material.nombre} - {material.cantidad} x ${material.precio}
-								</div>
+								<tr key={material.nombre}>
+									<td className="border border-gray-300 px-4 py-2">{material.nombre}</td>
+									<td className="border border-gray-300 px-4 py-2">{material.cantidad}</td>
+									<td className="border border-gray-300 px-4 py-2">${material.precio}</td>
+									<td className="border border-gray-300 px-4 py-2">${material.cantidad * material.precio}</td>
+								</tr>
 							))}
-							<div className="font-bold mt-4">
-								Total: $
-								{materiales.reduce(
-									(acc, curr) => acc + curr.cantidad * curr.precio,
-									0
-								)}
-							</div>
-						</>
+							</tbody>
+							<tfoot>
+							<tr>
+								<td className="font-bold px-4 py-2 text-right" colSpan="3">
+									Total: ${materiales.reduce((acc, curr) => acc + (curr.cantidad * curr.precio), 0)}
+								</td>
+							</tr>
+							</tfoot>
+						</table>
 					) : (
 						<div className="text-center py-4 text-gray-500">
 							No hay materiales disponibles
@@ -428,6 +458,7 @@ export default function RevisarCotizacion() {
 					)}
 				</CardContent>
 			</Card>
+
 
 			{/* @ts-expect-error Mostrar el item extra */}
 			{cotizacionData?.itemExtra && (
