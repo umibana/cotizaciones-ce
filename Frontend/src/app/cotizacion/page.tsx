@@ -286,6 +286,29 @@ export default function QuotationForm() {
 		return true;
 	};
 
+	const calcularPrecioTentativo = () => {
+		const subtotal = materials.reduce(
+			(acc, item) =>
+				acc +
+				item.quantity * item.precio +
+				item.quantity * item.precio * (porcentaje / 100),
+			0
+		);
+		console.log("Subtotal:", subtotal);
+
+		const totalManoObra = manoObras.reduce(
+			(acc, obra) => acc + obra.areaTrabajarM2 * obra.valorPorM2,
+			0
+		);
+		console.log("Total Mano de Obra:", totalManoObra);
+		const IVA = 0.19;
+		const valorIva = subtotal * IVA;
+		console.log("IVA:", valorIva);
+		const precioTentativo = subtotal + valorIva + totalManoObra;
+		console.log("Precio Tentativo:", precioTentativo);
+		return precioTentativo;
+	};
+
 	const handleSubmitQuotation = async (event: React.FormEvent) => {
 		event.preventDefault();
 
@@ -295,6 +318,8 @@ export default function QuotationForm() {
 			toast.error("No se encontró el ID del proyecto.");
 			return;
 		}
+
+		const precioTentativo = calcularPrecioTentativo();
 
 		const quotationData: CotizacionRequestDTO = {
 			nombre: quotationName,
@@ -329,6 +354,7 @@ export default function QuotationForm() {
 			condDePagoAdelantado: condPagoAdelantado,
 			condDePagoContraEntrega: condPagoContraEntrega,
 			plazoDeEntrega: plazoDeEntrega,
+			precioTentativo: precioTentativo,
 			porcentaje: porcentaje,
 			idProyecto: parseInt(projectId),
 			idUser: proyecto?.idUser,
