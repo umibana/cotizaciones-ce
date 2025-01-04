@@ -141,7 +141,7 @@ public class CotizacionService {
     }
 
     public Cotizacion getCotizacionByProyecto(Long id_Proyecto) {
-        return cotizacionRepository.findByIdProyecto(id_Proyecto);
+        return cotizacionRepository.findTopByProyectoIdOrderByTimestampDesc(id_Proyecto);
     }
 
     public List<Cotizacion> getCotizacionesByEstado(String estado) {
