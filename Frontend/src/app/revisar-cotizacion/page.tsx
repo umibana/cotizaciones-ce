@@ -26,7 +26,6 @@ interface Material {
 	descripcion: string;
 }
 
-
 interface Cotizacion {
 	id_Cotizacion: number;
 	validezOferta: number;
@@ -35,6 +34,7 @@ interface Cotizacion {
 	plazoDeEntrega: number;
 	precioTentativo: number;
 	notas: string;
+	porcentaje: number;
 	// manosDeObra: ManoDeObra[]; Se implementara cuando bryan tenga listo su HU
 	// materiales: Material[]; Se implementara cuando bryan tenga listo su HU
 	// itemExtra: ItemExtra | null;
@@ -374,29 +374,49 @@ export default function RevisarCotizacion() {
 					) : manoObra?.length ? (
 						<table className="table-auto w-full border-collapse border border-gray-300">
 							<thead>
-							<tr>
-								<th className="border border-gray-300 px-4 py-2 text-left">Nombre mano de obra</th>
-								<th className="border border-gray-300 px-4 py-2 text-left">Area a trabajar</th>
-								<th className="border border-gray-300 px-4 py-2 text-left">Valor por M2</th>
-								<th className="border border-gray-300 px-4 py-2 text-left">Costo total</th>
-							</tr>
+								<tr>
+									<th className="border border-gray-300 px-4 py-2 text-left">
+										Nombre mano de obra
+									</th>
+									<th className="border border-gray-300 px-4 py-2 text-left">
+										Area a trabajar
+									</th>
+									<th className="border border-gray-300 px-4 py-2 text-left">
+										Valor por M2
+									</th>
+									<th className="border border-gray-300 px-4 py-2 text-left">
+										Costo total
+									</th>
+								</tr>
 							</thead>
 							<tbody>
-							{manoObra.map((item) => (
-								<tr key={item.nombre}>
-									<td className="border border-gray-300 px-4 py-2">{item.nombre}</td>
-									<td className="border border-gray-300 px-4 py-2">{item.areaTrabajar}</td>
-									<td className="border border-gray-300 px-4 py-2">{item.valorPorM2}</td>
-									<td className="border border-gray-300 px-4 py-2">{item.valorPorM2*2}</td>
-								</tr>
-							))}
+								{manoObra.map((item) => (
+									<tr key={item.nombre}>
+										<td className="border border-gray-300 px-4 py-2">
+											{item.nombre}
+										</td>
+										<td className="border border-gray-300 px-4 py-2">
+											{item.areaTrabajar}
+										</td>
+										<td className="border border-gray-300 px-4 py-2">
+											{item.valorPorM2}
+										</td>
+										<td className="border border-gray-300 px-4 py-2">
+											{item.valorPorM2 * 2}
+										</td>
+									</tr>
+								))}
 							</tbody>
 							<tfoot>
-							<tr>
-								<td className="font-bold px-4 py-2 text-right" colSpan="2">
-									Total de mano de obra: ${manoObra.reduce((acc, curr) => acc + (curr.areaTrabajar * curr.valorPorM2), 0)}
-								</td>
-							</tr>
+								<tr>
+									<td className="font-bold px-4 py-2 text-right" colSpan={2}>
+										Total de mano de obra: $
+										{manoObra.reduce(
+											(acc, curr) => acc + curr.areaTrabajar * curr.valorPorM2,
+											0
+										)}
+									</td>
+								</tr>
 							</tfoot>
 						</table>
 					) : (
@@ -406,7 +426,6 @@ export default function RevisarCotizacion() {
 					)}
 				</CardContent>
 			</Card>
-
 
 			<Card className="mb-8">
 				<CardHeader>
@@ -421,46 +440,80 @@ export default function RevisarCotizacion() {
 					) : materiales?.length ? (
 						<table className="table-auto w-full border-collapse border border-gray-300">
 							<thead>
-							<tr>
-								<th className="border border-gray-300 px-4 py-2 text-left">Nombre material</th>
-								<th className="border border-gray-300 px-4 py-2 text-left">Cantidad</th>
-								<th className="border border-gray-300 px-4 py-2 text-left">Precio por unidad</th>
-								<th className="border border-gray-300 px-4 py-2 text-left">Costo total sin utilidad</th>
-								<th className="border border-gray-300 px-4 py-2 text-left">Costo total con utilidad</th>
-							</tr>
+								<tr>
+									<th className="border border-gray-300 px-4 py-2 text-left">
+										Nombre material
+									</th>
+									<th className="border border-gray-300 px-4 py-2 text-left">
+										Cantidad
+									</th>
+									<th className="border border-gray-300 px-4 py-2 text-left">
+										Precio por unidad
+									</th>
+									<th className="border border-gray-300 px-4 py-2 text-left">
+										Costo total sin utilidad
+									</th>
+									<th className="border border-gray-300 px-4 py-2 text-left">
+										Costo total con utilidad
+									</th>
+								</tr>
 							</thead>
 							<tbody>
-							{materiales.map((material) => (
-								<tr key={material.nombre}>
-									<td className="border border-gray-300 px-4 py-2">{material.nombre}</td>
-									<td className="border border-gray-300 px-4 py-2">{material.cantidad}</td>
-									<td className="border border-gray-300 px-4 py-2">${material.precio}</td>
-									<td className="border border-gray-300 px-4 py-2">${material.cantidad * material.precio}</td>
-									<td className="border border-gray-300 px-4 py-2">${(material.cantidad * material.precio * cotizacionData.porcentaje/100) + material.cantidad * material.precio}</td>
-								</tr>
-							))}
+								{materiales.map((material) => (
+									<tr key={material.nombre}>
+										<td className="border border-gray-300 px-4 py-2">
+											{material.nombre}
+										</td>
+										<td className="border border-gray-300 px-4 py-2">
+											{material.cantidad}
+										</td>
+										<td className="border border-gray-300 px-4 py-2">
+											${material.precio}
+										</td>
+										<td className="border border-gray-300 px-4 py-2">
+											${material.cantidad * material.precio}
+										</td>
+										<td className="border border-gray-300 px-4 py-2">
+											$
+											{(material.cantidad *
+												material.precio *
+												cotizacionData.porcentaje) /
+												100 +
+												material.cantidad * material.precio}
+										</td>
+									</tr>
+								))}
 							</tbody>
-							<tfoot>
-							<tr className="flex-col">
-								<td className="font-bold px-4 py-2 text-right" colSpan="3">
-									Total sin utilidad:
-									${materiales.reduce((acc, curr) => acc + (curr.cantidad * curr.precio), 0)}
-								</td>
-								<td className="font-bold px-4 py-2 text-right" colSpan="3">
-									Total con utilidad:
-									${materiales.reduce((acc, curr) => acc + ((curr.cantidad * curr.precio)+(curr.cantidad * curr.precio * cotizacionData.porcentaje/100)), 0)}
-								</td>
-							</tr>
-							</tfoot>
+							<tfoot></tfoot>
 						</table>
 					) : (
 						<div className="text-center py-4 text-gray-500">
 							No hay materiales disponibles
 						</div>
 					)}
+
+					<tr className="flex-col">
+						<td className="font-bold px-4 py-2 text-right" colSpan={2}>
+							Total sin utilidad: $
+							{materiales.reduce(
+								(acc, curr) => acc + curr.cantidad * curr.precio,
+								0
+							)}
+						</td>
+						<td className="font-bold px-4 py-2 text-right" colSpan={3}>
+							Total con utilidad: $
+							{materiales.reduce(
+								(acc, curr) =>
+									acc +
+									(curr.cantidad * curr.precio +
+										(curr.cantidad * curr.precio * cotizacionData.porcentaje) /
+											100),
+								0
+							)}
+						</td>
+					</tr>
 				</CardContent>
 			</Card>
-
 
 			<Card>
 				<CardHeader>
@@ -481,7 +534,7 @@ export default function RevisarCotizacion() {
 	);
 }
 
-function Dialog({ title, value, onChange, onCancel, onSave }: any) {
+function Dialog({ title, value, onChange, onCancel, onSave }) {
 	return (
 		<div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
 			<div className="bg-white p-6 rounded-lg w-96">
