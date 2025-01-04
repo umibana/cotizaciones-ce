@@ -17,9 +17,11 @@ interface ManoDeObra {
 
 interface Material {
 	// Define las propiedades de un material, por ejemplo:
+	idMaterial: number;
 	nombre: string;
 	cantidad: number;
-	precioUnitario: number;
+	precio: number;
+	descripcion: string;
 }
 
 interface ItemExtra {
@@ -29,6 +31,7 @@ interface ItemExtra {
 }
 
 interface Cotizacion {
+	id_Cotizacion: number;
 	validezOferta: number;
 	condPagoAdelantado: string;
 	condPagoContraEntrega: string;
@@ -93,6 +96,16 @@ export default function RevisarCotizacion() {
 		}
 	}, [cotizacionData]);
 	console.log("Cotización Data:", cotizacionData);
+
+	const { data: materiales, isLoading: isMaterialesLoading } =
+		useAuthenticatedQuery<Material[]>(
+			["materiales", cotizacionId],
+			`${process.env.NEXT_PUBLIC_BACKEND_URL}/materiales/cotizacion/${cotizacionData?.id_Cotizacion}`,
+			{
+				// Only run this query when cotizacionData exists and has an id
+				enabled: !!cotizacionData?.id_Cotizacion,
+			}
+		);
 
 	// Manejo de la carga y errores
 	if (isLoading) return <div>Cargando cotización...</div>;
@@ -373,29 +386,31 @@ export default function RevisarCotizacion() {
 					<CardTitle>Materiales</CardTitle>
 				</CardHeader>
 				<CardContent>
-					{/*{ Modificar la estructura por esto: cotizacionData?.materiales.map((material) => ( */}
-					{[
-						{ nombre: "Cemento", cantidad: 10, precioUnitario: 50 },
-						{ nombre: "Ladrillos", cantidad: 100, precioUnitario: 10 },
-						{ nombre: "Pintura", cantidad: 5, precioUnitario: 20 },
-					].map((material) => (
-						<div key={material.nombre} className="mb-2">
-							{material.nombre} - {material.cantidad} x $
-							{material.precioUnitario}
+					{isMaterialesLoading ? (
+						<div className="flex items-center justify-center py-4">
+							<div className="h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-primary"></div>
+							<span className="ml-2">Cargando materiales...</span>
 						</div>
-					))}
-					{/* Calcular y mostrar el precio total */}
-					<div className="font-bold">
-						Total: $
-						{[
-							{ nombre: "Cemento", cantidad: 10, precioUnitario: 50 },
-							{ nombre: "Ladrillos", cantidad: 100, precioUnitario: 10 },
-							{ nombre: "Pintura", cantidad: 5, precioUnitario: 20 },
-						].reduce(
-							(acc, curr) => acc + curr.cantidad * curr.precioUnitario,
-							0
-						)}
-					</div>
+					) : materiales?.length ? (
+						<>
+							{materiales.map((material) => (
+								<div key={material.nombre} className="mb-2">
+									{material.nombre} - {material.cantidad} x ${material.precio}
+								</div>
+							))}
+							<div className="font-bold mt-4">
+								Total: $
+								{materiales.reduce(
+									(acc, curr) => acc + curr.cantidad * curr.precio,
+									0
+								)}
+							</div>
+						</>
+					) : (
+						<div className="text-center py-4 text-gray-500">
+							No hay materiales disponibles
+						</div>
+					)}
 				</CardContent>
 			</Card>
 

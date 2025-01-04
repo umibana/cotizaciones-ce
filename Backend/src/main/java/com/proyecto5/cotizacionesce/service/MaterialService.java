@@ -2,18 +2,21 @@ package com.proyecto5.cotizacionesce.service;
 
 import com.proyecto5.cotizacionesce.dto.MaterialRequestDTO;
 import com.proyecto5.cotizacionesce.entity.Material;
+import com.proyecto5.cotizacionesce.repository.CotizacionMaterialRepository;
 import com.proyecto5.cotizacionesce.repository.MaterialRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class MaterialService {
     private final MaterialRepository materialRepository;
+    private final CotizacionMaterialRepository cotizacionMaterialRepository;
 
     public Material createMaterial(Material material) {
         return materialRepository.save(material);
@@ -27,6 +30,7 @@ public class MaterialService {
         // Set other properties as needed
         return materialRepository.save(material);
     }
+
     public Material updateMaterial(Long id, Material material) {
         return materialRepository.findById(id)
                 .map(existing -> {
@@ -50,7 +54,12 @@ public class MaterialService {
         return materialRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Material no encontrado"));
     }
-    public List<Material> getAllmaterial(){
+
+    public List<Material> getAllmaterial() {
         return materialRepository.findAll();
+    }
+
+    public List<Map<String, Object>> getMaterialesByCotizacionId(Long cotizacionId) {
+        return cotizacionMaterialRepository.findMaterialesByCotizacionId(cotizacionId);
     }
 }
