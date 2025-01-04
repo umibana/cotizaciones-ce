@@ -147,7 +147,7 @@ export default function RevisarCotizacion() {
 
 	// Función para enviar el nuevo valor al backend
 	// Función genérica para actualizar valores en el backend
-	const actualizarValor = async (endpoint: string, body: any) => {
+	const actualizarValor = async (endpoint: string, body) => {
 		try {
 			const response = await fetch(
 				`${process.env.NEXT_PUBLIC_BACKEND_URL}/cotizaciones/${cotizacionId}/${endpoint}`,
