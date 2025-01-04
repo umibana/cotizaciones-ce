@@ -66,7 +66,7 @@ const ProjectDetailsPage = () => {
 				<CardContent>
 					<div className="grid grid-cols-2 gap-4">
 						<div className="space-y-2">
-							<Label htmlFor="nombre">Nombre del Proyecto</Label>
+							<Label htmlFor="nombre">Nombre del proyecto</Label>
 							<Input
 								id="nombre"
 								type="text"
@@ -98,6 +98,15 @@ const ProjectDetailsPage = () => {
 								id="estado"
 								type="text"
 								value={projectData?.estado || ""}
+								readOnly
+							/>
+						</div>
+						<div className="space-y-2">
+							<Label htmlFor="estado">Fecha visita tecnica</Label>
+							<Input
+								id="estado"
+								type="date"
+								value={projectData?.fechaVisita || ""}
 								readOnly
 							/>
 						</div>
@@ -136,15 +145,6 @@ const ProjectDetailsPage = () => {
 								id="telefono"
 								type="text"
 								value={clientData?.telefono || ""}
-								readOnly
-							/>
-						</div>
-						<div className="space-y-2">
-							<Label htmlFor="direccion">Dirección</Label>
-							<Input
-								id="direccion"
-								type="text"
-								value={clientData?.direccion || ""}
 								readOnly
 							/>
 						</div>
