@@ -24,6 +24,4 @@ public class ManoObra {
     @Column(name = "valor_por_m2", nullable = false)
     private Integer valorPorM2;
 
-    @Column(name = "id_cotizacion", nullable = false)
-    private Long idCotizacion;
 }

@@ -7,14 +7,22 @@ import lombok.Setter;
 @Getter
 public class ManoObraRequestDTO {
 
+
     private Long idManoObra;
     private String nombreManoObra;
     private Integer areaTrabajarM2;
     private Integer costoUnitario;
     private Integer valorPorM2;
-    private Long idCotizacion;
 
     // Getters y Setters
+
+    public Long getIdManoObra() {
+        return idManoObra;
+    }
+
+    public void setIdManoObra(Long idManoObra) {
+        this.idManoObra = idManoObra;
+    }
     public String getNombreMaterial() {
         return nombreManoObra;
     }

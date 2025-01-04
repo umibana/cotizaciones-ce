@@ -33,6 +33,7 @@ public class CotizacionService {
     private final ManoObraService manoObraService;
     @Autowired
     private final MaterialService materialService;
+    private final CotizacionManoObraService cotizacionManoObraService;
 
     public Cotizacion createCotizacion(CotizacionRequestDTO request) {
         // Crear cotización
@@ -80,21 +81,33 @@ public class CotizacionService {
                 processedMaterials,
                 savedCotizacion.getId_Cotizacion());
 
-        // Creo tablas intermedia para saber que material y su cantidad
-        // cotizacionMaterialService.createCotizacionMateriales(
-        // request.getMaterials(),
-        // savedCotizacion.getId_Cotizacion());
-
         // En caso de tener items personalizados, se crearan con el método
         personalizadoService.createPersonalizados(
                 request.getExtraItems(),
                 savedCotizacion.getId_Cotizacion());
 
-        // Paso 1: Asignar el ID de cotización a cada mano de obra
-        request.getManoObras().forEach(obra -> obra.setIdCotizacion(savedCotizacion.getId_Cotizacion()));
 
-        // Paso 2: Guardar las manos de obra
-        manoObraService.guardarManoObra(request.getManoObras());
+        List<ManoObraRequestDTO> manoObraProcesada = request.getManoObras().stream()
+                .peek(manoObraDTO -> {
+                    if (manoObraDTO.getIdManoObra() == null) {
+                        System.out.println("Material nuevo - ID: " + manoObraDTO.getIdManoObra()
+                                + ", Nombre: " + manoObraDTO.getNombreManoObra()
+                                + ", Nombre (eliminar si funcionan ambos): " + manoObraDTO.getNombreMaterial()
+                                + ", area : " + manoObraDTO.getAreaTrabajarM2()
+                                + ", costo : " + manoObraDTO.getCostoUnitario()
+                                + ", valor m2 : " + manoObraDTO.getValorPorM2()
+                                + ", id: " + manoObraDTO.getIdManoObra());
+
+                        ManoObra newManoObra = manoObraService.crearManoObra(manoObraDTO);
+                        manoObraDTO.setIdManoObra(newManoObra.getIdManoObra());
+                    }
+                })
+                .toList();
+
+        // Ahora creo las tablas intermedias de mano de obra y cotización
+        cotizacionManoObraService.createCotizacionManoObra(
+                manoObraProcesada,
+                savedCotizacion.getId_Cotizacion());
 
         // Actualizar el estado del proyecto
         proyectoService.estadoRevision(request.getIdProyecto());

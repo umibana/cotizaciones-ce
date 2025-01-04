@@ -12,7 +12,9 @@ import { Plus } from "lucide-react";
 interface ManoDeObra {
 	// Define las propiedades de una mano de obra, por ejemplo:
 	nombre: string;
-	costo: number;
+	valorPorM2: number;
+	areaTrabajarM2: number;
+	costoUnitario: number;
 }
 
 interface Material {
@@ -101,6 +103,16 @@ export default function RevisarCotizacion() {
 		useAuthenticatedQuery<Material[]>(
 			["materiales", cotizacionId],
 			`${process.env.NEXT_PUBLIC_BACKEND_URL}/materiales/cotizacion/${cotizacionData?.id_Cotizacion}`,
+			{
+				// Only run this query when cotizacionData exists and has an id
+				enabled: !!cotizacionData?.id_Cotizacion,
+			}
+		);
+
+	const { data: manoObra, isLoading: isManoObraLoading } =
+		useAuthenticatedQuery<ManoDeObra[]>(
+			["manoDeObra", cotizacionId],
+			`${process.env.NEXT_PUBLIC_BACKEND_URL}/mano-obra/cotizacion/${cotizacionData?.id_Cotizacion}`,
 			{
 				// Only run this query when cotizacionData exists and has an id
 				enabled: !!cotizacionData?.id_Cotizacion,
@@ -359,25 +371,28 @@ export default function RevisarCotizacion() {
 					<CardTitle>Manos de Obra</CardTitle>
 				</CardHeader>
 				<CardContent>
-					{/* Lista de manos de obra hardcodeada */}
-					{[
-						{ nombre: "Instalación de piso", costo: 1000 },
-						{ nombre: "Pintura de paredes", costo: 500 },
-						{ nombre: "Reparación de techo", costo: 1200 },
-					].map((manoDeObra) => (
-						<div key={manoDeObra.nombre} className="mb-2">
-							{manoDeObra.nombre} - ${manoDeObra.costo}
+					{isManoObraLoading ? (
+						<div className="flex items-center justify-center py-4">
+							<div className="h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-primary"></div>
+							<span className="ml-2">Cargando mano de obra...</span>
 						</div>
-					))}
-					{/* Calcular y mostrar el precio total */}
-					<div className="font-bold">
-						Total: $
-						{[
-							{ nombre: "Instalación de piso", costo: 1000 },
-							{ nombre: "Pintura de paredes", costo: 500 },
-							{ nombre: "Reparación de techo", costo: 1200 },
-						].reduce((acc, curr) => acc + curr.costo, 0)}
-					</div>
+					) : manoObra?.length ? (
+						<>
+							{manoObra.map((item) => (
+								<div key={item.nombre} className="mb-2">
+									{item.nombre} - ${item.costoUnitario}
+								</div>
+							))}
+							<div className="font-bold mt-4">
+								Total: $
+								{manoObra.reduce((acc, curr) => acc + curr.costoUnitario, 0)}
+							</div>
+						</>
+					) : (
+						<div className="text-center py-4 text-gray-500">
+							No hay mano de obra disponible
+						</div>
+					)}
 				</CardContent>
 			</Card>
 

@@ -19,19 +19,5 @@ public interface CotizacionMaterialRepository extends JpaRepository<CotizacionMa
             "FROM CotizacionMaterial cm " +
             "INNER JOIN Material m ON cm.idMaterial = m.idMaterial " +
             "WHERE cm.idCotizacion = :cotizacionId")
-    default List<Map<String, Object>> findMaterialesByCotizacionId(@Param("cotizacionId") Long cotizacionId) {
-        List<Map<String, Object>> results = findMaterialesByCotizacionIdInternal(cotizacionId);
-        System.out.println("Query results for cotizacionId " + cotizacionId + ": " + results);
-        return results;
-    }
-
-    @Query("SELECT new map(cm.cantidad as cantidad, " +
-            "m.idMaterial as materialId, " +
-            "m.nombre as nombre, " +
-            "m.descripcion as descripcion, " +
-            "m.precio as precio) " +
-            "FROM CotizacionMaterial cm " +
-            "INNER JOIN Material m ON cm.idMaterial = m.idMaterial " +
-            "WHERE cm.idCotizacion = :cotizacionId")
-    List<Map<String, Object>> findMaterialesByCotizacionIdInternal(@Param("cotizacionId") Long cotizacionId);
+    List<Map<String, Object>> findMaterialesByCotizacionId(@Param("cotizacionId") Long cotizacionId);
 }
