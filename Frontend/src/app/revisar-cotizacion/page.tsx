@@ -484,34 +484,55 @@ export default function RevisarCotizacion() {
 									</tr>
 								))}
 							</tbody>
-							<tfoot></tfoot>
+							<tfoot>
+								{isMaterialesLoading ? (
+									<tr>
+										<td colSpan={5} className="px-4 py-2">
+											<div className="flex items-center justify-center">
+												<div className="h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-primary"></div>
+												<span className="ml-2">Cargando totales...</span>
+											</div>
+										</td>
+									</tr>
+								) : materiales?.length ? (
+									<>
+										<tr>
+											<td
+												colSpan={5}
+												className="font-bold px-4 py-2 text-right">
+												Total sin utilidad: $
+												{materiales.reduce(
+													(acc, curr) => acc + curr.cantidad * curr.precio,
+													0
+												)}
+											</td>
+										</tr>
+										<tr>
+											<td
+												colSpan={5}
+												className="font-bold px-4 py-2 text-right">
+												Total con utilidad: $
+												{materiales.reduce(
+													(acc, curr) =>
+														acc +
+														(curr.cantidad * curr.precio +
+															(curr.cantidad *
+																curr.precio *
+																cotizacionData.porcentaje) /
+																100),
+													0
+												)}
+											</td>
+										</tr>
+									</>
+								) : null}
+							</tfoot>
 						</table>
 					) : (
 						<div className="text-center py-4 text-gray-500">
 							No hay materiales disponibles
 						</div>
 					)}
-
-					<tr className="flex-col">
-						<td className="font-bold px-4 py-2 text-right" colSpan={2}>
-							Total sin utilidad: $
-							{materiales.reduce(
-								(acc, curr) => acc + curr.cantidad * curr.precio,
-								0
-							)}
-						</td>
-						<td className="font-bold px-4 py-2 text-right" colSpan={3}>
-							Total con utilidad: $
-							{materiales.reduce(
-								(acc, curr) =>
-									acc +
-									(curr.cantidad * curr.precio +
-										(curr.cantidad * curr.precio * cotizacionData.porcentaje) /
-											100),
-								0
-							)}
-						</td>
-					</tr>
 				</CardContent>
 			</Card>
 
