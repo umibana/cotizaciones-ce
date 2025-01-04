@@ -13,7 +13,7 @@ interface ManoDeObra {
 	// Define las propiedades de una mano de obra, por ejemplo:
 	nombre: string;
 	valorPorM2: number;
-	areaTrabajarM2: number;
+	areaTrabajar: number;
 	costoUnitario: number;
 }
 
@@ -26,11 +26,6 @@ interface Material {
 	descripcion: string;
 }
 
-interface ItemExtra {
-	// Define las propiedades de un item extra, por ejemplo:
-	descripcion: string;
-	costo: number;
-}
 
 interface Cotizacion {
 	id_Cotizacion: number;
@@ -390,7 +385,7 @@ export default function RevisarCotizacion() {
 							{manoObra.map((item) => (
 								<tr key={item.nombre}>
 									<td className="border border-gray-300 px-4 py-2">{item.nombre}</td>
-									<td className="border border-gray-300 px-4 py-2">{item.areaTrabajarM2}</td>
+									<td className="border border-gray-300 px-4 py-2">{item.areaTrabajar}</td>
 									<td className="border border-gray-300 px-4 py-2">{item.valorPorM2}</td>
 									<td className="border border-gray-300 px-4 py-2">{item.valorPorM2*2}</td>
 								</tr>
@@ -399,7 +394,7 @@ export default function RevisarCotizacion() {
 							<tfoot>
 							<tr>
 								<td className="font-bold px-4 py-2 text-right" colSpan="2">
-									Total: ${manoObra.reduce((acc, curr) => acc + curr.costoUnitario, 0)}
+									Total de mano de obra: ${manoObra.reduce((acc, curr) => acc + (curr.areaTrabajar * curr.valorPorM2), 0)}
 								</td>
 							</tr>
 							</tfoot>
@@ -430,7 +425,8 @@ export default function RevisarCotizacion() {
 								<th className="border border-gray-300 px-4 py-2 text-left">Nombre material</th>
 								<th className="border border-gray-300 px-4 py-2 text-left">Cantidad</th>
 								<th className="border border-gray-300 px-4 py-2 text-left">Precio por unidad</th>
-								<th className="border border-gray-300 px-4 py-2 text-left">Costo total</th>
+								<th className="border border-gray-300 px-4 py-2 text-left">Costo total sin utilidad</th>
+								<th className="border border-gray-300 px-4 py-2 text-left">Costo total con utilidad</th>
 							</tr>
 							</thead>
 							<tbody>
@@ -440,13 +436,19 @@ export default function RevisarCotizacion() {
 									<td className="border border-gray-300 px-4 py-2">{material.cantidad}</td>
 									<td className="border border-gray-300 px-4 py-2">${material.precio}</td>
 									<td className="border border-gray-300 px-4 py-2">${material.cantidad * material.precio}</td>
+									<td className="border border-gray-300 px-4 py-2">${(material.cantidad * material.precio * cotizacionData.porcentaje/100) + material.cantidad * material.precio}</td>
 								</tr>
 							))}
 							</tbody>
 							<tfoot>
-							<tr>
+							<tr className="flex-col">
 								<td className="font-bold px-4 py-2 text-right" colSpan="3">
-									Total: ${materiales.reduce((acc, curr) => acc + (curr.cantidad * curr.precio), 0)}
+									Total sin utilidad:
+									${materiales.reduce((acc, curr) => acc + (curr.cantidad * curr.precio), 0)}
+								</td>
+								<td className="font-bold px-4 py-2 text-right" colSpan="3">
+									Total con utilidad:
+									${materiales.reduce((acc, curr) => acc + ((curr.cantidad * curr.precio)+(curr.cantidad * curr.precio * cotizacionData.porcentaje/100)), 0)}
 								</td>
 							</tr>
 							</tfoot>
@@ -459,21 +461,6 @@ export default function RevisarCotizacion() {
 				</CardContent>
 			</Card>
 
-
-			{/* @ts-expect-error Mostrar el item extra */}
-			{cotizacionData?.itemExtra && (
-				<Card className="mb-8">
-					<CardHeader>
-						<CardTitle>Item Extra</CardTitle>
-					</CardHeader>
-					<CardContent>
-						{/* @ts-expect-error Mostrar el item extra */}
-						{cotizacionData.itemExtra.descripcion} - $
-						{/* @ts-expect-error Mostrar el item extra */}
-						{cotizacionData.itemExtra.costo}
-					</CardContent>
-				</Card>
-			)}
 
 			<Card>
 				<CardHeader>
