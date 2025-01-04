@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +31,8 @@ public class CotizacionService {
     private final ProyectoService proyectoService;
     @Autowired
     private final ManoObraService manoObraService;
-
+    @Autowired
+    private final MaterialService materialService;
 
     public Cotizacion createCotizacion(CotizacionRequestDTO request) {
         // Crear cotización
@@ -45,7 +47,6 @@ public class CotizacionService {
         cotizacion.setPlazoDeEntrega(request.getPlazoDeEntrega());
         cotizacion.setPorcentaje(request.getPorcentaje());
 
-
         if (request.getIdProyecto() != null) {
             Proyecto proyecto = proyectoService.getProyectoById(request.getIdProyecto())
                     .orElseThrow(() -> new IllegalArgumentException("Proyecto no encontrado"));
@@ -57,19 +58,37 @@ public class CotizacionService {
 
         // Guardar cotización para obtener el id
         Cotizacion savedCotizacion = cotizacionRepository.save(cotizacion);
-        // Creo tablas intermedia para saber que material y su cantidad
+        // Si es material nuevo, lo creo.
+
+        List<MaterialRequestDTO> processedMaterials = request.getMaterials().stream()
+                .peek(materialDTO -> {
+                    if (materialDTO.getIdMaterial() == null) {
+                        System.out.println("Material nuevo - ID: " + materialDTO.getIdMaterial()
+                                + ", Nombre: " + materialDTO.getNombre()
+                                + ", Precio: " + materialDTO.getPrecio()
+                                + ", Cantidad: " + materialDTO.getCantidad());
+
+                        Material newMaterial = materialService.crearMaterial(materialDTO);
+                        materialDTO.setIdMaterial(newMaterial.getIdMaterial());
+                    }
+                })
+                .collect(Collectors.toList());
+
+        // Now create the intermediate table entries with all materials (new and
+        // existing)
         cotizacionMaterialService.createCotizacionMateriales(
-                request.getMaterials(),
-                savedCotizacion.getId_Cotizacion()
-        );
+                processedMaterials,
+                savedCotizacion.getId_Cotizacion());
+
+        // Creo tablas intermedia para saber que material y su cantidad
+        // cotizacionMaterialService.createCotizacionMateriales(
+        // request.getMaterials(),
+        // savedCotizacion.getId_Cotizacion());
 
         // En caso de tener items personalizados, se crearan con el método
         personalizadoService.createPersonalizados(
                 request.getExtraItems(),
-                savedCotizacion.getId_Cotizacion()
-        );
-        System.out.println(request.getManoObras());
-
+                savedCotizacion.getId_Cotizacion());
 
         // Paso 1: Asignar el ID de cotización a cada mano de obra
         request.getManoObras().forEach(obra -> obra.setIdCotizacion(savedCotizacion.getId_Cotizacion()));

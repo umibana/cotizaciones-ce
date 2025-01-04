@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 // import { useQuery } from "@tanstack/react-query";
 
 interface Material {
-	id: number;
+	idMaterial: number;
 	nombre: string;
 	precio: number;
 	descripcion?: string;
@@ -53,12 +53,11 @@ export default function Materiales({ isDialog = false, onMaterialAdd }) {
 
 			// Create new material object from form data
 			const newMaterial: Material = {
-				id: Date.now(), // Temporary ID until backend integration
+				idMaterial: undefined,
 				nombre: formData.get("nombre") as string,
 				precio: Number(formData.get("precio")),
 				descripcion: formData.get("descripcion") as string,
 			};
-
 			// Call the callback if it exists
 			onMaterialAdd?.(newMaterial);
 

@@ -1,4 +1,5 @@
 package com.proyecto5.cotizacionesce.controllers;
+
 import com.proyecto5.cotizacionesce.entity.Cotizacion;
 import com.proyecto5.cotizacionesce.service.CotizacionService;
 import jakarta.validation.Valid;
@@ -11,6 +12,7 @@ import com.proyecto5.cotizacionesce.dto.CotizacionRequestDTO;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/cotizaciones")
@@ -22,17 +24,33 @@ public class CotizacionController {
     @PostMapping("/crear")
     public ResponseEntity<?> createCotizacion(@Valid @RequestBody CotizacionRequestDTO request) {
         try {
+            System.out.println("Request received: {");
+            System.out.println("  idProyecto: " + request.getIdProyecto());
+            System.out.println("  nombre: " + request.getNombre());
+            System.out.println("  descripcion: " + request.getDescripcion());
+            System.out.println("  notas: " + request.getNotas());
+            System.out.println("  porcentaje: " + request.getPorcentaje());
+            System.out.println("  plazoDeEntrega: " + request.getPlazoDeEntrega());
+            System.out.println("  condDePagoAdelantado: " + request.getCondDePagoAdelantado());
+            System.out.println("  condDePagoContraEntrega: " + request.getCondDePagoContraEntrega());
+            System.out.println("  validezOferta: " + request.getValidezOferta());
+            System.out.println("  materials: " + request.getMaterials().stream()
+                    .map(m -> String.format("\n    {id: %s, nombre: '%s', precio: %s, cantidad: %s}",
+                            m.getIdMaterial(), m.getNombre(), m.getPrecio(), m.getCantidad()))
+                    .collect(Collectors.joining(",")));
+            System.out.println("}");
             System.out.println("ID Proyecto recibido: " + request.getIdProyecto());
             Cotizacion cotizacion = cotizacionService.createCotizacion(request);
             Map<String, String> response = new HashMap<>();
             response.put("message", "Cotización " + cotizacion.getId_Cotizacion() + " creada exitosamente");
-            return ResponseEntity.ok(response);  // Send JSON
+            return ResponseEntity.ok(response); // Send JSON
         } catch (Exception e) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("message", "Error al crear la cotización: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<Cotizacion> updateCotizacion(@PathVariable Long id, @RequestBody Cotizacion cotizacion) {
         return ResponseEntity.ok(cotizacionService.updateCotizacion(id, cotizacion));

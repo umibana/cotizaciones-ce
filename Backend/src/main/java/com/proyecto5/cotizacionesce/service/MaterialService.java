@@ -1,5 +1,6 @@
 package com.proyecto5.cotizacionesce.service;
 
+import com.proyecto5.cotizacionesce.dto.MaterialRequestDTO;
 import com.proyecto5.cotizacionesce.entity.Material;
 import com.proyecto5.cotizacionesce.repository.MaterialRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,14 @@ public class MaterialService {
         return materialRepository.save(material);
     }
 
+    public Material crearMaterial(MaterialRequestDTO materialDTO) {
+        Material material = new Material();
+        material.setNombre(materialDTO.getNombre());
+        material.setPrecio(materialDTO.getPrecio());
+        material.setDescripcion(materialDTO.getDescripcion());
+        // Set other properties as needed
+        return materialRepository.save(material);
+    }
     public Material updateMaterial(Long id, Material material) {
         return materialRepository.findById(id)
                 .map(existing -> {

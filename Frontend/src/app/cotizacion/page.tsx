@@ -225,6 +225,7 @@ export default function QuotationForm() {
 					m.id === material.id ? { ...m, quantity: m.quantity + 1 } : m
 				);
 			} else {
+				console.log(material);
 				return [...prev, { ...material, quantity: 1 }];
 			}
 		});
@@ -298,10 +299,15 @@ export default function QuotationForm() {
 		const quotationData: CotizacionRequestDTO = {
 			nombre: quotationName,
 			descripcion: quotationDescription,
-			materials: materials.map(({ id, quantity }) => ({
-				idMaterial: id,
-				cantidad: quantity,
-			})),
+			materials: materials.map(
+				({ id, quantity, nombre, precio, descripcion }) => ({
+					idMaterial: id,
+					cantidad: quantity,
+					nombre,
+					precio,
+					descripcion,
+				})
+			),
 			extraItems: extraItems.map((item) => ({
 				nombre: item.nombre,
 				descripcion: item.descripcion,
@@ -407,9 +413,15 @@ export default function QuotationForm() {
 
 	const handleMaterialAdd = (material: Material) => {
 		// Add the material to the selected materials list with quantity 1
-		setMaterials((prev) => [...prev, { ...material, quantity: 1 }]);
+		// setMaterials((prev) => [...prev, { ...material, quantity: 1 }]);
+		setMaterials((prev) => {
+			const newMaterials = [...prev, { ...material, quantity: 1 }];
+			console.log("Updated materials:", newMaterials); // Log inside the state update
+			return newMaterials;
+		});
 		// Close the dialog
 		setMaterialesOpen(false);
+		console.log(materials);
 		// Show success toast
 		toast.success("Material added successfully");
 	};
@@ -468,9 +480,11 @@ export default function QuotationForm() {
 					</CardHeader>
 					<CardContent>
 						<ul className="space-y-4 mb-4">
-							{materials.map((item) => (
+							{materials.map((item, index) => (
 								<li
-									key={`material-${item.id}`}
+									key={
+										item.id ? `material-${item.id}` : `temp-material-${index}`
+									}
 									className="flex items-center justify-between">
 									<span>
 										{item.nombre} - ${item.precio * item.quantity}
@@ -501,16 +515,16 @@ export default function QuotationForm() {
 						</ul>
 
 						{isLoading ? (
-							<p>Loading materials...</p>
+							<p>Cargando materiales...</p>
 						) : isError ? (
-							<p>Error loading materials</p>
+							<p>Error cargando materiales</p>
 						) : (
 							<div>
 								<div className="flex items-center space-x-2 mb-2">
 									<Search className="w-4 h-4 text-gray-500" />
 									<Input
 										type="text"
-										placeholder="Filter materials..."
+										placeholder="Filtrar materiales..."
 										value={filter}
 										onChange={(e) => setFilter(e.target.value)}
 									/>
