@@ -345,7 +345,7 @@ export default function QuotationForm() {
 				idManoObra: obra.idManoObra || null, // Permite actualizaciones
 				nombreManoObra: obra.nombreManoObra,
 				areaTrabajarM2: obra.areaTrabajarM2,
-				costoUnitario: obra.costoMaterialUnitario, // Costo unitario
+				costoUnitario: 0, // Costo unitario
 				valorPorM2: obra.valorPorM2, // Valor por m²
 				idCotizacion: parseInt(projectId), // Asignar el ID de cotización
 			})),
@@ -599,12 +599,6 @@ export default function QuotationForm() {
 										<th className="border border-gray-300 px-4 py-2 text-center">
 											Área (m²)
 										</th>
-										{/* <th className="border border-gray-300 px-4 py-2 text-center">
-											Rendimiento (m²/unidad)
-										</th> */}
-										<th className="border border-gray-300 px-4 py-2 text-center">
-											Costo Unitario
-										</th>
 										<th className="border border-gray-300 px-4 py-2 text-center">
 											Valor (m²)
 										</th>
@@ -817,23 +811,6 @@ export default function QuotationForm() {
 									placeholder="Ejemplo: 25"
 								/>
 							</div> */}
-							<div>
-								<Label htmlFor="costoMaterialUnitario">
-									Costo Unitario del Material
-								</Label>
-								<Input
-									id="costoMaterialUnitario"
-									type="number"
-									value={manoObraTemp.costoMaterialUnitario}
-									onChange={(e) =>
-										setManoObraTemp({
-											...manoObraTemp,
-											costoMaterialUnitario: parseFloat(e.target.value) || 0,
-										})
-									}
-									placeholder="Ejemplo: 30000"
-								/>
-							</div>
 							<div>
 								<Label htmlFor="valorPorM2">Costo Mano de Obra por m²</Label>
 								<Input
