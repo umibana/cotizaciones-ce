@@ -226,6 +226,30 @@ const ProyectosCotizados = ({ projects,role }: ProjectListProps) => (
 	</Card>
 );
 
+const ProyectoTerminado = async (idProyecto: string): Promise<void> => {
+	try {
+	  const response = await fetch(
+		`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/terminados/${idProyecto}`,
+		{
+		  method: "PUT",
+		  headers: {
+			"Content-Type": "application/json",
+		  },
+		}
+	  );
+  
+	  if (!response.ok) {
+		throw new Error(`Error ${response.status}: No se pudo actualizar el proyecto`);
+	  }
+  
+	  alert("Proyecto terminado con éxito");
+	  // Aquí puedes recargar datos u otra acción.
+	} catch (error) {
+	  console.error("Error al aprobar el proyecto:", error);
+	  alert("Hubo un problema al intentar aprobar el proyecto.");
+	}
+  };
+
 const ProyectosAprobados = ({ projects, role}: ProjectListProps) => (
 	<Card className="flex-1">
 		<CardHeader>
@@ -247,7 +271,8 @@ const ProyectosAprobados = ({ projects, role}: ProjectListProps) => (
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="end">
 								<DropdownMenuLabel>Opciones</DropdownMenuLabel>
-								{(role === "jefe de operaciones" || role === "supervisor" ) && (<DropdownMenuItem>
+								{(role === "jefe de operaciones" || role === "supervisor" ) && (<DropdownMenuItem
+								onClick={() => ProyectoTerminado(project.idProyecto)}>
 									Actualizar: Terminado
 								</DropdownMenuItem>)}
 								<DropdownMenuItem>
