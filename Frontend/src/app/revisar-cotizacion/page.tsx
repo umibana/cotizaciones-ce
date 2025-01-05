@@ -181,9 +181,6 @@ export default function RevisarCotizacion() {
 					<div className="grid grid-cols-2 gap-4">
 						<div className="space-y-2">
 							<Label htmlFor="validez">Validez Oferta (días)</Label>
-							<Button size="sm" onClick={() => setDialogValidez(true)}>
-								<Plus className="h-4 w-4" />
-							</Button>
 							<Input
 								id="validez"
 								type="number"
@@ -192,30 +189,8 @@ export default function RevisarCotizacion() {
 							/>
 						</div>
 
-						{dialogValidez && (
-							<Dialog
-								title="Editar Validez Oferta"
-								value={nuevoValorValidez}
-								onChange={(e) =>
-									setNuevoValorValidez(parseInt(e.target.value) || "")
-								}
-								onCancel={() => setDialogValidez(false)}
-								onSave={() => {
-									actualizarValor("validez-oferta", {
-										validezOferta: nuevoValorValidez,
-									});
-									setDialogValidez(false);
-								}}
-							/>
-						)}
-
 						<div className="space-y-2">
-							<Label htmlFor="pagoAdelantado">
-								Condición Pago Adelantado (%)
-							</Label>
-							<Button size="sm" onClick={() => setDialogPagoAdelantado(true)}>
-								<Plus className="h-4 w-4" />
-							</Button>
+							<Label htmlFor="pagoAdelantado">Condición Pago Adelantado (%)</Label>
 							<Input
 								id="pagoAdelantado"
 								type="string"
@@ -224,30 +199,8 @@ export default function RevisarCotizacion() {
 							/>
 						</div>
 
-						{dialogPagoAdelantado && (
-							<Dialog
-								title="Editar Condición Pago Adelantado"
-								value={nuevoPagoAdelantado}
-								onChange={(e) => setNuevoPagoAdelantado(e.target.value)}
-								onCancel={() => setDialogPagoAdelantado(false)}
-								onSave={() => {
-									actualizarValor("pago-adelantado", {
-										condPagoAdelantado: nuevoPagoAdelantado,
-									});
-									setDialogPagoAdelantado(false);
-								}}
-							/>
-						)}
-
 						<div className="space-y-2">
-							<Label htmlFor="pagoContraEntrega">
-								Condición Pago Contra Entrega (%)
-							</Label>
-							<Button
-								size="sm"
-								onClick={() => setDialogPagoContraEntrega(true)}>
-								<Plus className="h-4 w-4" />
-							</Button>
+							<Label htmlFor="pagoContraEntrega">Condición Pago Contra Entrega (%)</Label>
 							<Input
 								id="pagoContraEntrega"
 								type="string"
@@ -256,27 +209,8 @@ export default function RevisarCotizacion() {
 							/>
 						</div>
 
-						{dialogPagoContraEntrega && (
-							<Dialog
-								title="Editar Condición Pago Contra Entrega"
-								value={nuevoPagoContraEntrega}
-								onChange={(e) => setNuevoPagoContraEntrega(e.target.value)}
-								onCancel={() => setDialogPagoContraEntrega(false)}
-								onSave={() => {
-									actualizarValor("pago-contra-entrega", {
-										condPagoContraEntrega: nuevoPagoContraEntrega,
-									});
-									setDialogPagoContraEntrega(false);
-								}}
-							/>
-						)}
-
-						{/* Plazo de Entrega */}
 						<div className="space-y-2">
 							<Label htmlFor="plazoEntrega">Plazo Entrega (días)</Label>
-							<Button size="sm" onClick={() => setDialogPlazoEntrega(true)}>
-								<Plus className="h-4 w-4" />
-							</Button>
 							<Input
 								id="plazoEntrega"
 								type="number"
@@ -285,28 +219,8 @@ export default function RevisarCotizacion() {
 							/>
 						</div>
 
-						{dialogPlazoEntrega && (
-							<Dialog
-								title="Editar Plazo de Entrega"
-								value={nuevoPlazoEntrega}
-								onChange={(e) =>
-									setNuevoPlazoEntrega(parseInt(e.target.value) || "")
-								}
-								onCancel={() => setDialogPlazoEntrega(false)}
-								onSave={() => {
-									actualizarValor("plazo-entrega", {
-										plazoDeEntrega: nuevoPlazoEntrega,
-									});
-									setDialogPlazoEntrega(false);
-								}}
-							/>
-						)}
-
 						<div className="space-y-2">
 							<Label htmlFor="notas">Notas</Label>
-							<Button size="sm" onClick={() => setDialogNotas(true)}>
-								<Plus className="h-4 w-4" />
-							</Button>
 							<Input
 								id="notas"
 								type="text"
@@ -315,24 +229,8 @@ export default function RevisarCotizacion() {
 							/>
 						</div>
 
-						{dialogNotas && (
-							<Dialog
-								title="Editar Notas"
-								value={nuevasNotas}
-								onChange={(e) => setNuevasNotas(e.target.value)}
-								onCancel={() => setDialogNotas(false)}
-								onSave={() => {
-									actualizarValor("notas", { notas: nuevasNotas });
-									setDialogNotas(false);
-								}}
-							/>
-						)}
-
 						<div className="space-y-2">
-							<Label htmlFor="validez">Precio total proyecto</Label>
-							<Button size="sm" onClick={() => setDialogPrecioTotal(true)}>
-								<Plus className="h-4 w-4" />
-							</Button>
+							<Label htmlFor="precioTentativo">Precio total proyecto(Revisar) tiene iva?</Label>
 							<Input
 								id="precioTentativo"
 								type="number"
@@ -340,23 +238,6 @@ export default function RevisarCotizacion() {
 								readOnly
 							/>
 						</div>
-
-						{dialogPrecioTotal && (
-							<Dialog
-								title="Editar Precio Total"
-								value={nuevoPrecioTotal}
-								onChange={(e) =>
-									setNuevoPrecioTotal(parseFloat(e.target.value) || "")
-								}
-								onCancel={() => setDialogPrecioTotal(false)}
-								onSave={() => {
-									actualizarValor("precio-total", {
-										precioTentativo: nuevoPrecioTotal,
-									});
-									setDialogPrecioTotal(false);
-								}}
-							/>
-						)}
 					</div>
 				</CardContent>
 			</Card>
@@ -542,12 +423,13 @@ export default function RevisarCotizacion() {
 				</CardHeader>
 				<CardContent>
 					<div className="space-y-2">
+						<Label htmlFor="utilidadEmpresa">Porcentaje de utilidad de empresa %</Label>
 						<Input
+							id="utilidadEmpresa"
 							type="number"
-							value={utilidadEmpresa}
-							onChange={handleUtilidadChange}
+							value={cotizacionData?.porcentaje|| ""}
+							readOnly
 						/>
-						{/* <Button onClick={handleGuardarUtilidad}>Guardar Utilidad</Button> */}
 					</div>
 				</CardContent>
 			</Card>
@@ -555,7 +437,7 @@ export default function RevisarCotizacion() {
 	);
 }
 
-function Dialog({ title, value, onChange, onCancel, onSave }) {
+function Dialog({title, value, onChange, onCancel, onSave}) {
 	return (
 		<div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
 			<div className="bg-white p-6 rounded-lg w-96">

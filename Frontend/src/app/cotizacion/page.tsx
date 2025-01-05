@@ -847,7 +847,7 @@ export default function QuotationForm() {
 				<div className="flex gap-4">
 					<Button type="submit" className="flex-1">
 						<Send className="h-4 w-4 mr-2" />
-						Enviar Cotización
+						Registrar Cotización
 					</Button>
 					<Button
 						type="button"

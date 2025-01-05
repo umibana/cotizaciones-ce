@@ -97,12 +97,12 @@ export default function Materiales({ isDialog = false, onMaterialAdd }) {
 					/>
 				</div>
 				<div className="space-y-2">
-					<Label htmlFor="precio">Precio per m²</Label>
+					<Label htmlFor="precio">Precio unitario</Label>
 					<Input
 						id="precio"
 						name="precio"
 						type="number"
-						placeholder="Precio por m²"
+						placeholder="Precio unitario"
 						required
 					/>
 				</div>
