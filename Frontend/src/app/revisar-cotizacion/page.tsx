@@ -13,7 +13,7 @@ interface ManoDeObra {
 	// Define las propiedades de una mano de obra, por ejemplo:
 	nombre: string;
 	valorPorM2: number;
-	areaTrabajarM2: number;
+	areaTrabajar: number;
 	costoUnitario: number;
 }
 
@@ -26,12 +26,6 @@ interface Material {
 	descripcion: string;
 }
 
-interface ItemExtra {
-	// Define las propiedades de un item extra, por ejemplo:
-	descripcion: string;
-	costo: number;
-}
-
 interface Cotizacion {
 	id_Cotizacion: number;
 	validezOferta: number;
@@ -40,6 +34,7 @@ interface Cotizacion {
 	plazoDeEntrega: number;
 	precioTentativo: number;
 	notas: string;
+	porcentaje: number;
 	// manosDeObra: ManoDeObra[]; Se implementara cuando bryan tenga listo su HU
 	// materiales: Material[]; Se implementara cuando bryan tenga listo su HU
 	// itemExtra: ItemExtra | null;
@@ -152,7 +147,7 @@ export default function RevisarCotizacion() {
 
 	// Función para enviar el nuevo valor al backend
 	// Función genérica para actualizar valores en el backend
-	const actualizarValor = async (endpoint: string, body: any) => {
+	const actualizarValor = async (endpoint: string, body) => {
 		try {
 			const response = await fetch(
 				`${process.env.NEXT_PUBLIC_BACKEND_URL}/cotizaciones/${cotizacionId}/${endpoint}`,
@@ -368,7 +363,7 @@ export default function RevisarCotizacion() {
 
 			<Card className="mb-8">
 				<CardHeader>
-					<CardTitle>Manos de Obra</CardTitle>
+					<CardTitle>Manos de obra</CardTitle>
 				</CardHeader>
 				<CardContent>
 					{isManoObraLoading ? (
@@ -377,17 +372,53 @@ export default function RevisarCotizacion() {
 							<span className="ml-2">Cargando mano de obra...</span>
 						</div>
 					) : manoObra?.length ? (
-						<>
-							{manoObra.map((item) => (
-								<div key={item.nombre} className="mb-2">
-									{item.nombre} - ${item.costoUnitario}
-								</div>
-							))}
-							<div className="font-bold mt-4">
-								Total: $
-								{manoObra.reduce((acc, curr) => acc + curr.costoUnitario, 0)}
-							</div>
-						</>
+						<table className="table-auto w-full border-collapse border border-gray-300">
+							<thead>
+								<tr>
+									<th className="border border-gray-300 px-4 py-2 text-left">
+										Nombre mano de obra
+									</th>
+									<th className="border border-gray-300 px-4 py-2 text-left">
+										Area a trabajar
+									</th>
+									<th className="border border-gray-300 px-4 py-2 text-left">
+										Valor por M2
+									</th>
+									<th className="border border-gray-300 px-4 py-2 text-left">
+										Costo total
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								{manoObra.map((item) => (
+									<tr key={item.nombre}>
+										<td className="border border-gray-300 px-4 py-2">
+											{item.nombre}
+										</td>
+										<td className="border border-gray-300 px-4 py-2">
+											{item.areaTrabajar}
+										</td>
+										<td className="border border-gray-300 px-4 py-2">
+											{item.valorPorM2}
+										</td>
+										<td className="border border-gray-300 px-4 py-2">
+											{item.valorPorM2 * item.areaTrabajar}
+										</td>
+									</tr>
+								))}
+							</tbody>
+							<tfoot>
+								<tr>
+									<td className="font-bold px-4 py-2 text-right" colSpan={2}>
+										Total de mano de obra: $
+										{manoObra.reduce(
+											(acc, curr) => acc + curr.areaTrabajar * curr.valorPorM2,
+											0
+										)}
+									</td>
+								</tr>
+							</tfoot>
+						</table>
 					) : (
 						<div className="text-center py-4 text-gray-500">
 							No hay mano de obra disponible
@@ -407,20 +438,96 @@ export default function RevisarCotizacion() {
 							<span className="ml-2">Cargando materiales...</span>
 						</div>
 					) : materiales?.length ? (
-						<>
-							{materiales.map((material) => (
-								<div key={material.nombre} className="mb-2">
-									{material.nombre} - {material.cantidad} x ${material.precio}
-								</div>
-							))}
-							<div className="font-bold mt-4">
-								Total: $
-								{materiales.reduce(
-									(acc, curr) => acc + curr.cantidad * curr.precio,
-									0
-								)}
-							</div>
-						</>
+						<table className="table-auto w-full border-collapse border border-gray-300">
+							<thead>
+								<tr>
+									<th className="border border-gray-300 px-4 py-2 text-left">
+										Nombre material
+									</th>
+									<th className="border border-gray-300 px-4 py-2 text-left">
+										Cantidad
+									</th>
+									<th className="border border-gray-300 px-4 py-2 text-left">
+										Precio por unidad
+									</th>
+									<th className="border border-gray-300 px-4 py-2 text-left">
+										Costo total sin utilidad
+									</th>
+									<th className="border border-gray-300 px-4 py-2 text-left">
+										Costo total con utilidad
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								{materiales.map((material) => (
+									<tr key={material.nombre}>
+										<td className="border border-gray-300 px-4 py-2">
+											{material.nombre}
+										</td>
+										<td className="border border-gray-300 px-4 py-2">
+											{material.cantidad}
+										</td>
+										<td className="border border-gray-300 px-4 py-2">
+											${material.precio}
+										</td>
+										<td className="border border-gray-300 px-4 py-2">
+											${material.cantidad * material.precio}
+										</td>
+										<td className="border border-gray-300 px-4 py-2">
+											$
+											{(material.cantidad *
+												material.precio *
+												cotizacionData.porcentaje) /
+												100 +
+												material.cantidad * material.precio}
+										</td>
+									</tr>
+								))}
+							</tbody>
+							<tfoot>
+								{isMaterialesLoading ? (
+									<tr>
+										<td colSpan={5} className="px-4 py-2">
+											<div className="flex items-center justify-center">
+												<div className="h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-primary"></div>
+												<span className="ml-2">Cargando totales...</span>
+											</div>
+										</td>
+									</tr>
+								) : materiales?.length ? (
+									<>
+										<tr>
+											<td
+												colSpan={5}
+												className="font-bold px-4 py-2 text-right">
+												Total sin utilidad: $
+												{materiales.reduce(
+													(acc, curr) => acc + curr.cantidad * curr.precio,
+													0
+												)}
+											</td>
+										</tr>
+										<tr>
+											<td
+												colSpan={5}
+												className="font-bold px-4 py-2 text-right">
+												Total con utilidad: $
+												{materiales.reduce(
+													(acc, curr) =>
+														acc +
+														(curr.cantidad * curr.precio +
+															(curr.cantidad *
+																curr.precio *
+																cotizacionData.porcentaje) /
+																100),
+													0
+												)}
+											</td>
+										</tr>
+									</>
+								) : null}
+							</tfoot>
+						</table>
 					) : (
 						<div className="text-center py-4 text-gray-500">
 							No hay materiales disponibles
@@ -428,21 +535,6 @@ export default function RevisarCotizacion() {
 					)}
 				</CardContent>
 			</Card>
-
-			{/* @ts-expect-error Mostrar el item extra */}
-			{cotizacionData?.itemExtra && (
-				<Card className="mb-8">
-					<CardHeader>
-						<CardTitle>Item Extra</CardTitle>
-					</CardHeader>
-					<CardContent>
-						{/* @ts-expect-error Mostrar el item extra */}
-						{cotizacionData.itemExtra.descripcion} - $
-						{/* @ts-expect-error Mostrar el item extra */}
-						{cotizacionData.itemExtra.costo}
-					</CardContent>
-				</Card>
-			)}
 
 			<Card>
 				<CardHeader>
@@ -463,7 +555,7 @@ export default function RevisarCotizacion() {
 	);
 }
 
-function Dialog({ title, value, onChange, onCancel, onSave }: any) {
+function Dialog({ title, value, onChange, onCancel, onSave }) {
 	return (
 		<div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
 			<div className="bg-white p-6 rounded-lg w-96">

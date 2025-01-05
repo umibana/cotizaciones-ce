@@ -36,9 +36,9 @@ export default function Asignacion() {
 	const [filterRole, setFilterRole] = useState<string>("");
 	const [filterName, setFilterName] = useState<string>("");
 	const [roles] = useState<string[]>([
-		"Jefe de operaciones",
-		"Supervisor",
-		"Maestro",
+		"jefe de operaciones",
+		"supervisor",
+		"maestro",
 	]);
 
 	// Authenticated queries

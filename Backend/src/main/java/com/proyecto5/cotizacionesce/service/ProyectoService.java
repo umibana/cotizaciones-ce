@@ -37,14 +37,16 @@ public class ProyectoService {
     private ImagenCotizacionService imagenCotizacionService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private SendGridService sendGridService;
 
-    public List<Proyecto> getProyectos(){
-        return(List<Proyecto>) proyectoRepository.findAll();
+    public List<Proyecto> getProyectos() {
+        return (List<Proyecto>) proyectoRepository.findAll();
     }
+
     public Optional<Proyecto> getProyectoById(Long idProyecto) {
         return proyectoRepository.findById(idProyecto);
     }
-
 
     public Proyecto saveProyecto(Proyecto proyecto) {
         return proyectoRepository.save(proyecto);
@@ -56,8 +58,7 @@ public class ProyectoService {
                 proyectoDTO.clienteRut,
                 proyectoDTO.clienteNumero,
                 proyectoDTO.clienteDireccion,
-                proyectoDTO.clienteCorreo
-        );
+                proyectoDTO.clienteCorreo);
 
         if (cliente.getUniqueID() == null) {
             throw new RuntimeException("El cliente no se creó correctamente.");
@@ -72,92 +73,100 @@ public class ProyectoService {
         proyecto.setIdUserBase(proyectoDTO.idCreador);
         proyecto.setIdCliente(cliente.getUniqueID());
 
-
         return proyectoRepository.save(proyecto);
     }
 
-
-    public Proyecto estadoRevision(Long idProyecto){
+    public Proyecto estadoRevision(Long idProyecto) {
 
         Proyecto proyecto = proyectoRepository.findByIdProyecto(idProyecto)
                 .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
 
-        if("Preparacion cotizacion".equals(proyecto.getEstado())){
+        if ("Preparacion cotizacion".equals(proyecto.getEstado())) {
             proyecto.setEstado("Cotizado");
             proyecto = proyectoRepository.save(proyecto);
-        }else{
+        } else {
             throw new RuntimeException("El proyecto no estaba en estado 'Preparacion cotizacion'");
         }
 
         return proyecto;
     }
 
-    //borrador de cambio de estado a "aprobado"
-    public Proyecto estadoAprobado(Long idProyecto){
+    // borrador de cambio de estado a "aprobado"
+    public Proyecto estadoAprobado(Long idProyecto) {
         Proyecto proyecto = proyectoRepository.findByIdProyecto(idProyecto)
                 .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
 
-        if("Cotizado".equals(proyecto.getEstado())){
+        if ("Cotizado".equals(proyecto.getEstado())) {
             proyecto.setEstado("Aprobado");
             proyecto = proyectoRepository.save(proyecto);
-        }else{
+        } else {
             throw new RuntimeException("El proyecto no estaba en estado 'Cotizado'");
         }
         return proyecto;
     }
 
-    //borrador de cambiar estado a "terminado"
-    public Proyecto estadoTerminado(Long idProyecto){
+    // borrador de cambiar estado a "terminado"
+    public Proyecto estadoTerminado(Long idProyecto) {
         Proyecto proyecto = proyectoRepository.findByIdProyecto(idProyecto)
                 .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
 
-        if("Aprobado".equals(proyecto.getEstado())){
+        if ("Aprobado".equals(proyecto.getEstado())) {
             proyecto.setEstado("Terminado");
             proyecto = proyectoRepository.save(proyecto);
-        }else{
+        } else {
             throw new RuntimeException("El proyecto no estaba en estado 'Aprobado'");
         }
         return proyecto;
     }
 
-    //borrador de cambio de estado "rechazado"
-    public Proyecto estadoRechazado(Long idProyecto){
+    // borrador de cambio de estado "rechazado"
+    public Proyecto estadoRechazado(Long idProyecto) {
         Proyecto proyecto = proyectoRepository.findByIdProyecto(idProyecto)
                 .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
 
-        if("Cotizado".equals(proyecto.getEstado())){
+        if ("Cotizado".equals(proyecto.getEstado())) {
             proyecto.setEstado("Rechazado");
             proyecto = proyectoRepository.save(proyecto);
-        }else{
+        } else {
             throw new RuntimeException("El proyecto no estaba en estado 'Preparacion cotizacion'");
         }
         return proyecto;
     }
 
-    public void asignarColaboradoresAlProyecto(Long projectId, List<Long> workerIds){
+    public void asignarColaboradoresAlProyecto(Long projectId, List<Long> workerIds) {
+        Proyecto proyecto = proyectoRepository.findById(projectId)
+                .orElseThrow(() -> new IllegalArgumentException("Proyecto no encontrado"));
 
-        for (Long workerId : workerIds){
+        for (Long workerId : workerIds) {
             ProyectoUser proyectoUser = new ProyectoUser();
             proyectoUser.setIdProyecto(projectId);
             proyectoUser.setIdUser(workerId);
             proyectoUserRepository.save(proyectoUser);
-            //aqui iria envio del aviso por correo
-            Optional<User> user = userService.getUserById(workerId);
 
+            User user = userService.getUserById(workerId)
+                    .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+            sendGridService.sendEmail(
+                    user.getEmail(),
+                    "Se le ha asignado el proyecto " + proyecto.getNombre(),
+                    String.format(
+                            "Se le ha asignado el proyecto %s ubicado en %s con fecha de visita %s y descripcion %s",
+                            proyecto.getNombre(),
+                            proyecto.getDireccion(),
+                            proyecto.getFechaVisita(),
+                            proyecto.getDescripcion()));
         }
 
-        Proyecto proyecto = proyectoRepository.findById(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("Proyecto no encontrado"));
         proyecto.setEstado("Preparacion cotizacion");
         proyectoRepository.save(proyecto);
     }
 
-    public List<Proyecto> listaProyectosAsignadosPorEmail(String email){
+    public List<Proyecto> listaProyectosAsignadosPorEmail(String email) {
         Optional<User> usuario = userRepository.findUserByEmail(email);
         Long id_usuario = usuario.get().getIdUser();
         List<ProyectoUser> ListaproyectosUser = proyectoUserService.getProyectoAsignados(id_usuario);
         List<Proyecto> ListaProyectos = new ArrayList<>();
-        for(ProyectoUser proyectoUser : ListaproyectosUser){
+        for (ProyectoUser proyectoUser : ListaproyectosUser) {
             Optional<Proyecto> proyectoAdd = proyectoRepository.findById(proyectoUser.idProyecto);
             // Agregar el proyecto a la lista si existe
             proyectoAdd.ifPresent(ListaProyectos::add);
