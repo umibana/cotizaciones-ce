@@ -133,6 +133,14 @@ public class ProyectoService {
         return proyecto;
     }
 
+    public Proyecto estadoEliminado(Long idProyecto) {
+        Proyecto proyecto = proyectoRepository.findByIdProyecto(idProyecto)
+                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
+        proyecto.setEstado("Eliminado");
+        proyecto = proyectoRepository.save(proyecto);
+        return proyecto;
+    }
+
     public void asignarColaboradoresAlProyecto(Long projectId, List<Long> workerIds) {
         Proyecto proyecto = proyectoRepository.findById(projectId)
                 .orElseThrow(() -> new IllegalArgumentException("Proyecto no encontrado"));

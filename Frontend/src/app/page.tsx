@@ -5,7 +5,10 @@ import { useRoles } from "@/hooks/useRoles";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FaTrash } from "react-icons/fa";
-import { useAuthenticatedQuery } from "@/hooks/useAuth";
+import {
+	useAuthenticatedMutation,
+	useAuthenticatedQuery,
+} from "@/hooks/useAuth";
 import { useState } from "react";
 import {
 	DropdownMenu,
@@ -63,7 +66,7 @@ const UnassignedProjectList = ({
 											<Link
 												href={{
 													pathname: "/asignacion",
-													query: {id: project.idProyecto},
+													query: { id: project.idProyecto },
 												}}>
 												Asignar
 											</Link>
@@ -77,7 +80,7 @@ const UnassignedProjectList = ({
 												Revisar Proyecto
 											</Link>
 										</DropdownMenuItem>
-										<DropdownMenuSeparator/>
+										<DropdownMenuSeparator />
 										{/* Aquí puedes agregar más opciones si es necesario */}
 									</DropdownMenuContent>
 								</DropdownMenu>
@@ -92,10 +95,10 @@ const UnassignedProjectList = ({
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const AssignedProjectList = ({
-								 projects,
-								 onReview,
-								 role,
-							 }: ProjectListProps) => (
+	projects,
+	onReview,
+	role,
+}: ProjectListProps) => (
 	<Card className="flex-1">
 		<CardHeader>
 			<CardTitle>Proyectos asignados</CardTitle>
@@ -150,107 +153,153 @@ const AssignedProjectList = ({
 
 const ProyectoAprobado = async (idProyecto: string): Promise<void> => {
 	try {
-	  const response = await fetch(
-		`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/aprobados/${idProyecto}`,
-		{
-		  method: "PUT",
-		  headers: {
-			"Content-Type": "application/json",
-		  },
-		}
-	  );
-  
-	  if (!response.ok) {
-		throw new Error(`Error ${response.status}: No se pudo actualizar el proyecto`);
-	  }
-  
-	  alert("Proyecto aprobado con éxito");
-	  // Aquí puedes recargar datos u otra acción.
-	} catch (error) {
-	  console.error("Error al aprobar el proyecto:", error);
-	  alert("Hubo un problema al intentar aprobar el proyecto.");
-	}
-  };
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/aprobados/${idProyecto}`,
+			{
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			}
+		);
 
-const ProyectosCotizados = ({ projects,role }: ProjectListProps) => (
-	<Card className="flex-1">
-		<CardHeader>
-			<CardTitle>Proyectos cotizados</CardTitle>
-		</CardHeader>
-		<CardContent>
-			<ScrollArea className="h-[350px] w-full rounded-md border p-4">
-				{projects.map((project: any) => (
-					<div
-						key={project.idProyecto}
-						className="mb-2 flex flex-wrap items-center justify-between bg-muted p-2">
-						{/* Nombre del proyecto con texto truncado en pantallas pequeñas */}
-						<span className="text-lg font-bold w-full sm:w-auto overflow-hidden text-ellipsis">
-							{project.nombre}
-						</span>
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<Button size="sm">Acciones</Button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align="end">
-								<DropdownMenuLabel>Opciones</DropdownMenuLabel>
-								{(role === "jefe de operaciones" || role === "supervisor" ) && (<DropdownMenuItem
-								onClick={() => ProyectoAprobado(project.idProyecto)}>
-										Actualizar: Aprobado
-								</DropdownMenuItem>)}
-								<DropdownMenuItem>
-									<Link
-										href={{
-											pathname: "/revisar-cotizacion",
-											query: { id: project.idProyecto },
-										}}>
-										Revisar Cotización
-									</Link>
-								</DropdownMenuItem>
-								<DropdownMenuItem>
-									<Link
-										href={{
-											pathname: "/revisar-proyecto",
-											query: { id: project.idProyecto },
-										}}>
-										Revisar Proyecto
-									</Link>
-								</DropdownMenuItem>
-								<DropdownMenuSeparator />
-								{/* Aquí puedes agregar más opciones si es necesario */}
-							</DropdownMenuContent>
-						</DropdownMenu>
-					</div>
-				))}
-			</ScrollArea>
-		</CardContent>
-	</Card>
-);
+		if (!response.ok) {
+			throw new Error(
+				`Error ${response.status}: No se pudo actualizar el proyecto`
+			);
+		}
+
+		alert("Proyecto aprobado con éxito");
+		// Aquí puedes recargar datos u otra acción.
+	} catch (error) {
+		console.error("Error al aprobar el proyecto:", error);
+		alert("Hubo un problema al intentar aprobar el proyecto.");
+	}
+};
+
+const handleDeleteProject = async (idProyecto: string) => {
+	try {
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/eliminados/${idProyecto}`,
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			}
+		);
+
+		if (!response.ok) {
+			throw new Error(
+				`Error ${response.status}: No se pudo eliminar el proyecto`
+			);
+		}
+
+		// Refresh the data after successful deletion
+		window.location.reload();
+	} catch (error) {
+		console.error("Error al eliminar el proyecto:", error);
+		alert("Hubo un problema al intentar eliminar el proyecto.");
+	}
+};
+
+const ProyectosCotizados = ({ projects, role }: ProjectListProps) => {
+	return (
+		<Card className="flex-1">
+			<CardHeader>
+				<CardTitle>Proyectos cotizados</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<ScrollArea className="h-[350px] w-full rounded-md border p-4">
+					{projects.map((project: any) => {
+						return (
+							<div
+								key={project.idProyecto}
+								className="mb-2 flex flex-wrap items-center justify-between bg-muted p-2">
+								{/* Nombre del proyecto con texto truncado en pantallas pequeñas */}
+								<span className="text-lg font-bold w-full sm:w-auto overflow-hidden text-ellipsis">
+									{project.nombre}
+								</span>
+								<DropdownMenu>
+									<DropdownMenuTrigger asChild>
+										<Button size="sm">Acciones</Button>
+									</DropdownMenuTrigger>
+									<DropdownMenuContent align="end">
+										<DropdownMenuLabel>Opciones</DropdownMenuLabel>
+										{(role === "jefe de operaciones" ||
+											role === "supervisor") && (
+											<>
+												<DropdownMenuItem
+													onClick={() => ProyectoAprobado(project.idProyecto)}>
+													Actualizar: Aprobado
+												</DropdownMenuItem>
+												<DropdownMenuItem
+													onClick={() =>
+														handleDeleteProject(project.idProyecto)
+													}
+													className="text-red-600">
+													Eliminar Proyecto
+												</DropdownMenuItem>
+											</>
+										)}
+										<DropdownMenuItem>
+											<Link
+												href={{
+													pathname: "/revisar-cotizacion",
+													query: { id: project.idProyecto },
+												}}>
+												Revisar Cotización
+											</Link>
+										</DropdownMenuItem>
+										<DropdownMenuItem>
+											<Link
+												href={{
+													pathname: "/revisar-proyecto",
+													query: { id: project.idProyecto },
+												}}>
+												Revisar Proyecto
+											</Link>
+										</DropdownMenuItem>
+										<DropdownMenuSeparator />
+										{/* Aquí puedes agregar más opciones si es necesario */}
+									</DropdownMenuContent>
+								</DropdownMenu>
+							</div>
+						);
+					})}
+				</ScrollArea>
+			</CardContent>
+		</Card>
+	);
+};
 
 const ProyectoTerminado = async (idProyecto: string): Promise<void> => {
 	try {
-	  const response = await fetch(
-		`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/terminados/${idProyecto}`,
-		{
-		  method: "PUT",
-		  headers: {
-			"Content-Type": "application/json",
-		  },
-		}
-	  );
-  
-	  if (!response.ok) {
-		throw new Error(`Error ${response.status}: No se pudo actualizar el proyecto`);
-	  }
-  
-	  alert("Proyecto terminado con éxito");
-	  // Aquí puedes recargar datos u otra acción.
-	} catch (error) {
-	  console.error("Error al aprobar el proyecto:", error);
-	  alert("Hubo un problema al intentar aprobar el proyecto.");
-	}
-  };
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/terminados/${idProyecto}`,
+			{
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			}
+		);
 
-const ProyectosAprobados = ({ projects, role}: ProjectListProps) => (
+		if (!response.ok) {
+			throw new Error(
+				`Error ${response.status}: No se pudo actualizar el proyecto`
+			);
+		}
+
+		alert("Proyecto terminado con éxito");
+		// Aquí puedes recargar datos u otra acción.
+	} catch (error) {
+		console.error("Error al aprobar el proyecto:", error);
+		alert("Hubo un problema al intentar aprobar el proyecto.");
+	}
+};
+
+const ProyectosAprobados = ({ projects, role }: ProjectListProps) => (
 	<Card className="flex-1">
 		<CardHeader>
 			<CardTitle>Proyectos aprobados</CardTitle>
@@ -271,10 +320,12 @@ const ProyectosAprobados = ({ projects, role}: ProjectListProps) => (
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="end">
 								<DropdownMenuLabel>Opciones</DropdownMenuLabel>
-								{(role === "jefe de operaciones" || role === "supervisor" ) && (<DropdownMenuItem
-								onClick={() => ProyectoTerminado(project.idProyecto)}>
-									Actualizar: Terminado
-								</DropdownMenuItem>)}
+								{(role === "jefe de operaciones" || role === "supervisor") && (
+									<DropdownMenuItem
+										onClick={() => ProyectoTerminado(project.idProyecto)}>
+										Actualizar: Terminado
+									</DropdownMenuItem>
+								)}
 								<DropdownMenuItem>
 									<Link
 										href={{
@@ -473,39 +524,46 @@ function Proyectos({ role }: ProyectosProps) {
 			{/* Botones de filtros con flechas */}
 			<div className="flex flex-wrap items-center gap-2 mb-4">
 				{role === "jefe de operaciones" && (
-				<Button
-					size="sm"
-					variant={selectedFilter === "Sin asignar" ? "default" : "outline"}
-					onClick={() => setSelectedFilter("Sin asignar")}
-					className={
-						selectedFilter === "Sin asignar"
-							? "bg-red-500 text-white"
-							: "bg-white text-red-500 border border-red-500"
-					}>
-					Sin asignar ({projects.unassigned.length})
-				</Button>)
-				}
+					<Button
+						size="sm"
+						variant={selectedFilter === "Sin asignar" ? "default" : "outline"}
+						onClick={() => setSelectedFilter("Sin asignar")}
+						className={
+							selectedFilter === "Sin asignar"
+								? "bg-red-500 text-white"
+								: "bg-white text-red-500 border border-red-500"
+						}>
+						Sin asignar ({projects.unassigned.length})
+					</Button>
+				)}
 
 				{/* Flecha */}
 				{role === "jefe de operaciones" && (
-					<span className="text-muted-foreground">→</span>)}
+					<span className="text-muted-foreground">→</span>
+				)}
 
-				{(role === "jefe de operaciones" || role === "supervisor" ) && (<Button
-					size="sm"
-					variant={
-						selectedFilter === "Preparacion cotizacion" ? "default" : "outline"
-					}
-					onClick={() => setSelectedFilter("Preparacion cotizacion")}
-					className={
-						selectedFilter === "Preparacion cotizacion"
-							? "bg-orange-500 text-white"
-							: "bg-white text-orange-500 border border-orange-500"
-					}>
-					Preparacion cotizacion ({projects.assigned.length})
-				</Button>)}
+				{(role === "jefe de operaciones" || role === "supervisor") && (
+					<Button
+						size="sm"
+						variant={
+							selectedFilter === "Preparacion cotizacion"
+								? "default"
+								: "outline"
+						}
+						onClick={() => setSelectedFilter("Preparacion cotizacion")}
+						className={
+							selectedFilter === "Preparacion cotizacion"
+								? "bg-orange-500 text-white"
+								: "bg-white text-orange-500 border border-orange-500"
+						}>
+						Preparacion cotizacion ({projects.assigned.length})
+					</Button>
+				)}
 
 				{/* Flecha */}
-				{(role === "jefe de operaciones" || role === "supervisor" ) && (<span className="text-muted-foreground">→</span>)}
+				{(role === "jefe de operaciones" || role === "supervisor") && (
+					<span className="text-muted-foreground">→</span>
+				)}
 
 				<Button
 					size="sm"
@@ -554,14 +612,19 @@ function Proyectos({ role }: ProyectosProps) {
 			{selectedFilter === "Sin asignar" && role === "jefe de operaciones" && (
 				<UnassignedProjectList projects={projects.unassigned} role={role} />
 			)}
-			{selectedFilter === "Preparacion cotizacion" && (role === "jefe de operaciones" || role === "supervisor" ) && (
-				<AssignedProjectList projects={projects.assigned} role={role} />
-			)}
+			{selectedFilter === "Preparacion cotizacion" &&
+				(role === "jefe de operaciones" || role === "supervisor") && (
+					<AssignedProjectList projects={projects.assigned} role={role} />
+				)}
 			{selectedFilter === "Cotizado" && (
-				<ProyectosCotizados projects={projects.cotizados} role={role}/>
+				<ProyectosCotizados projects={projects.cotizados} role={role} />
 			)}
-			{selectedFilter === "Aprobado" && <ProyectosAprobados projects={projects.aprobados} role={role} />}
-			{selectedFilter === "Terminado" && <ProyectosTerminados projects={projects.terminados}/>}
+			{selectedFilter === "Aprobado" && (
+				<ProyectosAprobados projects={projects.aprobados} role={role} />
+			)}
+			{selectedFilter === "Terminado" && (
+				<ProyectosTerminados projects={projects.terminados} />
+			)}
 
 			{/* Mostrar la tarjeta de administración si corresponde */}
 			<AdminCard role={role} />

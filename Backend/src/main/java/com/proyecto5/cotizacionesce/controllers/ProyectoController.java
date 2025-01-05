@@ -99,6 +99,12 @@ public class ProyectoController {
         return ResponseEntity.ok(proyecto);
     }
 
+    @PostMapping("/eliminados/{idProyecto}")
+    public ResponseEntity<Proyecto> estadoEliminado(@PathVariable Long idProyecto){
+        Proyecto proyecto = proyectoService.estadoEliminado(idProyecto);
+        return ResponseEntity.ok(proyecto);
+    }
+
     @PostMapping("/asignadosEmail")
     public ResponseEntity<List<Proyecto>> listarProyectosAsignadosPorEmail(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
