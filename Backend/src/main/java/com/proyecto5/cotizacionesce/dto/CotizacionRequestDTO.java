@@ -31,6 +31,15 @@ public class CotizacionRequestDTO {
     @NotNull(message = "El plazo de entrega es obligatorio")
     private Integer plazoDeEntrega;
 
+    public double getPrecioTentativo() {
+        return precioTentativo;
+    }
+
+    public void setPrecioTentativo(double precioTentativo) {
+        this.precioTentativo = precioTentativo;
+    }
+
+    private double precioTentativo;
 
     @NotNull(message = "La condicion de pago es obligatoria")
     private Integer condDePagoAdelantado;
@@ -60,6 +69,7 @@ public class CotizacionRequestDTO {
     public String getDescripcion() {
         return descripcion;
     }
+
 
 
     public void setDescripcion(String descripcion) {

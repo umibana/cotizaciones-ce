@@ -42,6 +42,7 @@ public class CotizacionService {
         cotizacion.setNombre(request.getNombre());
         cotizacion.setDescripcion(request.getDescripcion());
         cotizacion.setNotas(request.getNotas());
+        cotizacion.setPrecioTentativo(request.getPrecioTentativo());
         cotizacion.setCondPagoAdelantado(String.valueOf(request.getCondDePagoAdelantado()));
         cotizacion.setCondPagoContraEntrega(String.valueOf(request.getCondDePagoContraEntrega()));
         cotizacion.setValidezOferta(request.getValidezOferta());
