@@ -402,7 +402,7 @@ export default function RevisarCotizacion() {
 											{item.valorPorM2}
 										</td>
 										<td className="border border-gray-300 px-4 py-2">
-											{item.valorPorM2 * 2}
+											{item.valorPorM2 * item.areaTrabajar}
 										</td>
 									</tr>
 								))}

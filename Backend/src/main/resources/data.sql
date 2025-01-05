@@ -113,9 +113,6 @@ VALUES(1,1),
 INSERT INTO material (nombre, descripcion, precio)
 VALUES('Aire acondicionado', 'Aire acondicionado de 12000 BTU', 500);
 INSERT INTO users (username,email,name,rut,role)
-VALUES('adminCasaExperto','casaexperto@usach.cl','Casa Experto Administraction','11111111-1','ADMIN'),
-      ('Jefe de operaciones','hans@usach.cl','Hans','11111111-1','jefe de operaciones'),
+VALUES('Jefe de operaciones','hans@usach.cl','Hans','11111111-1','jefe de operaciones'),
       ('Maestro','maestro@usach.cl','Juan','11111111-1','maestro'),
-      ('Supervisor','supervisor@usach.cl','Pablo','11111111-1','supervisor'),
-      ('JuanP3','juan3@casaexperto.cl','Juan Pablo 3','11111111-1','maestro'),
-      ('PedroP1','pedro@casaexperto.cl','Pedro Pablo','11111111-1','maestro');
+      ('Supervisor','supervisor@usach.cl','Pablo','11111111-1','supervisor');
