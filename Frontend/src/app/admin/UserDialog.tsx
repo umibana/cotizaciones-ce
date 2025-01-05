@@ -16,6 +16,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { useManagementMutation } from "@/hooks/useManagementApi";
+import { useAuthenticatedMutation } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
 interface Auth0User {
@@ -46,6 +47,8 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
 		},
 	});
 
+	const [rut, setRut] = useState("");
+
 	const createMutation = useManagementMutation<Auth0User, Partial<Auth0User>>(
 		`${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/api/v2/users`
 	);
@@ -53,6 +56,11 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
 	const updateMutation = useManagementMutation<Auth0User, Partial<Auth0User>>(
 		`${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/api/v2/users/${user?.user_id}`,
 		"PATCH"
+	);
+
+	const secondEndpointMutation = useAuthenticatedMutation(
+		`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/crear`,
+		"POST"
 	);
 
 	const handleSubmit = async (e: React.FormEvent) => {
@@ -66,6 +74,19 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
 			} else {
 				await createMutation.mutateAsync(formData);
 			}
+
+			const secondEndpointData = {
+				username: formData.email,
+				email: formData.email,
+				name: formData.name,
+				rut: rut,
+				role: formData.app_metadata.role,
+			};
+
+			await secondEndpointMutation.mutateAsync(
+				secondEndpointData as unknown as void
+			);
+
 			onOpenChange(false);
 		} catch (error) {
 			toast.error(error as string);
@@ -119,6 +140,17 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
 							/>
 						</div>
 					)}
+					<div className="space-y-2">
+						<label htmlFor="rut">RUT</label>
+						<Input
+							id="rut"
+							value={rut}
+							onChange={(e) => setRut(e.target.value)}
+							required
+							placeholder="Ingrese RUT"
+							className="w-full"
+						/>
+					</div>
 					<div className="space-y-2">
 						<label htmlFor="role">Rol</label>
 						<Select
