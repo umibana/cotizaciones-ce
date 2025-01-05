@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Controller
@@ -111,4 +112,14 @@ public class ProyectoController {
         List<Proyecto> proyecto = proyectoService.listaProyectosAsignadosPorEmail(email);
         return ResponseEntity.ok(proyecto);
     }
+    @PostMapping("/diastrabajo/{id}")
+    public ResponseEntity<String> updateDiasTrabajo(@PathVariable Long id, @RequestBody List<String> diasTrabajo) {
+        try {
+            proyectoService.updateDiasTrabajo(id, diasTrabajo);
+            return ResponseEntity.ok("Días de trabajo actualizados correctamente.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error al actualizar los días de trabajo.");
+        }
+    }
+
 }

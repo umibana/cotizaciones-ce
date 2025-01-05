@@ -16,9 +16,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLOutput;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -180,6 +183,19 @@ public class ProyectoService {
             proyectoAdd.ifPresent(ListaProyectos::add);
         }
         return ListaProyectos;
+    }
+
+    public void updateDiasTrabajo(Long id, List<String> diasTrabajo) {
+        Proyecto proyecto = proyectoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Proyecto no encontrado"));
+
+        // Transformar la lista de String a LocalDate
+        List<LocalDate> fechasConvertidas = diasTrabajo.stream()
+                .map(fecha -> LocalDate.parse(fecha, DateTimeFormatter.ofPattern("dd-MM-yyyy")))
+                .collect(Collectors.toList());
+
+        proyecto.setFechaDiasTrabajo(fechasConvertidas);
+        proyectoRepository.save(proyecto);
     }
 
 }

@@ -4,11 +4,21 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useAuthenticatedQuery } from "@/hooks/useAuth";
-
+//Datos importados del calendario
+import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { format, isBefore, startOfDay } from "date-fns";
+import { Button } from "@/components/ui/button";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
 const ProjectDetailsPage = () => {
 	const searchParams = useSearchParams();
 	const projectId = searchParams.get("id");
-
 	// Fetch project data
 	const {
 		data: projectData,
@@ -52,6 +62,53 @@ const ProjectDetailsPage = () => {
 			enabled: !!projectData?.idUserBase,
 		}
 	);
+
+	//DATOS DE Seleccionar fecha
+	const [selectedDates, setSelectedDates] = useState(projectData?.fechaDiasTrabajo || []);
+	const [errorMessage, setErrorMessage] = useState("");
+	const today = startOfDay(new Date());
+
+	const formatDateForBackend = (date) => {
+		return format(new Date(date), 'dd-MM-yyyy');
+	};
+	const handleDateChange = async (dates) => {
+		const filteredDates = dates.filter(date =>
+			!isBefore(startOfDay(new Date(date)), today)
+		);
+
+		if (filteredDates.length !== dates.length) {
+			setErrorMessage("No puedes seleccionar fechas pasadas.");
+		} else {
+			setErrorMessage("");
+		}
+
+		setSelectedDates(filteredDates);
+
+		// Transformar las fechas al formato requerido por el backend
+		const formattedDates = filteredDates.map(formatDateForBackend);
+		await updateProjectDates(projectId, formattedDates);
+	};
+	const resetDates = () => {
+		setSelectedDates([]);
+		setErrorMessage("");
+	};
+
+	const updateProjectDates = async (projectId, dates) => {
+		try {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/diastrabajo/${projectId}`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(dates),
+			});
+			if (!response.ok) {
+				throw new Error("Error al actualizar las fechas.");
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	};
 
 	if (isProjectLoading || isClientLoading) return <p>Cargando...</p>;
 	if (projectError || clientError) return <p>Error al cargar los datos.</p>;
@@ -110,6 +167,35 @@ const ProjectDetailsPage = () => {
 								readOnly
 							/>
 						</div>
+						<div className="space-y-2">
+							<Label htmlFor="fechaDiasTrabajo">Días de Trabajo</Label>
+							<Popover>
+								<PopoverTrigger asChild>
+									<Button
+										variant={"outline"}
+										className={`w-full justify-start text-left font-normal ${!selectedDates.length && "text-muted-foreground"}`}
+									>
+										<CalendarIcon className="mr-2 h-4 w-4" />
+										{selectedDates.length ? (
+											selectedDates.map(date => format(date, "PPP")).join(", ")
+										) : (
+											<span>Elige las fechas</span>
+										)}
+									</Button>
+								</PopoverTrigger>
+								<PopoverContent className="w-auto p-0">
+									<Calendar
+										className="text-pretty"
+										mode="multiple"
+										selected={selectedDates}
+										onSelect={handleDateChange}
+										disabled={(date) => isBefore(startOfDay(date), today)}
+									/>
+								</PopoverContent>
+							</Popover>
+							{errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
+							<Button onClick={resetDates} className="mt-2" variant="secondary">Restablecer Fechas</Button>
+						</div>
 					</div>
 				</CardContent>
 			</Card>
@@ -161,7 +247,7 @@ const ProjectDetailsPage = () => {
 				</CardContent>
 			</Card>
 			<Card className="mb-8">
-				<CardHeader>
+			<CardHeader>
 					<CardTitle>Autor de creacion de proyecto</CardTitle>
 				</CardHeader>
 				<CardContent>

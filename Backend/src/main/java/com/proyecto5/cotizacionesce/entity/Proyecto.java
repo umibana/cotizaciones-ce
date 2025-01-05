@@ -32,7 +32,10 @@ public class Proyecto {
 
     public LocalDate fechaVisita;
 
-    public Date fechaDiasTrabajo;
+    @ElementCollection
+    @CollectionTable(name = "proyecto_dias_trabajo", joinColumns = @JoinColumn(name = "id_proyecto"))
+    @Column(name = "fecha_dia_trabajo")
+    public List<LocalDate> fechaDiasTrabajo;
 
     @Column(name = "id_cliente")
     public Long idCliente;
