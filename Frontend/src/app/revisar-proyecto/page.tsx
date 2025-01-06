@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
+import { es } from "date-fns/locale";
 const ProjectDetailsPage = () => {
 	const searchParams = useSearchParams();
 	const projectId = searchParams.get("id");
@@ -178,26 +179,35 @@ const ProjectDetailsPage = () => {
 								<PopoverTrigger asChild>
 									<Button
 										variant={"outline"}
-										className={`w-full justify-start text-left font-normal ${
+										className={`w-full justify-start text-left font-normal group ${
 											!selectedDates.length && "text-muted-foreground"
 										}`}>
-										<CalendarIcon className="mr-2 h-4 w-4" />
-										{selectedDates.length ? (
-											selectedDates
-												.map((date) => format(date, "PPP"))
-												.join(", ")
-										) : (
-											<span>Elige las fechas</span>
-										)}
+										<CalendarIcon className="mr-2 h-4 w-4 flex-shrink-0" />
+										<div className=" text-sm overflow-x-auto scrollbar-hide scrollbar-thin whitespace-nowrap">
+											{selectedDates.length ? (
+												selectedDates
+													.map((date) => format(date, "d/MM/yy"))
+													.join(", ")
+											) : (
+												<span>Elige las fechas</span>
+											)}
+										</div>
 									</Button>
 								</PopoverTrigger>
 								<PopoverContent className="w-auto h-auto">
 									<Calendar
 										mode="multiple"
-										className="text-pretty"
 										selected={selectedDates}
 										onSelect={handleDateChange}
 										disabled={(date) => isBefore(startOfDay(date), today)}
+										locale={es}
+										weekStartsOn={1}
+										classNames={{
+											day_selected:
+												"bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
+											day_today: "bg-accent opacity-70 text-accent-foreground",
+											day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100",
+										}}
 									/>
 								</PopoverContent>
 							</Popover>
