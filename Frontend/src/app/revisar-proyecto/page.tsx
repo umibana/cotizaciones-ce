@@ -64,16 +64,18 @@ const ProjectDetailsPage = () => {
 	);
 
 	//DATOS DE Seleccionar fecha
-	const [selectedDates, setSelectedDates] = useState(projectData?.fechaDiasTrabajo || []);
+	const [selectedDates, setSelectedDates] = useState(
+		projectData?.fechaDiasTrabajo || []
+	);
 	const [errorMessage, setErrorMessage] = useState("");
 	const today = startOfDay(new Date());
 
 	const formatDateForBackend = (date) => {
-		return format(new Date(date), 'dd-MM-yyyy');
+		return format(new Date(date), "dd-MM-yyyy");
 	};
 	const handleDateChange = async (dates) => {
-		const filteredDates = dates.filter(date =>
-			!isBefore(startOfDay(new Date(date)), today)
+		const filteredDates = dates.filter(
+			(date) => !isBefore(startOfDay(new Date(date)), today)
 		);
 
 		if (filteredDates.length !== dates.length) {
@@ -95,13 +97,16 @@ const ProjectDetailsPage = () => {
 
 	const updateProjectDates = async (projectId, dates) => {
 		try {
-			const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/diastrabajo/${projectId}`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(dates),
-			});
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/diastrabajo/${projectId}`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(dates),
+				}
+			);
 			if (!response.ok) {
 				throw new Error("Error al actualizar las fechas.");
 			}
@@ -167,34 +172,41 @@ const ProjectDetailsPage = () => {
 								readOnly
 							/>
 						</div>
-						<div className="space-y-2">
+						<div>
 							<Label htmlFor="fechaDiasTrabajo">Días de Trabajo</Label>
 							<Popover>
 								<PopoverTrigger asChild>
 									<Button
 										variant={"outline"}
-										className={`w-full justify-start text-left font-normal ${!selectedDates.length && "text-muted-foreground"}`}
-									>
+										className={`w-full justify-start text-left font-normal ${
+											!selectedDates.length && "text-muted-foreground"
+										}`}>
 										<CalendarIcon className="mr-2 h-4 w-4" />
 										{selectedDates.length ? (
-											selectedDates.map(date => format(date, "PPP")).join(", ")
+											selectedDates
+												.map((date) => format(date, "PPP"))
+												.join(", ")
 										) : (
 											<span>Elige las fechas</span>
 										)}
 									</Button>
 								</PopoverTrigger>
-								<PopoverContent className="w-auto p-0">
+								<PopoverContent className="w-auto h-auto">
 									<Calendar
-										className="text-pretty"
 										mode="multiple"
+										className="text-pretty"
 										selected={selectedDates}
 										onSelect={handleDateChange}
 										disabled={(date) => isBefore(startOfDay(date), today)}
 									/>
 								</PopoverContent>
 							</Popover>
-							{errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
-							<Button onClick={resetDates} className="mt-2" variant="secondary">Restablecer Fechas</Button>
+							{errorMessage && (
+								<p className="text-red-500 text-sm">{errorMessage}</p>
+							)}
+							<Button onClick={resetDates} className="mt-2" variant="secondary">
+								Restablecer Fechas
+							</Button>
 						</div>
 					</div>
 				</CardContent>
@@ -247,7 +259,7 @@ const ProjectDetailsPage = () => {
 				</CardContent>
 			</Card>
 			<Card className="mb-8">
-			<CardHeader>
+				<CardHeader>
 					<CardTitle>Autor de creacion de proyecto</CardTitle>
 				</CardHeader>
 				<CardContent>
