@@ -183,9 +183,10 @@ const ProjectDetailsPage = () => {
 											!selectedDates.length && "text-muted-foreground"
 										}`}>
 										<CalendarIcon className="mr-2 h-4 w-4 flex-shrink-0" />
-										<div className=" text-sm overflow-x-auto scrollbar-hide scrollbar-thin whitespace-nowrap">
+										<div className="text-sm overflow-x-auto scrollbar-hide scrollbar-thin whitespace-nowrap">
 											{selectedDates.length ? (
-												selectedDates
+												[...selectedDates]
+													.sort((a, b) => a.getTime() - b.getTime())
 													.map((date) => format(date, "d/MM/yy"))
 													.join(", ")
 											) : (
