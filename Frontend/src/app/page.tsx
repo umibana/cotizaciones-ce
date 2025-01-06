@@ -152,6 +152,10 @@ const AssignedProjectList = ({
 );
 
 const ProyectoAprobado = async (idProyecto: string): Promise<void> => {
+	// Add confirmation dialog
+	const isConfirmed = confirm("¿Está seguro que desea aprobar este proyecto?");
+	if (!isConfirmed) return;
+
 	try {
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/aprobados/${idProyecto}`,
@@ -178,6 +182,12 @@ const ProyectoAprobado = async (idProyecto: string): Promise<void> => {
 };
 
 const handleDeleteProject = async (idProyecto: string) => {
+	// Add confirmation dialog
+	const isConfirmed = confirm(
+		"¿Está seguro que desea eliminar este proyecto? Esta acción no se puede deshacer."
+	);
+	if (!isConfirmed) return;
+
 	try {
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/eliminados/${idProyecto}`,
@@ -274,6 +284,12 @@ const ProyectosCotizados = ({ projects, role }: ProjectListProps) => {
 };
 
 const ProyectoTerminado = async (idProyecto: string): Promise<void> => {
+	// Add confirmation dialog
+	const isConfirmed = confirm(
+		"¿Está seguro que desea marcar este proyecto como terminado? Esta acción no se puede deshacer."
+	);
+	if (!isConfirmed) return;
+
 	try {
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/terminados/${idProyecto}`,
