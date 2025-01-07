@@ -204,7 +204,9 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
 								<SelectValue placeholder="Select role" />
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="admin">Admin</SelectItem>
+								<SelectItem value="jefe de operaciones">
+									Jefe de Operaciones
+								</SelectItem>
 								<SelectItem value="maestro">Maestro</SelectItem>
 								<SelectItem value="supervisor">Supervisor</SelectItem>
 							</SelectContent>
