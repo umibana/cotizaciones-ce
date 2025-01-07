@@ -57,3 +57,45 @@ export const useManagementMutation = <TResponse, TInput = void>(
         }
     });
 };
+
+export const useAssignRoleMutation = () => {
+    return useMutation({
+        mutationFn: async ({ userId, roles }: { userId: string; roles: string[] }) => {
+            const token = await getManagementToken();
+            const encodedUserId = encodeURIComponent(userId);
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/api/v2/users/${encodedUserId}/roles`,
+                {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ roles })
+                }
+            );
+
+            if (!response.ok) {
+                const errorData = await response.json();
+
+                if (errorData.message && AUTH0_ERROR_MESSAGES[errorData.message]) {
+                    throw {
+                        ...errorData,
+                        message: AUTH0_ERROR_MESSAGES[errorData.message]
+                    };
+                }
+
+                throw errorData;
+            }
+
+            return response.json();
+        },
+        onError: (error: unknown) => {
+            const errorMessage = (error as { message?: string }).message
+                || (error as { error_description?: string }).error_description
+                || (error as { error?: string }).error
+                || 'Operation failed';
+            toast.error(errorMessage);
+        }
+    });
+};

@@ -15,11 +15,14 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { useManagementMutation } from "@/hooks/useManagementApi";
+import {
+	useManagementMutation,
+	useAssignRoleMutation,
+} from "@/hooks/useManagementApi";
 import { useAuthenticatedMutation } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { Eye, EyeOff } from "lucide-react";
-
+import { Eye } from "lucide-react";
+import { EyeOff } from "lucide-react";
 interface Auth0User {
 	user_id: string;
 	email: string;
@@ -36,6 +39,12 @@ interface UserDialogProps {
 	onOpenChange: (open: boolean) => void;
 	user: Auth0User | null;
 }
+
+const ROLE_IDS = {
+	"jefe de operaciones": "rol_YTqDFHgVtZ2a0Svz",
+	maestro: "rol_nmfYemcUpYZoftAt",
+	supervisor: "rol_kuL1hcMnbOaeHyR5",
+};
 
 export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
 	const [formData, setFormData] = useState({
@@ -60,6 +69,8 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
 		`${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/api/v2/users/${user?.user_id}`,
 		"PATCH"
 	);
+
+	const assignRoleMutation = useAssignRoleMutation();
 
 	const secondEndpointMutation = useAuthenticatedMutation(
 		`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/crear`,
@@ -91,7 +102,11 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
 					app_metadata: formData.app_metadata,
 				});
 			} else {
-				await createMutation.mutateAsync(formData);
+				const newUser = await createMutation.mutateAsync(formData);
+				await assignRoleMutation.mutateAsync({
+					userId: newUser.user_id,
+					roles: [ROLE_IDS[formData.app_metadata.role]],
+				});
 			}
 
 			const secondEndpointData = {
