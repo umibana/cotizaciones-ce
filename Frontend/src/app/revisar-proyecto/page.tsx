@@ -4,9 +4,9 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useAuthenticatedQuery } from "@/hooks/useAuth";
-//Datos importados del calendario
-import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+
+import { useEffect, useState } from "react";
 import { format, isBefore, startOfDay } from "date-fns";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,27 +17,31 @@ import {
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { es } from "date-fns/locale";
+
 const ProjectDetailsPage = () => {
 	const searchParams = useSearchParams();
 	const projectId = searchParams.get("id");
-	// Fetch project data
+
+	const queryClient = useQueryClient();
+
+	// =============================
+	//  1) FETCH DEL PROYECTO
+	// =============================
 	const {
 		data: projectData,
 		isLoading: isProjectLoading,
 		error: projectError,
 	} = useAuthenticatedQuery(
-		["project", projectId as string],
+		["project", projectId],
 		`${process.env.NEXT_PUBLIC_BACKEND_URL}/proyectos/${projectId}`,
 		{
 			enabled: !!projectId,
+			refetchOnMount: "always", 
+			staleTime: 0,             
 		}
 	);
-	console.log("Project Data", projectData);
-	console.log(
-		`${process.env.NEXT_PUBLIC_BACKEND_URL}/clientes/${projectData?.idCliente}`
-	);
 
-	// Fetch client data
+	// FETCH DEL CLIENTE
 	const {
 		data: clientData,
 		isLoading: isClientLoading,
@@ -45,31 +49,50 @@ const ProjectDetailsPage = () => {
 	} = useAuthenticatedQuery(
 		["client", projectData?.idCliente],
 		projectData?.idCliente
-			? `${process.env.NEXT_PUBLIC_BACKEND_URL}/clientes/${projectData.idCliente}`
-			: null,
+		? `${process.env.NEXT_PUBLIC_BACKEND_URL}/clientes/${projectData.idCliente}`
+		: null,
 		{
-			enabled: !!projectData?.idCliente,
+		enabled: !!projectData?.idCliente,
 		}
 	);
 
+	// FETCH DEL USUARIO QUE CREÓ EL PROYECTO
 	const {
 		data: nombreCreador,
 		isLoading: isNameLoading,
 		error: nameError,
 	} = useAuthenticatedQuery(
 		["creador", projectData?.idUserBase],
-		`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${projectData?.idUserBase}`,
+		projectData?.idUserBase
+		? `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${projectData?.idUserBase}`
+		: null,
 		{
-			enabled: !!projectData?.idUserBase,
+		enabled: !!projectData?.idUserBase,
 		}
 	);
 
-	//DATOS DE Seleccionar fecha
-	const [selectedDates, setSelectedDates] = useState(
-		projectData?.fechaDiasTrabajo || []
-	);
+	// ====================================================
+	//     MANEJO DE FECHAS DE TRABAJO
+	// ====================================================
+	const [selectedDates, setSelectedDates] = useState([]);
 	const [errorMessage, setErrorMessage] = useState("");
 	const today = startOfDay(new Date());
+
+
+	// Función para parsear fechas del formato dd-MM-yyyy a Date
+	const parseDate = (dateString) => {
+		const [year, month, day] = dateString.split("-").map(Number); // Divide la fecha
+		return new Date(year, month - 1, day); // Devuelve objeto Date
+	};
+
+
+
+	useEffect(() => {
+		if (projectData && projectData.fechaDiasTrabajo) {
+		  const initialDates = projectData.fechaDiasTrabajo.map(parseDate);
+		  setSelectedDates(initialDates);
+		}
+	  }, [projectData]);
 
 	const formatDateForBackend = (date) => {
 		return format(new Date(date), "dd-MM-yyyy");
@@ -183,16 +206,27 @@ const ProjectDetailsPage = () => {
 											!selectedDates.length && "text-muted-foreground"
 										}`}>
 										<CalendarIcon className="mr-2 h-4 w-4 flex-shrink-0" />
-										<div className="text-sm overflow-x-auto scrollbar-hide scrollbar-thin whitespace-nowrap">
-											{selectedDates.length ? (
-												[...selectedDates]
-													.sort((a, b) => a.getTime() - b.getTime())
-													.map((date) => format(date, "d/MM/yy"))
-													.join(", ")
-											) : (
-												<span>Elige las fechas</span>
-											)}
-										</div>
+											<div className="text-sm overflow-x-auto scrollbar-hide scrollbar-thin whitespace-nowrap">
+												{selectedDates.length > 0 ? (
+													[...selectedDates]
+														.sort((a, b) => {
+															// Validar que a y b sean objetos Date
+															const dateA = a instanceof Date ? a : new Date(a);
+															const dateB = b instanceof Date ? b : new Date(b);
+
+															// Comparar fechas usando getTime()
+															return dateA.getTime() - dateB.getTime();
+														})
+														.map((date) => {
+															// Asegurarnos de que cada fecha se renderice correctamente
+															const validDate = date instanceof Date ? date : new Date(date);
+															return format(validDate, "dd-MM-yy");
+														})
+														.join(", ")
+												) : (
+													<span>Elige las fechas</span>
+												)}
+											</div>
 									</Button>
 								</PopoverTrigger>
 								<PopoverContent className="w-auto h-auto">
