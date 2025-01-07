@@ -18,6 +18,7 @@ import {
 import { useManagementMutation } from "@/hooks/useManagementApi";
 import { useAuthenticatedMutation } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { Eye, EyeOff } from "lucide-react";
 
 interface Auth0User {
 	user_id: string;
@@ -48,6 +49,8 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
 	});
 
 	const [rut, setRut] = useState("");
+	const [showPassword, setShowPassword] = useState(false);
+	const [passwordError, setPasswordError] = useState("");
 
 	const createMutation = useManagementMutation<Auth0User, Partial<Auth0User>>(
 		`${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/api/v2/users`
@@ -63,8 +66,24 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
 		"POST"
 	);
 
+	const validatePassword = (password: string) => {
+		if (password.length < 8) {
+			return "La contraseña debe tener al menos 8 caracteres";
+		}
+		if (!/[A-Z]/.test(password)) {
+			return "La contraseña debe contener al menos una mayúscula";
+		}
+		return "";
+	};
+
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+
+		if (!user && validatePassword(formData.password)) {
+			setPasswordError(validatePassword(formData.password));
+			return;
+		}
+
 		try {
 			if (user) {
 				await updateMutation.mutateAsync({
@@ -89,7 +108,7 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
 
 			onOpenChange(false);
 		} catch (error) {
-			toast.error(error as string);
+			toast.error(error.message as string);
 		}
 	};
 
@@ -129,15 +148,35 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
 					{!user && (
 						<div className="space-y-2">
 							<label htmlFor="password">Contraseña</label>
-							<Input
-								id="password"
-								type="password"
-								value={formData.password}
-								onChange={(e) =>
-									setFormData({ ...formData, password: e.target.value })
-								}
-								required
-							/>
+							<div className="relative">
+								<Input
+									id="password"
+									type={showPassword ? "text" : "password"}
+									value={formData.password}
+									onChange={(e) => {
+										const newPassword = e.target.value;
+										setFormData({ ...formData, password: newPassword });
+										setPasswordError(validatePassword(newPassword));
+									}}
+									required
+									className={passwordError ? "border-red-500" : ""}
+								/>
+								<Button
+									type="button"
+									variant="ghost"
+									size="sm"
+									className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
+									onClick={() => setShowPassword(!showPassword)}>
+									{showPassword ? (
+										<EyeOff className="h-4 w-4" />
+									) : (
+										<Eye className="h-4 w-4" />
+									)}
+								</Button>
+							</div>
+							{passwordError && (
+								<p className="text-sm text-red-500 mt-1">{passwordError}</p>
+							)}
 						</div>
 					)}
 					<div className="space-y-2">

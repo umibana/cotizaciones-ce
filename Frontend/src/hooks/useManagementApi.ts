@@ -10,6 +10,13 @@ const getManagementToken = async () => {
     return data.access_token;
 };
 
+const AUTH0_ERROR_MESSAGES: Record<string, string> = {
+    "The user already exists.": "El usuario ya existe en el sistema.",
+    "Password is too weak": "La contraseña es demasiado débil.",
+    "Password contains user information": "La contraseña no puede contener información del usuario.",
+    // Add more mappings as needed
+};
+
 export const useManagementMutation = <TResponse, TInput = void>(
     url: string,
     method = 'POST'
@@ -27,13 +34,26 @@ export const useManagementMutation = <TResponse, TInput = void>(
             });
 
             if (!response.ok) {
-                throw new Error('Operation failed');
+                const errorData = await response.json();
+
+                if (errorData.message && AUTH0_ERROR_MESSAGES[errorData.message]) {
+                    throw {
+                        ...errorData,
+                        message: AUTH0_ERROR_MESSAGES[errorData.message]
+                    };
+                }
+
+                throw errorData;
             }
 
             return response.json() as Promise<TResponse>;
         },
-        onError: (error: Error) => {
-            toast.error(error.message);
+        onError: (error: unknown) => {
+            const errorMessage = (error as { message?: string }).message
+                || (error as { error_description?: string }).error_description
+                || (error as { error?: string }).error
+                || 'Operation failed';
+            toast.error(errorMessage);
         }
     });
 };
