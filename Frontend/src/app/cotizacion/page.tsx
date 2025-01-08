@@ -365,8 +365,10 @@ export default function QuotationForm() {
 		const result = await createQuotation(quotationData, projectId);
 
 		if (result.error) {
+			alert("Error al crear la cotizacion")
 			toast.error("Failed to create quotation. Please try again.");
 		} else {
+			alert("Cotizacion creada exitosamente!")
 			toast.success(`Quotation created with ID: ${result}`);
 
 			// Generate PDF using the same function
@@ -379,6 +381,8 @@ export default function QuotationForm() {
 			setQuotationDescription("");
 			setManoObras([]);
 		}
+
+		window.location.href = "/";
 	};
 
 	const generatePDF = async () => {
