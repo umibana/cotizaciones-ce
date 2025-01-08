@@ -274,7 +274,7 @@ export default function NuevoProyecto() {
 				<Button type="button" variant="outline" onClick={handleClear}>
 					Cancelar
 				</Button>
-				<Button type="submit">Enviar Solicitud</Button>
+				<Button type="submit">Registrar proyecto</Button>
 			</div>
 		</form>
 	);

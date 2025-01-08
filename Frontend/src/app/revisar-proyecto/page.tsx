@@ -17,6 +17,7 @@ import {
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { es } from "date-fns/locale";
+import {useRoles} from "@/hooks/useRoles";
 
 const ProjectDetailsPage = () => {
 	const searchParams = useSearchParams();
@@ -70,6 +71,15 @@ const ProjectDetailsPage = () => {
 		enabled: !!projectData?.idUserBase,
 		}
 	);
+	// Bloque para determinar el rol del usuario y habilitar opciones de modificacion
+	const { isAdmin, isMaestro, isSupervisor } = useRoles();
+	const role = isAdmin
+		? "jefe de operaciones"
+		: isMaestro
+			? "maestro"
+			: isSupervisor
+				? "supervisor"
+				: null;
 
 	// ====================================================
 	//     MANEJO DE FECHAS DE TRABAJO
@@ -233,7 +243,11 @@ const ProjectDetailsPage = () => {
 									<Calendar
 										mode="multiple"
 										selected={selectedDates}
-										onSelect={handleDateChange}
+										onSelect={(dates) => {
+											if (role === "jefe de operaciones" || role === "supervisor") {
+												handleDateChange(dates);
+											}
+										}}
 										disabled={(date) => isBefore(startOfDay(date), today)}
 										locale={es}
 										weekStartsOn={1}
@@ -249,9 +263,6 @@ const ProjectDetailsPage = () => {
 							{errorMessage && (
 								<p className="text-red-500 text-sm">{errorMessage}</p>
 							)}
-							<Button onClick={resetDates} className="mt-2" variant="secondary">
-								Restablecer Fechas
-							</Button>
 						</div>
 					</div>
 				</CardContent>

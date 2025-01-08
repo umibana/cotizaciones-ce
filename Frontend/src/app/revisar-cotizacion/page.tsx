@@ -230,7 +230,7 @@ export default function RevisarCotizacion() {
 						</div>
 
 						<div className="space-y-2">
-							<Label htmlFor="precioTentativo">Precio total proyecto(Revisar) tiene iva?</Label>
+							<Label htmlFor="precioTentativo">Precio total proyecto</Label>
 							<Input
 								id="precioTentativo"
 								type="number"
@@ -290,7 +290,7 @@ export default function RevisarCotizacion() {
 							</tbody>
 							<tfoot>
 								<tr>
-									<td className="font-bold px-4 py-2 text-right" colSpan={2}>
+									<td className="font-bold px-4 py-2 text-right" colSpan={4}>
 										Total de mano de obra: $
 										{manoObra.reduce(
 											(acc, curr) => acc + curr.areaTrabajar * curr.valorPorM2,
