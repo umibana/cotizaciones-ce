@@ -179,6 +179,7 @@ const ProyectoAprobado = async (idProyecto: string): Promise<void> => {
 
 		alert("Proyecto aprobado con éxito");
 		// Aquí puedes recargar datos u otra acción.
+		window.location.reload();
 	} catch (error) {
 		console.error("Error al aprobar el proyecto:", error);
 		alert("Hubo un problema al intentar aprobar el proyecto.");
@@ -317,6 +318,7 @@ const ProyectoTerminado = async (idProyecto: string): Promise<void> => {
 
 		alert("Proyecto terminado con éxito");
 		// Aquí puedes recargar datos u otra acción.
+		window.location.reload();
 	} catch (error) {
 		console.error("Error al aprobar el proyecto:", error);
 		alert("Hubo un problema al intentar aprobar el proyecto.");
