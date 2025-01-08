@@ -97,11 +97,11 @@ export default function AdminDashboard() {
 
 		try {
 			await deleteMutation.mutateAsync();
-			toast.success("User deleted successfully");
+			toast.success("Usuario eliminado correctamente");
 			queryClient.invalidateQueries({ queryKey: ["users"] });
 			setIsDeleteDialogOpen(false);
 		} catch (error) {
-			toast.error(`Failed to delete user: ${error}`);
+			toast.error(`Failed to delete user: ${error.message}`);
 		}
 	};
 
@@ -122,8 +122,7 @@ export default function AdminDashboard() {
 			const roles = rolesData.map((role: { name: string }) => role.name);
 			setUserDetails({ userId, roles, isLoading: false });
 		} catch (error) {
-			console.error("Error fetching user roles:", error);
-			toast.error("Failed to fetch user roles");
+			toast.error(error.message);
 			setUserDetails(null);
 		}
 	};

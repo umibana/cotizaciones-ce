@@ -34,7 +34,8 @@ export const useManagementMutation = <TResponse, TInput = void>(
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
+                const text = await response.text();
+                const errorData = text ? JSON.parse(text) : { message: 'Operation failed' };
 
                 if (errorData.message && AUTH0_ERROR_MESSAGES[errorData.message]) {
                     throw {
@@ -46,7 +47,11 @@ export const useManagementMutation = <TResponse, TInput = void>(
                 throw errorData;
             }
 
-            return response.json() as Promise<TResponse>;
+            if (method === 'DELETE' || response.headers.get('content-length') === '0') {
+                return undefined;
+            }
+
+            return await response.json() as Promise<TResponse>;
         },
         onError: (error: unknown) => {
             const errorMessage = (error as { message?: string }).message
@@ -76,7 +81,8 @@ export const useAssignRoleMutation = () => {
             );
 
             if (!response.ok) {
-                const errorData = await response.json();
+                const text = await response.text();
+                const errorData = text ? JSON.parse(text) : { message: 'Operation failed' };
 
                 if (errorData.message && AUTH0_ERROR_MESSAGES[errorData.message]) {
                     throw {
@@ -88,7 +94,10 @@ export const useAssignRoleMutation = () => {
                 throw errorData;
             }
 
-            return response.json();
+            const text = await response.text();
+            if (!text) return undefined;
+
+            return JSON.parse(text);
         },
         onError: (error: unknown) => {
             const errorMessage = (error as { message?: string }).message

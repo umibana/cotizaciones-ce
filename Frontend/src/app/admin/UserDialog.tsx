@@ -120,6 +120,7 @@ export function UserDialog({ open, onOpenChange, user }: UserDialogProps) {
 			await secondEndpointMutation.mutateAsync(
 				secondEndpointData as unknown as void
 			);
+			toast.success("Usuario creado correctamente");
 
 			onOpenChange(false);
 		} catch (error) {
