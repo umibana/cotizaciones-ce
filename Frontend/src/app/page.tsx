@@ -64,6 +64,7 @@ const UnassignedProjectList = ({
 										<DropdownMenuLabel>Opciones</DropdownMenuLabel>
 										<DropdownMenuItem>
 											<Link
+												style={{ display: 'block', width: '100%', height: '100%' }}
 												href={{
 													pathname: "/asignacion",
 													query: { id: project.idProyecto },
@@ -73,6 +74,7 @@ const UnassignedProjectList = ({
 										</DropdownMenuItem>
 										<DropdownMenuItem>
 											<Link
+												style={{ display: 'block', width: '100%', height: '100%' }}
 												href={{
 													pathname: "/revisar-proyecto",
 													query: { id: project.idProyecto },
@@ -123,6 +125,7 @@ const AssignedProjectList = ({
 									<DropdownMenuLabel>Opciones</DropdownMenuLabel>
 									<DropdownMenuItem>
 										<Link
+											style={{ display: 'block', width: '100%', height: '100%' }}
 											href={{
 												pathname: "/cotizacion",
 												query: { id: project.idProyecto },
@@ -132,6 +135,7 @@ const AssignedProjectList = ({
 									</DropdownMenuItem>
 									<DropdownMenuItem>
 										<Link
+											style={{ display: 'block', width: '100%', height: '100%' }}
 											href={{
 												pathname: "/revisar-proyecto",
 												query: { id: project.idProyecto },
@@ -240,10 +244,12 @@ const ProyectosCotizados = ({ projects, role }: ProjectListProps) => {
 											role === "supervisor") && (
 											<>
 												<DropdownMenuItem
+													style={{ cursor: 'pointer' }}
 													onClick={() => ProyectoAprobado(project.idProyecto)}>
 													Actualizar: Aprobado
 												</DropdownMenuItem>
 												<DropdownMenuItem
+													style={{ cursor: 'pointer' }}
 													onClick={() =>
 														handleDeleteProject(project.idProyecto)
 													}
@@ -254,6 +260,7 @@ const ProyectosCotizados = ({ projects, role }: ProjectListProps) => {
 										)}
 										<DropdownMenuItem>
 											<Link
+												style={{ display: 'block', width: '100%', height: '100%' }}
 												href={{
 													pathname: "/revisar-cotizacion",
 													query: { id: project.idProyecto },
@@ -263,6 +270,7 @@ const ProyectosCotizados = ({ projects, role }: ProjectListProps) => {
 										</DropdownMenuItem>
 										<DropdownMenuItem>
 											<Link
+												style={{ display: 'block', width: '100%', height: '100%' }}
 												href={{
 													pathname: "/revisar-proyecto",
 													query: { id: project.idProyecto },
@@ -338,12 +346,14 @@ const ProyectosAprobados = ({ projects, role }: ProjectListProps) => (
 								<DropdownMenuLabel>Opciones</DropdownMenuLabel>
 								{(role === "jefe de operaciones" || role === "supervisor") && (
 									<DropdownMenuItem
+										style={{ cursor: 'pointer' }}
 										onClick={() => ProyectoTerminado(project.idProyecto)}>
 										Actualizar: Terminado
 									</DropdownMenuItem>
 								)}
 								<DropdownMenuItem>
 									<Link
+										style={{ display: 'block', width: '100%', height: '100%' }}
 										href={{
 											pathname: "/revisar-cotizacion",
 											query: { id: project.idProyecto },
@@ -353,6 +363,7 @@ const ProyectosAprobados = ({ projects, role }: ProjectListProps) => (
 								</DropdownMenuItem>
 								<DropdownMenuItem>
 									<Link
+										style={{ display: 'block', width: '100%', height: '100%' }}
 										href={{
 											pathname: "/revisar-proyecto",
 											query: { id: project.idProyecto },
@@ -394,6 +405,7 @@ const ProyectosTerminados = ({ projects, role }: ProjectListProps) => (
 								<DropdownMenuLabel>Opciones</DropdownMenuLabel>
 								<DropdownMenuItem>
 									<Link
+										style={{ display: 'block', width: '100%', height: '100%' }}
 										href={{
 											pathname: "/revisar-cotizacion",
 											query: { id: project.idProyecto },
@@ -403,6 +415,7 @@ const ProyectosTerminados = ({ projects, role }: ProjectListProps) => (
 								</DropdownMenuItem>
 								<DropdownMenuItem>
 									<Link
+										style={{ display: 'block', width: '100%', height: '100%' }}
 										href={{
 											pathname: "/revisar-proyecto",
 											query: { id: project.idProyecto },
